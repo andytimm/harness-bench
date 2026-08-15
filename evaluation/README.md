@@ -29,3 +29,12 @@ PYTHONPATH=src .venv/bin/python evaluation/run_prime_subset.py
 ```
 
 The runner writes its manifest atomically after every task and stops on the first command or validation failure. Rerunning it resumes from validated result JSON files, so completed tasks are not repeated. For local-service tasks it maps the benchmark's public-URL template to the hook's loopback URL: Prime tools share the hook's host network namespace, so this avoids unnecessarily exposing fixture services through a public tunnel.
+
+Generate the exact-subset comparison plots from retained Prime result JSON and the derived authors' GPT-5.4 score artifact:
+
+```bash
+uv pip install --python .venv/bin/python matplotlib
+.venv/bin/python evaluation/plot_prime_comparison.py
+```
+
+The comparison uses completion/oracle outcome only. The public baseline records exact task and model labels but omits reasoning effort, backend revision, harness versions, and benchmark SHA; see the comparison report for caveats.

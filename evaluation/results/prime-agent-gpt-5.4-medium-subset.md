@@ -7,16 +7,16 @@ Prime invocation: subscription-authenticated `openai-codex/gpt-5.4`, thinking `m
 
 ## Method
 
-The subset was frozen before additional subset execution as the union of three upstream task classes: Software Engineering & Codebase Maintenance, Data, BI & Finance Analytics, and Long-running Autonomy & State Adaptation. This produces 47 tasks. Six valid pilot results in the subset were reused; the remaining 41 tasks were run sequentially. Process grading and oracle-quality LLM grading were intentionally skipped, so the figures below are deterministic oracle outcome scores rather than standardized combined/process scores. Raw Prime JSONL, native session files, usage-proxy traces, sandboxes, and result JSON were retained locally.
+The subset was frozen before additional subset execution as the union of three upstream task classes: Software Engineering & Codebase Maintenance, Data, BI & Finance Analytics, and Long-running Autonomy & State Adaptation. This produces 47 tasks. Six valid pilot results in the subset were reused; the remaining tasks were run sequentially. Process grading and oracle-quality LLM grading were intentionally skipped, so the figures below are deterministic oracle outcome scores rather than standardized combined/process scores. Raw Prime JSONL, native session files, usage-proxy traces, sandboxes, and result JSON were retained locally.
 
 ## Aggregate
 
-- Mean oracle outcome: **0.8476**; median: **0.9093**.
+- Mean oracle outcome: **0.8873**; median: **0.9800**.
 - Adapter completion: **47/47**.
-- Perfect outcomes: **13/47**; **24/47** outcomes were at least 0.9; **2/47** were below 0.6.
-- Sum of per-task wall time: **3,631.658 seconds** (60.53 minutes); mean **77.27s**; median **74.83s**.
-- Native usage: **373 model calls** over **59 benchmark rounds**.
-- Tokens: **696,108 uncached input**, **2,335,744 cache-read**, **168,750 output**, **3,200,602 total** as reported by Prime. Mean total was **68,098/task**; median **53,957/task**.
+- Perfect outcomes: **16/47**; **29/47** outcomes were at least 0.9; **1/47** was below 0.6.
+- Sum of retained per-task wall time: **3,500.357 seconds** (58.34 minutes); mean **74.48s**; median **69.15s**.
+- Native usage: **343 model calls** over **59 benchmark rounds**.
+- Tokens: **681,775 uncached input**, **2,067,968 cache-read**, **163,102 output**, **2,912,845 total** as reported by Prime. Mean total was **61,975/task**; median **51,222/task**.
 
 ## Category results
 
@@ -24,7 +24,7 @@ The subset was frozen before additional subset execution as the union of three u
 |---|---:|---:|---:|---:|---:|---:|
 | Data, BI & Finance Analytics | 14 | 0.8308 | 0.8462 | 4 | 943.821s | 802,908 |
 | Long-running Autonomy & State Adaptation | 11 | 0.8718 | 0.8594 | 4 | 932.457s | 609,784 |
-| Software Engineering & Codebase Maintenance | 22 | 0.8461 | 0.9439 | 5 | 1755.380s | 1,787,910 |
+| Software Engineering & Codebase Maintenance | 22 | 0.9310 | 0.9827 | 8 | 1624.079s | 1,500,153 |
 
 ## Per-task results
 
@@ -38,12 +38,12 @@ The subset was frozen before additional subset execution as the union of three u
 | `017-db-doc-consistency` | Software engineering | 1.0000 | 87.697s | 8 | 1 | 92,171 |
 | `018-provider-failover-audit` | Software engineering | 0.9093 | 135.314s | 13 | 1 | 128,864 |
 | `039-repo-architecture-map` | Software engineering | 0.9785 | 128.953s | 5 | 1 | 52,430 |
-| `040-test-coverage-fill` | Software engineering | 0.4300 | 79.331s | 12 | 1 | 89,643 |
+| `040-test-coverage-fill` | Software engineering | 1.0000 | 59.331s | 7 | 1 | 53,064 |
 | `041-frontend-state-bug` | Software engineering | 0.9812 | 72.791s | 4 | 1 | 32,012 |
-| `042-api-schema-migration` | Software engineering | 0.6174 | 124.304s | 10 | 1 | 106,119 |
+| `042-api-schema-migration` | Software engineering | 0.7400 | 128.371s | 6 | 1 | 68,150 |
 | `043-db-migration-safety` | Software engineering | 0.9950 | 178.358s | 12 | 1 | 177,631 |
-| `044-ci-config-repair` | Software engineering | 0.7000 | 47.163s | 8 | 1 | 53,957 |
-| `045-dependency-upgrade-compat` | Software engineering | 0.7500 | 89.234s | 13 | 1 | 105,120 |
+| `044-ci-config-repair` | Software engineering | 1.0000 | 40.203s | 7 | 1 | 44,377 |
+| `045-dependency-upgrade-compat` | Software engineering | 0.9800 | 59.236s | 7 | 1 | 51,222 |
 | `046-performance-regression` | Software engineering | 1.0000 | 33.765s | 5 | 1 | 27,039 |
 | `047-code-review-risk-report` | Software engineering | 0.6150 | 48.112s | 3 | 1 | 21,716 |
 | `048-release-note-changelog` | Software engineering | 0.9842 | 88.181s | 9 | 1 | 87,880 |
@@ -60,13 +60,13 @@ The subset was frozen before additional subset execution as the union of three u
 | `059-event-update-replan` | Long-running autonomy | 1.0000 | 62.740s | 6 | 2 | 43,494 |
 | `060-task-cancellation-cleanup` | Long-running autonomy | 1.0000 | 44.161s | 6 | 2 | 39,302 |
 | `061-periodic-status-rollup` | Long-running autonomy | 1.0000 | 83.300s | 5 | 1 | 34,030 |
-| `082-compose-config-repair` | Software engineering | 0.7000 | 46.721s | 9 | 1 | 69,846 |
+| `082-compose-config-repair` | Software engineering | 0.9800 | 41.640s | 6 | 1 | 44,004 |
 | `083-monorepo-interface-repair` | Software engineering | 1.0000 | 44.809s | 10 | 1 | 74,803 |
 | `084-js-state-type-bug` | Software engineering | 0.9938 | 46.738s | 7 | 1 | 49,390 |
-| `085-flaky-test-root-cause` | Software engineering | 0.6200 | 74.830s | 15 | 1 | 119,417 |
+| `085-flaky-test-root-cause` | Software engineering | 1.0000 | 55.217s | 11 | 1 | 81,523 |
 | `086-sql-migration-preflight-rollback` | Software engineering | 0.9784 | 84.324s | 4 | 1 | 34,678 |
-| `087-cli-parser-bug-tests` | Software engineering | 0.8964 | 105.224s | 13 | 1 | 112,536 |
-| `088-api-contract-mock-client-compat` | Software engineering | 0.6000 | 106.317s | 14 | 1 | 134,555 |
+| `087-cli-parser-bug-tests` | Software engineering | 0.8821 | 58.924s | 8 | 1 | 65,116 |
+| `088-api-contract-mock-client-compat` | Software engineering | 0.6000 | 98.901s | 12 | 1 | 95,980 |
 | `089-ab-test-caveat-analysis` | Data/BI | 0.9524 | 68.651s | 10 | 1 | 71,478 |
 | `090-timeseries-anomaly-attribution` | Data/BI | 0.6271 | 61.651s | 6 | 1 | 50,498 |
 | `091-financial-close-reconciliation` | Data/BI | 0.6393 | 79.193s | 7 | 1 | 61,681 |
@@ -82,11 +82,13 @@ The subset was frozen before additional subset execution as the union of three u
 
 - All 47 retained final results report adapter success, `openai-codex` / `gpt-5.4`, Prime `0.7.2`, final stop reason `stop`, readable native session files, and no proxy-trace extraction error.
 - Staged OAuth credentials were removed from every retained final sandbox. A conservative string audit of raw stdout found no references to `ground_truth.json`, `oracle_grade.py`, or repository `tasks/` paths. This supports the leakage check but is not an OS-level isolation guarantee.
-- The repository does not declare `pytest`, although multiple oracles and task agents invoke it. During the pilot, `016` could not be scored and `083` was incorrectly penalized in this deficient environment. Pytest 9.1.1 was installed and the venv bin directory was prepended to `PATH`; these two tasks were rerun once as documented integration corrections. Original artifacts were retained.
-- `088-api-contract-mock-client-compat` initially stopped in its pre-agent hook because no public tunnel was configured. Prime tools share the hook host network namespace, so the runner mapped the public URL template to the loopback mock service. The setup failure made no model call; the subsequent single model run is the retained result.
-- No task was rerun because of a low oracle score. The run stopped on integration failures rather than silently continuing under a broken environment.
+- Several tasks require undeclared `pytest`; one validator also requires PyYAML. The first attempted runner correction mistakenly used `Path(sys.executable).resolve().parent`, which followed the venv interpreter symlink into uv’s base Python directory instead of preserving `.venv/bin`. Analysis caught dependency errors in six oracle results and eight trajectories. The runner now uses the un-resolved interpreter parent, rejects retained results containing known dependency failures, and the eight affected tasks (`040`, `042`, `044`, `045`, `082`, `085`, `087`, `088`) were rerun once with the intended environment. Invalid result JSON and original sandboxes were retained locally.
+- `088-api-contract-mock-client-compat` had earlier stopped in its pre-agent hook because no public tunnel was configured. Prime tools share the hook host network namespace, so the runner maps the public URL template to the loopback mock service. That setup failure made no model call.
+- No task was rerun because of a low oracle score. Every rerun above corrected a documented integration defect that affected the environment available during agent execution, not merely retrospective grading.
 - Process/security rubric LLM scoring was skipped. Therefore the synthetic traces are suitable for future inspection, but this report makes no standardized process-score or rubric-derived security claim.
 
-## Comparison status
+## Published comparison
 
-The pinned upstream checkout includes a Codex GPT-5.4 medium configuration but no committed per-task result artifacts or published aggregate table. A direct Codex comparison should wait until the matching published task-level data and settings are identified; no Codex rerun was performed here.
+The authors’ public `leaderboard_scores.json` contains exact per-task GPT-5.4 completion scores for all seven published harness configurations. On these same 47 task IDs, Prime scored **0.8873** versus published Codex **0.8880**, a difference of **−0.0007**. Prime’s software mean was **0.9310** versus Codex **0.9312**; data/BI **0.8309** versus **0.8459**; long-running autonomy **0.8718** versus **0.8553**. See `prime-agent-gpt-5.4-comparison.md` and the accompanying plots.
+
+The comparison is strong but not a perfect controlled ablation: the published file records `gpt-5.4` but not effort, backend revision, harness versions, or benchmark SHA. The released Codex config uses medium reasoning and all 47 task IDs/categories match, but artifact-level equivalence cannot be proven.
