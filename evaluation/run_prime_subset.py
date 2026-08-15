@@ -140,6 +140,9 @@ def main() -> int:
     env["PYTHONPATH"] = os.pathsep.join([str(Path("src").resolve()), env.get("PYTHONPATH", "")])
     env["HARNESSBENCH_SKIP_PROCESS_GRADE"] = "1"
     env["HARNESSBENCH_SKIP_ORACLE_QUALITY_LLM"] = "1"
+    # Prime's tools execute on the same host/network namespace as task hooks,
+    # so loopback is preferable to exposing mock fixtures through a tunnel.
+    env.setdefault("HARNESSBENCH_PUBLIC_URL_TEMPLATE", "{local_url}")
 
     manifest: dict[str, Any] = {
         "started_at": utc_now(),

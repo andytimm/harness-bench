@@ -28,4 +28,4 @@ Run the frozen 47-task GPT-5.4 subset sequentially, reusing only validated exist
 PYTHONPATH=src .venv/bin/python evaluation/run_prime_subset.py
 ```
 
-The runner writes its manifest atomically after every task and stops on the first command or validation failure. Rerunning it resumes from validated result JSON files, so completed tasks are not repeated.
+The runner writes its manifest atomically after every task and stops on the first command or validation failure. Rerunning it resumes from validated result JSON files, so completed tasks are not repeated. For local-service tasks it maps the benchmark's public-URL template to the hook's loopback URL: Prime tools share the hook's host network namespace, so this avoids unnecessarily exposing fixture services through a public tunnel.
