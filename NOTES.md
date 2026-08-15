@@ -49,3 +49,19 @@ Harness-Bench normally computes standardized process traces from its usage proxy
 ## Running observations
 
 - `config/harness.example.yaml` is YAML rather than strict JSON (it includes a trailing comma), so the declared PyYAML dependency must be installed. A repository-local `.venv` was created with `uv` and the project installed editable.
+
+## One-task validation result
+
+Run completed on 2026-08-15 with Prime Agent 0.7.2, `openai-codex/gpt-5.4`, thinking `medium`, and subscription OAuth.
+
+- Task: `001-file`
+- Adapter status: success
+- Oracle outcome: `1.0` (the only check passed)
+- Wall time: `5.02s`
+- Native model calls: 2
+- Usage: 4,540 uncached input tokens, 4,096 cache-read tokens, 94 output tokens, 8,730 total tokens as reported by Prime
+- Trajectory: one IPython call read `in/input.txt`, counted four lines, and wrote only `out/linecount.txt`; the final response was `Done.`
+- Manual checks: fixture unchanged, output was exactly `4`, prompt used the intended workspace, no grader/ground-truth path appeared in the trajectory, raw JSONL and native session JSONL were retained, synthetic trace extraction was coherent, and the staged OAuth credential was removed from the retained sandbox.
+- Process grading was intentionally skipped according to the precommitted outcome-first plan.
+
+Isolation limitation: Harness-Bench copies only fixtures into the task workspace, so graders and ground truth are not present there. Prime's local Python/tool process is not an OS-level filesystem sandbox, however, and the default Harness-Bench work root is inside the repository. A sufficiently exploratory or adversarial agent could navigate outside the workspace. The validation trajectory did not do so. This limitation should be reported and compared with the effective filesystem permissions of other local adapters rather than described as hard isolation.
