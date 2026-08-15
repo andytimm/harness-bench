@@ -104,6 +104,15 @@ def validate_result(path: Path, task_id: str) -> dict[str, Any]:
     rubric = (data.get("scoring") or {}).get("rubric") or {}
     if not rubric.get("skipped"):
         errors.append("process rubric was not skipped")
+    dependency_markers = ("No module named pytest", "No module named 'pytest'", "No module named 'yaml'")
+    evidence = json.dumps(oracle, ensure_ascii=False)
+    for adapter_round in data.get("adapter_results") or []:
+        stdout_path = (adapter_round.get("metadata") or {}).get("stdout_log_file")
+        if stdout_path and Path(stdout_path).is_file():
+            evidence += Path(stdout_path).read_text(encoding="utf-8", errors="replace")
+    found_markers = [marker for marker in dependency_markers if marker in evidence]
+    if found_markers:
+        errors.append(f"dependency failure in oracle/trajectory: {found_markers}")
     if errors:
         raise RuntimeError(f"invalid result {path}: {'; '.join(errors)}")
     return {
@@ -136,7 +145,7 @@ def main() -> int:
         raise SystemExit(f"frozen subset no longer matches checkout: {missing_task_dirs}")
 
     env = os.environ.copy()
-    env["PATH"] = os.pathsep.join([str(Path(sys.executable).resolve().parent), env.get("PATH", "")])
+    env["PATH"] = os.pathsep.join([str(Path(sys.executable).parent), env.get("PATH", "")])
     env["PYTHONPATH"] = os.pathsep.join([str(Path("src").resolve()), env.get("PYTHONPATH", "")])
     env["HARNESSBENCH_SKIP_PROCESS_GRADE"] = "1"
     env["HARNESSBENCH_SKIP_ORACLE_QUALITY_LLM"] = "1"
