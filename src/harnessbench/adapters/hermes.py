@@ -1,221 +1,172 @@
 from __future__ import annotations
 
+import json
 import os
 import re
-import shutil
+import signal
+import sqlite3
+import tempfile
 import subprocess
+from functools import lru_cache
 from pathlib import Path
+from typing import Any
 
 from harnessbench.adapters.base import BaseAdapter
 from harnessbench.models import AdapterRunContext, AdapterRunResult
-from harnessbench.usage_proxy import register_routes
+
+_SESSION_ID_RE = re.compile(r"(?:session_id:|Session:)\s*([0-9]{8}_[0-9]{6}_[0-9a-f]+)", re.IGNORECASE)
 
 
 def _project_root() -> Path:
     return Path(__file__).resolve().parents[3]
 
 
-def _resolve_project_path(raw: str | Path) -> Path:
+def _resolve_path(raw: str | Path) -> Path:
     path = Path(os.path.expanduser(str(raw)))
     if not path.is_absolute():
         path = _project_root() / path
     return path.resolve()
 
 
-def _source_config_from_model_config(model_cfg: dict[str, object]) -> Path:
-    raw = model_cfg.get("user_config")
-    if raw:
-        return _resolve_project_path(str(raw))
-    env_raw = os.environ.get("HERMES_CONFIG_PATH") or os.environ.get("HERMES_CONFIG")
-    if env_raw:
-        return _resolve_project_path(env_raw)
-    return _resolve_project_path("~/.hermes/config.yaml")
-
-
-def _load_yaml(path: Path) -> dict[str, object]:
+@lru_cache(maxsize=16)
+def _command_version(command: str) -> str:
     try:
-        import yaml  # type: ignore
-    except ModuleNotFoundError:
-        try:
-            from ruamel import yaml  # type: ignore
-        except ModuleNotFoundError as exc:
-            raise RuntimeError("Hermes adapter requires PyYAML or ruamel.yaml to rewrite config") from exc
-
-    data = yaml.safe_load(path.read_text(encoding="utf-8"))
-    return dict(data or {}) if isinstance(data, dict) else {}
+        completed = subprocess.run(
+            [command, "--version"], text=True, capture_output=True, timeout=10, check=False
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return ""
+    output = completed.stdout.strip() or completed.stderr.strip()
+    return output.splitlines()[0] if completed.returncode == 0 and output else ""
 
 
-def _dump_yaml(path: Path, data: dict[str, object]) -> None:
+def _minimal_auth(source: Path, provider: str) -> dict[str, Any]:
+    data = json.loads(source.read_text(encoding="utf-8"))
+    providers = data.get("providers") if isinstance(data, dict) else None
+    provider_state = providers.get(provider) if isinstance(providers, dict) else None
+    pools = data.get("credential_pool") if isinstance(data, dict) else None
+    pool = pools.get(provider) if isinstance(pools, dict) else None
+    if not isinstance(provider_state, dict) or not provider_state:
+        raise ValueError(f"provider {provider!r} is not authenticated")
+    staged: dict[str, Any] = {
+        "version": data.get("version", 1),
+        "providers": {provider: provider_state},
+        "active_provider": provider,
+    }
+    if isinstance(pool, list) and pool:
+        staged["credential_pool"] = {provider: pool}
+    return staged
+
+
+def _stage_auth(source: Path, hermes_home: Path, provider: str) -> Path:
+    target = hermes_home / "auth.json"
+    target.write_text(json.dumps(_minimal_auth(source, provider), indent=2) + "\n", encoding="utf-8")
+    target.chmod(0o600)
+    return target
+
+
+def _sync_staged_auth(source: Path, staged: Path, provider: str) -> bool:
+    """Atomically copy back only rotated credentials for the selected provider."""
+    if not staged.is_file():
+        return False
     try:
-        import yaml  # type: ignore
-    except ModuleNotFoundError:
-        try:
-            from ruamel import yaml  # type: ignore
-        except ModuleNotFoundError as exc:
-            raise RuntimeError("Hermes adapter requires PyYAML or ruamel.yaml to rewrite config") from exc
+        staged_data = json.loads(staged.read_text(encoding="utf-8"))
+        staged_provider = (staged_data.get("providers") or {}).get(provider)
+        staged_pool = (staged_data.get("credential_pool") or {}).get(provider)
+        if not isinstance(staged_provider, dict):
+            return False
+        lock_path = source.with_suffix(".lock")
+        lock_path.parent.mkdir(parents=True, exist_ok=True)
+        with lock_path.open("a+", encoding="utf-8") as lock:
+            if os.name == "posix":
+                import fcntl
+                fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+            current = json.loads(source.read_text(encoding="utf-8"))
+            current.setdefault("providers", {})[provider] = staged_provider
+            if isinstance(staged_pool, list):
+                current.setdefault("credential_pool", {})[provider] = staged_pool
+            fd, temporary_name = tempfile.mkstemp(prefix=source.name + ".tmp.", dir=source.parent)
+            try:
+                os.fchmod(fd, 0o600)
+                with os.fdopen(fd, "w", encoding="utf-8") as handle:
+                    json.dump(current, handle, indent=2)
+                    handle.write("\n")
+                    handle.flush()
+                    os.fsync(handle.fileno())
+                os.replace(temporary_name, source)
+            finally:
+                if os.path.exists(temporary_name):
+                    os.unlink(temporary_name)
+        return True
+    except (OSError, ValueError, json.JSONDecodeError):
+        return False
 
+
+def _remove_auth(path: Path) -> None:
+    try:
+        if path.exists() or path.is_symlink():
+            path.unlink()
+    except OSError:
+        pass
+
+
+def _write_minimal_config(path: Path, provider: str, model: str, reasoning: str) -> None:
+    # safe-mode ignores user configuration, but an explicit minimal file makes the
+    # isolated home self-describing and prevents accidental fallback if flags change.
     path.write_text(
-        yaml.safe_dump(data, allow_unicode=True, sort_keys=False),
+        "model:\n"
+        f"  default: {json.dumps(model)}\n"
+        f"  provider: {json.dumps(provider)}\n"
+        "agent:\n"
+        f"  reasoning_effort: {json.dumps(reasoning)}\n"
+        "memory:\n"
+        "  memory_enabled: false\n"
+        "  user_profile_enabled: false\n"
+        "skills:\n"
+        "  external_dirs: []\n",
         encoding="utf-8",
     )
 
 
-def _safe_name(raw: str, fallback: str) -> str:
-    cleaned = "".join(ch if ch.isalnum() or ch in ("-", "_", ".") else "-" for ch in raw).strip("-._")
-    return cleaned or fallback
+def _session_record(db_file: Path, session_id: str) -> dict[str, Any]:
+    if not db_file.is_file() or not session_id:
+        return {}
+    try:
+        connection = sqlite3.connect(f"file:{db_file}?mode=ro", uri=True)
+        connection.row_factory = sqlite3.Row
+        row = connection.execute(
+            "SELECT id, model, billing_provider, billing_mode, end_reason, "
+            "message_count, api_call_count FROM sessions WHERE id = ?", (session_id,)
+        ).fetchone()
+        assistant_count = connection.execute(
+            "SELECT COUNT(*) FROM messages WHERE session_id = ? AND role = 'assistant'", (session_id,)
+        ).fetchone()[0]
+        connection.close()
+    except sqlite3.Error:
+        return {}
+    result = dict(row) if row is not None else {}
+    result["assistant_message_count"] = int(assistant_count or 0)
+    return result
 
 
-def _register_route(
-    routes: dict[str, dict[str, str]],
-    *,
-    proxy_base_url: str,
-    upstream: str,
-    route_name: str,
-    provider: str,
-) -> str:
-    prefix = f"/hermes/{route_name}"
-    routes[prefix] = {
-        "framework": "hermes",
-        "provider": provider,
-        "upstream": upstream,
-    }
-    return f"{proxy_base_url}{prefix}"
-
-
-def _matching_custom_provider(
-    custom_providers: object,
-    base_url: str,
-    model_name: str,
-) -> dict[str, object] | None:
-    if not isinstance(custom_providers, list) or not base_url:
-        return None
-    candidates = [
-        entry
-        for entry in custom_providers
-        if isinstance(entry, dict)
-        and str(entry.get("base_url") or "").strip().rstrip("/") == base_url
-        and str(entry.get("api_key") or "").strip()
-    ]
-    if not candidates:
-        return None
-    if model_name:
-        for entry in candidates:
-            if str(entry.get("model") or "").strip() == model_name:
-                return entry
-    return candidates[0]
-
-
-def _merge_user_config(
-    user_config: Path,
-    out_path: Path,
-    *,
-    proxy_base_url: str = "",
-    proxy_routes_file: Path | None = None,
-) -> None:
-    data = _load_yaml(user_config)
-    routes: dict[str, dict[str, str]] = {}
-    custom_providers = data.get("custom_providers")
-
-    def rewrite_url(raw: object, route_name: str, provider: str) -> str | None:
-        upstream = str(raw or "").strip().rstrip("/")
-        if not upstream:
-            return None
-        if proxy_base_url and upstream.startswith(proxy_base_url.rstrip("/")):
-            return upstream
-        if proxy_base_url and proxy_routes_file is not None:
-            return _register_route(
-                routes,
-                proxy_base_url=proxy_base_url,
-                upstream=upstream,
-                route_name=route_name,
-                provider=provider,
-            )
-        return upstream
-
-    model_cfg = data.get("model")
-    if isinstance(model_cfg, dict):
-        provider_name = str(model_cfg.get("provider") or "model").strip() or "model"
-        original_base_url = str(model_cfg.get("base_url") or "").strip().rstrip("/")
-        model_name = str(model_cfg.get("default") or model_cfg.get("model") or "").strip()
-        matching_provider = _matching_custom_provider(custom_providers, original_base_url, model_name)
-        if proxy_base_url and matching_provider:
-            matching_name = str(matching_provider.get("name") or "custom").strip() or "custom"
-            rewritten = _register_route(
-                routes,
-                proxy_base_url=proxy_base_url,
-                upstream=original_base_url,
-                route_name=f"custom-{_safe_name(matching_name, 'custom')}",
-                provider=matching_name,
-            )
+def _terminate_process_group(proc: subprocess.Popen[str], grace_sec: float) -> int:
+    if proc.poll() is not None:
+        return int(proc.returncode or 0)
+    try:
+        if os.name == "posix":
+            os.killpg(proc.pid, signal.SIGTERM)
         else:
-            rewritten = rewrite_url(original_base_url, f"model-{_safe_name(provider_name, 'model')}", provider_name)
-        if rewritten:
-            if proxy_base_url and matching_provider and not str(model_cfg.get("api_mode") or "").strip():
-                api_mode = str(matching_provider.get("api_mode") or "").strip()
-                if api_mode:
-                    model_cfg["api_mode"] = api_mode
-            model_cfg["base_url"] = rewritten
-
-    if isinstance(custom_providers, list):
-        for index, entry in enumerate(custom_providers):
-            if not isinstance(entry, dict):
-                continue
-            provider_name = str(entry.get("name") or f"custom-{index}").strip() or f"custom-{index}"
-            rewritten = rewrite_url(entry.get("base_url"), f"custom-{_safe_name(provider_name, f'custom-{index}')}", provider_name)
-            if rewritten:
-                entry["base_url"] = rewritten
-
-    auxiliary = data.get("auxiliary")
-    if isinstance(auxiliary, dict):
-        for key, entry in auxiliary.items():
-            if not isinstance(entry, dict):
-                continue
-            rewritten = rewrite_url(entry.get("base_url"), f"aux-{_safe_name(str(key), 'aux')}", str(key))
-            if rewritten:
-                entry["base_url"] = rewritten
-
-    if routes and proxy_routes_file is not None:
-        register_routes(proxy_routes_file, routes)
-
-    _dump_yaml(out_path, data)
-
-
-def _build_command(ctx: AdapterRunContext, command: str, args: list[str]) -> list[str]:
-    fmt = {
-        "workspace": str(ctx.workspace),
-        "sandbox": str(ctx.sandbox),
-        "prompt_file": str(ctx.prompt_file),
-        "session_id": ctx.session_id,
-        "task_id": ctx.task.task_id,
-        "model_id": ctx.model_id,
-    }
-    cmd = [command, *[str(arg).format(**fmt) for arg in args]]
-
-    if "-q" in cmd or "--query" in cmd:
-        for index, arg in enumerate(cmd):
-            if arg in {"-q", "--query"}:
-                cmd.insert(index + 1, ctx.prompt)
-                break
-        return cmd
-
-    cmd.extend(["-q", ctx.prompt])
-    return cmd
-
-
-# Hermes session ID 格式：YYYYMMDD_HHMMSS_xxxxxxxx
-# 匹配 stdout/stderr 中 "Session: 20260410_181750_d6f1d7" 这样的行
-# 注意：该行被 Unicode 框线字符（│ U+2502）包裹，需要用 re.search 而非 startswith
-_SESSION_ID_RE = re.compile(r"Session:\s*(\d{8}_\d{6}_[0-9a-f]+)", re.IGNORECASE)
-
-# Hermes 在多线程退出时会因 CPython stdin buffer lock 竞争而以 SIGABRT(-6) 退出。
-# 这是已知的无害 bug，任务本身已完整执行，不应视为失败。
-_BENIGN_RETURNCODES = {0, -6}
-
-
-def _parse_session_id(text: str) -> str | None:
-    """从 Hermes stdout/stderr 中提取 session ID。"""
-    match = _SESSION_ID_RE.search(text)
-    return match.group(1) if match else None
+            proc.terminate()
+        return proc.wait(timeout=max(0.1, grace_sec))
+    except (ProcessLookupError, subprocess.TimeoutExpired):
+        try:
+            if os.name == "posix":
+                os.killpg(proc.pid, signal.SIGKILL)
+            else:
+                proc.kill()
+        except ProcessLookupError:
+            pass
+        return proc.wait()
 
 
 class HermesAgentAdapter(BaseAdapter):
@@ -223,124 +174,112 @@ class HermesAgentAdapter(BaseAdapter):
 
     def run(self, ctx: AdapterRunContext) -> AdapterRunResult:
         command = str(ctx.model_config.get("command") or "hermes")
-        args = [str(arg) for arg in (ctx.model_config.get("args") or ["chat"])]
-        use_usage_proxy = bool(ctx.model_config.get("use_usage_proxy", False))
+        provider = str(ctx.model_config.get("provider") or "openai-codex").strip()
+        model = str(ctx.model_config.get("model") or "gpt-5.4").strip()
+        reasoning = str(ctx.model_config.get("reasoning") or "medium").strip()
+        source_auth = _resolve_path(str(ctx.model_config.get("user_auth") or "~/.hermes/auth.json"))
+        version = _command_version(command)
+        if not version:
+            return AdapterRunResult(ok=False, stderr=f"Hermes command is unavailable or invalid: {command}")
+        if not source_auth.is_file():
+            return AdapterRunResult(ok=False, stderr=f"missing Hermes auth store: {source_auth}")
 
-        source_config = _source_config_from_model_config(ctx.model_config)
-        if not source_config.is_file():
-            return AdapterRunResult(ok=False, stderr=f"missing Hermes source config: {source_config}")
-
-        isolated_home = ctx.sandbox
-        hermes_home = isolated_home / ".hermes"
+        hermes_home = ctx.sandbox / ".hermes"
         hermes_home.mkdir(parents=True, exist_ok=True)
-        hermes_workspace = hermes_home / "workspace"
-        hermes_workspace.mkdir(parents=True, exist_ok=True)
+        config_file = hermes_home / "config.yaml"
+        _write_minimal_config(config_file, provider, model, reasoning)
+        try:
+            staged_auth = _stage_auth(source_auth, hermes_home, provider)
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            return AdapterRunResult(ok=False, stderr=f"invalid Hermes auth store {source_auth}: {exc}")
 
-        sandbox_user_config = hermes_home / "config.src.yaml"
-        shutil.copy2(source_config, sandbox_user_config)
-        merged_cfg = hermes_home / "config.yaml"
-        _merge_user_config(
-            sandbox_user_config,
-            merged_cfg,
-            proxy_base_url=str(ctx.env.get("HARNESSBENCH_LLM_PROXY_URL") or "") if use_usage_proxy else "",
-            proxy_routes_file=(
-                Path(ctx.env["HARNESSBENCH_LLM_PROXY_ROUTES"])
-                if use_usage_proxy and ctx.env.get("HARNESSBENCH_LLM_PROXY_ROUTES")
-                else None
-            ),
-        )
+        state_file = hermes_home / "harnessbench-state.json"
+        state: dict[str, Any] = {}
+        if state_file.is_file():
+            try:
+                loaded = json.loads(state_file.read_text(encoding="utf-8"))
+                state = loaded if isinstance(loaded, dict) else {}
+            except (OSError, json.JSONDecodeError):
+                pass
+        round_number = int(state.get("rounds", 0) or 0) + 1
+        prior_session = str(state.get("session_id") or "").strip()
 
-        # ── Session 续接逻辑 ──────────────────────────────────────────────────
-        # 每轮结束后把 Hermes session ID 写入 last_session_id.txt，
-        # 下一轮优先用 --resume <id> 续接；若文件不存在（第 1 轮）则不加任何参数。
-        # 若上一轮因 stdout 格式问题未能解析到 session ID，则 fallback 到 -c
-        # （让 Hermes 自动续接最近一次 session），保证多轮对话上下文连续。
-        session_id_file = hermes_home / "last_session_id.txt"
-        resume_session_id: str | None = None
-        resume_method: str = "none"  # "resume" | "continue" | "none"
+        cmd = [
+            command, "chat", "-Q", "--safe-mode", "--ignore-rules", "--source", "tool",
+            "--provider", provider, "--model", model, "--reasoning", reasoning,
+            "--in", str(ctx.workspace),
+        ]
+        if prior_session:
+            cmd.extend(["--resume", prior_session, "--no-restore-cwd"])
+        for arg in ctx.model_config.get("extra_args") or []:
+            cmd.append(str(arg))
+        cmd.extend(["-q", ctx.prompt])
 
-        if session_id_file.exists():
-            saved = session_id_file.read_text(encoding="utf-8").strip()
-            if saved:
-                resume_session_id = saved
-                resume_method = "resume"
-
-        # ── 构建命令 ──────────────────────────────────────────────────────────
-        cmd = _build_command(ctx, command, args)
-
-        if resume_method == "resume":
-            # 精确续接：--resume <session_id>
-            cmd.extend(["--resume", resume_session_id])
-        elif resume_method == "continue":
-            # Fallback：-c 续接最近一次 session（当上一轮 session ID 解析失败时）
-            cmd.append("-c")
-
-        # ── 执行 ──────────────────────────────────────────────────────────────
         env = os.environ.copy()
-        env["HOME"] = str(isolated_home)
+        env.update(ctx.env)
+        env["HOME"] = str(ctx.sandbox)
         env["HERMES_HOME"] = str(hermes_home)
-        env["HERMES_CONFIG"] = str(merged_cfg)
-        env["HERMES_CONFIG_PATH"] = str(merged_cfg)
+        env["HERMES_CONFIG"] = str(config_file)
+        env["HERMES_CONFIG_PATH"] = str(config_file)
+        env["NO_COLOR"] = "1"
+        env.pop("FORCE_COLOR", None)
+        env["WORKSPACE"] = str(ctx.workspace)
+        env["HARNESSBENCH_WORKSPACE"] = str(ctx.workspace)
+        env["HARNESSBENCH_SANDBOX"] = str(ctx.sandbox)
+        env["HARNESSBENCH_TASK_ID"] = ctx.task.task_id
 
-        completed = subprocess.run(
-            cmd,
-            cwd=str(ctx.workspace),
-            text=True,
-            capture_output=True,
-            timeout=ctx.timeout_sec,
-            env=env,
-            check=False,
-        )
+        stdout_log = ctx.sandbox / f"hermes-round{round_number}.stdout.log"
+        stderr_log = ctx.sandbox / f"hermes-round{round_number}.stderr.log"
+        timed_out = False
+        try:
+            proc = subprocess.Popen(
+                cmd, cwd=str(ctx.workspace), text=True, stdin=subprocess.DEVNULL,
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env,
+                start_new_session=(os.name == "posix"),
+            )
+            try:
+                stdout, stderr = proc.communicate(timeout=ctx.timeout_sec)
+                returncode = int(proc.returncode or 0)
+            except subprocess.TimeoutExpired:
+                timed_out = True
+                returncode = _terminate_process_group(
+                    proc, float(ctx.model_config.get("timeout_grace_sec", 5) or 5)
+                )
+                stdout, stderr = proc.communicate()
+        except OSError as exc:
+            _remove_auth(staged_auth)
+            return AdapterRunResult(ok=False, command=cmd, stderr=str(exc))
 
-        # ── 解析本轮产生的 session ID ─────────────────────────────────────────
-        # Hermes 在 stdout 的 UI 框里打印：
-        #   │             Session: 20260410_181750_d6f1d7             │
-        # 用 re.search 可以穿透框线字符直接匹配。
-        combined_output = completed.stdout + "\n" + completed.stderr
-        session_id_from_output = _parse_session_id(combined_output)
+        auth_synced = _sync_staged_auth(source_auth, staged_auth, provider)
+        _remove_auth(staged_auth)
+        stdout_log.write_text(stdout, encoding="utf-8")
+        stderr_log.write_text(stderr, encoding="utf-8")
+        parsed_session = _SESSION_ID_RE.search(stdout + "\n" + stderr)
+        session_id = parsed_session.group(1) if parsed_session else prior_session
+        native = _session_record(hermes_home / "state.db", session_id)
+        provider_ok = native.get("billing_provider") == provider
+        model_ok = native.get("model") == model
+        completed = bool(native.get("end_reason")) and int(native.get("assistant_message_count", 0)) > 0
+        ok = not timed_out and returncode == 0 and bool(session_id) and completed and provider_ok and model_ok
 
-        # 持久化 session ID 供下一轮使用
-        if session_id_from_output:
-            # 成功解析：写入精确 ID，下一轮用 --resume
-            session_id_file.write_text(session_id_from_output, encoding="utf-8")
-        elif resume_session_id:
-            # 本轮未解析到新 ID（可能是 Hermes 版本差异），保留上一轮的 ID
-            session_id_file.write_text(resume_session_id, encoding="utf-8")
-        else:
-            # 第 1 轮且未解析到 ID：写入特殊标记，下一轮用 -c fallback
-            session_id_file.write_text("__use_continue__", encoding="utf-8")
-
-        # 处理 fallback 标记（上一轮写入了 __use_continue__）
-        if resume_session_id == "__use_continue__":
-            resume_method = "continue"
-            resume_session_id = None
-
-        # ── 判断本轮是否成功 ──────────────────────────────────────────────────
-        # returncode -6 (SIGABRT) 是 CPython 多线程退出时的已知无害 bug，
-        # 只要 stdout 有内容就认为任务执行完成。
-        rc = completed.returncode
-        if rc in _BENIGN_RETURNCODES:
-            ok = bool(completed.stdout.strip())
-        else:
-            ok = False
+        if session_id:
+            temporary = state_file.with_suffix(".tmp")
+            temporary.write_text(
+                json.dumps({"session_id": session_id, "rounds": round_number}, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            temporary.replace(state_file)
 
         return AdapterRunResult(
-            ok=ok,
-            command=cmd,
-            stdout=completed.stdout,
-            stderr=completed.stderr,
+            ok=ok, command=cmd, stdout=stdout, stderr=stderr,
             metadata={
-                "returncode": rc,
-                "source_user_config_path": str(source_config),
-                "sandbox_user_config_path": str(sandbox_user_config),
-                "hermes_config_path": str(merged_cfg),
-                "isolated_home": str(isolated_home),
-                "hermes_home": str(hermes_home),
-                "hermes_workspace": str(hermes_workspace),
-                "workspace": str(ctx.workspace),
-                "usage_proxy_enabled": use_usage_proxy,
-                "session_id": ctx.session_id,
-                "hermes_session_id": session_id_from_output or resume_session_id,
-                "resume_method": resume_method,
+                "returncode": returncode, "timed_out": timed_out,
+                "hermes_version": version, "provider": provider, "model": model,
+                "reasoning": reasoning, "hermes_home": str(hermes_home),
+                "hermes_config_path": str(config_file), "hermes_session_id": session_id,
+                "resume_method": "resume" if prior_session else "none",
+                "stdout_log_file": str(stdout_log), "stderr_log_file": str(stderr_log),
+                "native_session": native, "auth_synced": auth_synced,
+                "staged_auth_removed": not staged_auth.exists(),
             },
         )

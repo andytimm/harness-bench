@@ -119,13 +119,16 @@
       "session_prefix": "harnessbench-null",
       "timeout_sec": 180
     },
-    "hermes-agent": {
+    "hermes-gpt-5.4-medium": {
       "adapter": "hermes_agent",
       "command": "hermes",
-      "session_prefix": "harnessbench-hermes",
-      "user_config": "~/.hermes/config.yaml",
-      "use_usage_proxy": true,
-      "args": ["chat"]
+      "provider": "openai-codex",
+      "model": "gpt-5.4",
+      "reasoning": "medium",
+      "user_auth": "~/.hermes/auth.json",
+      "session_prefix": "harnessbench-hermes-gpt54-medium",
+      "use_usage_proxy": false,
+      "timeout_sec": 1800
     },
     "generic-cli": {
       "adapter": "generic_cli",

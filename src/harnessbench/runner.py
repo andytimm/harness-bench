@@ -243,86 +243,52 @@ def _create_sandbox_dir(
     raise OSError("could not create unique sandbox directory under work_root")
 
 def _collect_hermes_usage_summary(db_file: Path, session_id: str, session_root: Path) -> dict[str, Any]:
-    """从 Hermes SQLite 数据库收集 usage 信息"""
+    """Collect usage for the adapter-selected Hermes session, never the latest global row."""
+    import sqlite3
+
     try:
-        import sqlite3
-    except ImportError:
+        connection = sqlite3.connect(f"file:{db_file}?mode=ro", uri=True)
+        connection.row_factory = sqlite3.Row
+        row = connection.execute(
+            "SELECT id, model, billing_provider, billing_mode, input_tokens, output_tokens, "
+            "cache_read_tokens, cache_write_tokens, reasoning_tokens, message_count, "
+            "api_call_count, estimated_cost_usd, actual_cost_usd, cost_status, end_reason "
+            "FROM sessions WHERE id = ?",
+            (session_id,),
+        ).fetchone()
+        connection.close()
+        if row is None:
+            raise sqlite3.DatabaseError(f"Hermes session {session_id!r} is absent")
+        record = dict(row)
+        input_tokens = int(record.get("input_tokens") or 0)
+        output_tokens = int(record.get("output_tokens") or 0)
         return {
-            "available": False,
-            "reason": "sqlite3 module not available",
-            "session_id": session_id,
-            "usage_root": str(session_root),
-            "database_file": str(db_file),
-        }
-    
-    try:
-        conn = sqlite3.connect(db_file)
-        cursor = conn.cursor()
-        
-        # 查询最近创建的会话
-        cursor.execute(
-            "SELECT id, title, started_at, model, billing_provider, input_tokens, output_tokens, message_count FROM sessions ORDER BY started_at DESC LIMIT 1"
-        )
-        latest_session = cursor.fetchone()
-        
-        if not latest_session:
-            return {
-                "available": False,
-                "reason": "Hermes database has no sessions",
-                "session_id": session_id,
-                "usage_root": str(session_root),
-                "database_file": str(db_file),
-            }
-        
-        # 使用数据库中的实际会话ID
-        session_id_in_db = latest_session[0]  # 数据库中的ID
-        
-        # 从 sessions 表获取 token 统计
-        input_tokens = latest_session[5] or 0  # input_tokens
-        output_tokens = latest_session[6] or 0  # output_tokens
-        total_tokens = input_tokens + output_tokens
-        
-        # 查询该会话的所有消息
-        cursor.execute(
-            "SELECT role, content, token_count FROM messages WHERE session_id = ? ORDER BY timestamp",
-            (session_id_in_db,)
-        )
-        messages = cursor.fetchall()
-        
-        # 如果 sessions 表没有 token 统计，尝试从 messages 表计算
-        if input_tokens == 0 and output_tokens == 0:
-            for role, content, token_count in messages:
-                if token_count is not None:
-                    total_tokens += int(token_count)
-                    if role == "user":
-                        input_tokens += int(token_count)
-                    elif role == "assistant":
-                        output_tokens += int(token_count)
-        
-        # 收集 usage 信息
-        summary: dict[str, Any] = {
             "available": True,
             "source": "hermes_sqlite",
-            "session_id": session_id_in_db,  # 数据库中的实际ID
-            "original_session_id": session_id,  # HarnessBench生成的ID
+            "session_id": record["id"],
             "usage_root": str(session_root),
             "database_file": str(db_file),
-            "message_count": len(messages),
-            "usage_message_count": len(messages),
+            "message_count": int(record.get("message_count") or 0),
+            "usage_message_count": int(record.get("api_call_count") or 0),
+            "request_count": int(record.get("api_call_count") or 0),
             "input_tokens": input_tokens,
             "output_tokens": output_tokens,
-            "total_tokens": total_tokens,
-            "providers": [latest_session[4] or "hermes"],  # billing_provider
-            "models": [latest_session[3] or "unknown"],    # model
+            "cache_read_tokens": int(record.get("cache_read_tokens") or 0),
+            "cache_write_tokens": int(record.get("cache_write_tokens") or 0),
+            "reasoning_tokens": int(record.get("reasoning_tokens") or 0),
+            "total_tokens": input_tokens + output_tokens,
+            "providers": [record.get("billing_provider") or "hermes"],
+            "models": [record.get("model") or "unknown"],
+            "billing_mode": record.get("billing_mode"),
+            "estimated_cost_usd": record.get("estimated_cost_usd"),
+            "actual_cost_usd": record.get("actual_cost_usd"),
+            "cost_status": record.get("cost_status"),
+            "end_reason": record.get("end_reason"),
         }
-        
-        conn.close()
-        return summary
-        
-    except sqlite3.Error as e:
+    except sqlite3.Error as exc:
         return {
             "available": False,
-            "reason": f"Hermes database error: {str(e)}",
+            "reason": f"Hermes database error: {exc}",
             "session_id": session_id,
             "usage_root": str(session_root),
             "database_file": str(db_file),
@@ -351,8 +317,16 @@ def _collect_usage_summary(adapter_result: Any, session_id: str) -> dict[str, An
     # 检查是否是 Hermes SQLite 数据库
     db_file = session_root / "state.db"
     if db_file.exists():
-        # Hermes 使用 SQLite，调用专门的函数处理
-        return _collect_hermes_usage_summary(db_file, session_id, session_root)
+        hermes_session_id = str(metadata.get("hermes_session_id") or "").strip()
+        if not hermes_session_id:
+            return {
+                "available": False,
+                "reason": "Hermes adapter metadata has no native session id",
+                "session_id": session_id,
+                "usage_root": str(session_root),
+                "database_file": str(db_file),
+            }
+        return _collect_hermes_usage_summary(db_file, hermes_session_id, session_root)
     
     candidates = [
         session_root / "agents" / "main" / "sessions" / f"{session_id}.jsonl",
