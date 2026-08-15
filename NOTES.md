@@ -9,8 +9,9 @@
 
 ## Methodological decisions (made before task results)
 
-- Primary model/provider route: `openai-codex/gpt-5.6-sol` through the existing OpenAI subscription OAuth used by Prime Agent.
-- Reasoning effort: `medium`. This matches the reasoning effort in Harness-Bench's current example Codex configuration and is a reasonable default for an eventual harness comparison.
+- Compatibility/control run model: `openai-codex/gpt-5.4` through the existing OpenAI subscription OAuth used by Prime Agent.
+- Reasoning effort: `medium`. This exactly matches the model and reasoning effort in Harness-Bench's current example Codex configuration, enabling the cleanest available harness comparison.
+- After the Prime + GPT-5.4 validation and pilot, run Prime + `openai-codex/gpt-5.6-sol` at `medium` as a newer-model extension. This order was changed before any benchmark task was run.
 - Prime will be invoked noninteractively with structured JSON output and a task-local session/state directory.
 - Preserve Prime's native event stream and session transcript even when it cannot be routed through Harness-Bench's usage proxy.
 - Prioritize deterministic oracle/outcome grading. Set `HARNESSBENCH_SKIP_PROCESS_GRADE=1` for initial validation and pilot so process grading neither requires a paid rubric API nor conflates native traces with standardized proxy traces.
