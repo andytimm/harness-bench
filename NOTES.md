@@ -103,3 +103,16 @@ The handoff's anticipated 47-task subset exactly matches the union of three upst
 This class-based selection rule was fixed before running any additional subset tasks and will not be altered based on pilot performance. The resulting task IDs are:
 
 `007-session-memory`, `009-git-pr-merge`, `011-code-debug`, `014-task-decomposition`, `016-code-repair-pytest`, `017-db-doc-consistency`, `018-provider-failover-audit`, `039-repo-architecture-map`, `040-test-coverage-fill`, `041-frontend-state-bug`, `042-api-schema-migration`, `043-db-migration-safety`, `044-ci-config-repair`, `045-dependency-upgrade-compat`, `046-performance-regression`, `047-code-review-risk-report`, `048-release-note-changelog`, `049-excel-like-cleaning`, `050-multitable-join-analysis`, `051-sql-query-report`, `052-metric-definition-audit`, `053-anomalous-transaction-detect`, `054-budget-variance-analysis`, `055-funnel-dropoff-analysis`, `056-inventory-forecast`, `057-interruption-resume`, `058-multiday-project-state`, `059-event-update-replan`, `060-task-cancellation-cleanup`, `061-periodic-status-rollup`, `082-compose-config-repair`, `083-monorepo-interface-repair`, `084-js-state-type-bug`, `085-flaky-test-root-cause`, `086-sql-migration-preflight-rollback`, `087-cli-parser-bug-tests`, `088-api-contract-mock-client-compat`, `089-ab-test-caveat-analysis`, `090-timeseries-anomaly-attribution`, `091-financial-close-reconciliation`, `092-schema-drift-audit`, `093-jsonl-sessionization-analysis`, `094-metric-definition-migration-diff`, `103-policy-update-replan-diff`, `104-async-ops-window-rollup`, `105-partial-batch-resume-ledger`, `106-release-approval-gate-plan`.
+
+
+## GPT-5.4 47-task subset result
+
+The frozen subset completed with 47/47 valid adapter results. Mean oracle outcome was **0.8476** (median **0.9093**): software engineering **0.8461** across 22 tasks, data/BI **0.8308** across 14, and long-running autonomy **0.8718** across 11. Thirteen tasks scored 1.0, 24 scored at least 0.9, and two scored below 0.6.
+
+The sum of per-task wall times was 3,631.658 seconds (60.53 minutes). Prime reported 373 model calls across 59 benchmark rounds and 3,200,602 total tokens: 696,108 uncached input, 2,335,744 cache-read, and 168,750 output.
+
+The sequential runner stopped before executing `088-api-contract-mock-client-compat` because its pre-agent hook required either a public tunnel or URL template. Since Prime tools execute in the same host network namespace as the hook, `HARNESSBENCH_PUBLIC_URL_TEMPLATE={local_url}` was added to use the loopback mock service rather than exposing fixtures publicly. The setup failure made no model call; the runner then resumed from 36 validated existing results and completed the remaining 11 tasks. No score-motivated retry occurred.
+
+All final results passed metadata/artifact audits: adapter success, expected provider/model, Prime 0.7.2, final `stop`, retained session files, no trace extraction errors, removed staged credentials, and no raw-stdout references to grader/ground-truth paths under the conservative string check. Process and oracle-quality LLM grading remained skipped, so no standardized process/security rubric claims are made.
+
+See `evaluation/results/prime-agent-gpt-5.4-medium-subset.md` for the complete per-task table, category results, methodology, and integration caveats.

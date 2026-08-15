@@ -81,6 +81,7 @@ def main() -> int:
                 "adapter_ok": bool((data.get("adapter_result") or {}).get("ok")),
                 "elapsed_sec": data.get("elapsed_sec"),
                 "model": data.get("api_model_label", ""),
+                "rounds": len(data.get("adapter_results") or []),
                 "requests": usage.get("request_count"),
                 "input_tokens": usage.get("input_tokens"),
                 "cache_read_tokens": usage.get("cache_read_tokens"),
@@ -101,6 +102,18 @@ def main() -> int:
     scores = [float(row["outcome_score"]) for row in rows if row["outcome_score"] is not None]
     elapsed = [float(row["elapsed_sec"]) for row in rows if row["elapsed_sec"] is not None]
     tokens = [int(row["total_tokens"]) for row in rows if row["total_tokens"] is not None]
+    category_summaries: dict[str, dict[str, Any]] = {}
+    for category in sorted({str(row["class"]) for row in rows}):
+        category_rows = [row for row in rows if row["class"] == category]
+        category_scores = [float(row["outcome_score"]) for row in category_rows if row["outcome_score"] is not None]
+        category_summaries[category] = {
+            "tasks": len(category_rows),
+            "mean_outcome_score": statistics.mean(category_scores) if category_scores else None,
+            "median_outcome_score": statistics.median(category_scores) if category_scores else None,
+            "perfect_outcomes": sum(score == 1.0 for score in category_scores),
+            "wall_time_sec_sum": sum(float(row["elapsed_sec"]) for row in category_rows if row["elapsed_sec"] is not None),
+            "total_tokens_sum": sum(int(row["total_tokens"]) for row in category_rows if row["total_tokens"] is not None),
+        }
     summary = {
         "harness": args.harness,
         "selection": args.selection,
@@ -109,13 +122,22 @@ def main() -> int:
         "missing_tasks": missing,
         "adapter_successes": sum(bool(row["adapter_ok"]) for row in rows),
         "mean_outcome_score": statistics.mean(scores) if scores else None,
+        "median_outcome_score": statistics.median(scores) if scores else None,
         "perfect_outcomes": sum(score == 1.0 for score in scores),
+        "outcomes_at_least_0_9": sum(score >= 0.9 for score in scores),
+        "outcomes_below_0_6": sum(score < 0.6 for score in scores),
         "wall_time_sec_sum": sum(elapsed),
         "wall_time_sec_mean": statistics.mean(elapsed) if elapsed else None,
         "wall_time_sec_median": statistics.median(elapsed) if elapsed else None,
+        "rounds_sum": sum(int(row["rounds"]) for row in rows),
+        "requests_sum": sum(int(row["requests"]) for row in rows if row["requests"] is not None),
+        "input_tokens_sum": sum(int(row["input_tokens"]) for row in rows if row["input_tokens"] is not None),
+        "cache_read_tokens_sum": sum(int(row["cache_read_tokens"]) for row in rows if row["cache_read_tokens"] is not None),
+        "output_tokens_sum": sum(int(row["output_tokens"]) for row in rows if row["output_tokens"] is not None),
         "total_tokens_sum": sum(tokens),
         "total_tokens_mean": statistics.mean(tokens) if tokens else None,
         "total_tokens_median": statistics.median(tokens) if tokens else None,
+        "categories": category_summaries,
     }
     json_path = args.output_dir / f"{stem}.summary.json"
     json_path.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
