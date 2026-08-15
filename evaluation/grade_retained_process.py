@@ -61,14 +61,20 @@ def sha256_tree(root: Path) -> str:
     return digest.hexdigest()
 
 
-def process_request_provenance(task: Any, sandbox: Path, oracle_result: dict[str, Any]) -> dict[str, Any]:
+def process_request_provenance(
+    task: Any,
+    sandbox: Path,
+    oracle_result: dict[str, Any],
+    *,
+    max_payload_chars: int,
+) -> dict[str, Any]:
     trace = extract_proxy_trace_incremental(sandbox / "usage-proxy")
     if trace.get("error"):
         raise RuntimeError(f"proxy trace error: {trace['error']}")
     full_payload = json.dumps(trace, ensure_ascii=False)
     payload = full_payload
-    if len(payload) > 24000:
-        payload = payload[:24000] + "\n...[truncated]"
+    if len(payload) > max_payload_chars:
+        payload = payload[:max_payload_chars] + "\n...[truncated]"
     system, user, prompt_source = load_rubric_prompts(task, payload, Path(__file__).resolve().parents[1])
     user_content = build_rubric_user_content_for_task(task.task_id, user, sandbox / "workspace")
     user_content = append_workspace_out_text_excerpts_for_process_rubric(
@@ -87,7 +93,8 @@ def process_request_provenance(task: Any, sandbox: Path, oracle_result: dict[str
     return {
         "request_sha256": hashlib.sha256(canonical.encode()).hexdigest(),
         "trace_payload_chars": len(full_payload),
-        "trace_payload_truncated": len(full_payload) > 24000,
+        "trace_payload_truncated": len(full_payload) > max_payload_chars,
+        "max_payload_chars": max_payload_chars,
         "rubric_prompt_source": prompt_source,
     }
 
@@ -195,6 +202,10 @@ def main() -> int:
     parser.add_argument("--output-root", type=Path, default=Path("evaluation/process-grades/claude-sonnet-4.6"))
     parser.add_argument("--manifest", type=Path, default=Path("reports/process-grade-claude-sonnet-4.6-manifest.json"))
     parser.add_argument("--max-cost-usd", type=float, default=20.0)
+    parser.add_argument(
+        "--max-payload-chars", type=int, default=24000,
+        help="maximum serialized trace characters sent to the judge; use a large value for full-trace runs",
+    )
     parser.add_argument("--max-new", type=int)
     parser.add_argument("--preflight-only", action="store_true")
     args = parser.parse_args()
@@ -230,7 +241,8 @@ def main() -> int:
             trace_hash = proxy_trace_sha256(sandbox)
             workspace_hash = sha256_tree(workspace)
             request_provenance = process_request_provenance(
-                tasks[task_id], sandbox, data.get("oracle_result") or {}
+                tasks[task_id], sandbox, data.get("oracle_result") or {},
+                max_payload_chars=args.max_payload_chars,
             )
             output = args.output_root / harness / f"{task_id}.json"
             source_hash = sha256_file(source)
@@ -275,6 +287,8 @@ def main() -> int:
         "harnesses": args.harness,
         "tasks": task_ids,
         "max_cost_usd": args.max_cost_usd,
+        "max_payload_chars": args.max_payload_chars,
+        "trace_policy": "full_valid_json" if args.max_payload_chars >= 1000000 else "legacy_prefix_truncation",
         "results": [],
         "status": "running",
     }
@@ -305,7 +319,10 @@ def main() -> int:
                 oracle_result = run_oracle(job["task"], job["workspace"])
                 if not isinstance(oracle_result.get("quality"), (int, float)):
                     raise RuntimeError(f"quality judgment missing for {job['harness']} {job['task_id']}")
-            scoring = compute_scoring(job["task"], job["sandbox"], oracle_result)
+            scoring = compute_scoring(
+                job["task"], job["sandbox"], oracle_result,
+                max_payload_chars=args.max_payload_chars,
+            )
             validate_scoring(scoring, expected_model)
         except Exception as exc:
             failed_cost = numeric_cost({"oracle_result": oracle_result, "scoring": scoring})
@@ -353,6 +370,8 @@ def main() -> int:
             "task_id": job["task_id"],
             "judge_model": expected_model,
             "judge_base_url": credentials["RUBRIC_BASE_URL"],
+            "max_payload_chars": args.max_payload_chars,
+            "trace_policy": "full_valid_json" if args.max_payload_chars >= 1000000 else "legacy_prefix_truncation",
             "source_result_file": str(job["source"]),
             "source_result_sha256": job["source_hash"],
             "proxy_trace_sha256": job["trace_hash"],
