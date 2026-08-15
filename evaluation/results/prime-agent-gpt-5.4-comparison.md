@@ -12,18 +12,27 @@ Only completion/oracle outcome is compared. Prime intentionally skipped process 
 
 ![Exact-subset harness and category comparison](prime-vs-published-gpt54-subset.png)
 
-| Harness | Overall | Software | Data/BI | Long-running | Median |
-|---|---:|---:|---:|---:|---:|
-| Codex | 0.8880 | 0.9312 | 0.8459 | 0.8553 | 0.9685 |
-| Prime Agent | 0.8873 | 0.9310 | 0.8309 | 0.8718 | 0.9800 |
-| NanoBot | 0.8631 | 0.8828 | 0.8547 | 0.8342 | 0.9524 |
-| Moltis | 0.8343 | 0.8857 | 0.7705 | 0.8129 | 0.9186 |
-| OpenClaw | 0.8284 | 0.8285 | 0.8277 | 0.8292 | 0.9615 |
-| Hermes | 0.8280 | 0.8476 | 0.8098 | 0.8120 | 0.9186 |
-| NullClaw | 0.7551 | 0.8769 | 0.6409 | 0.6570 | 0.7391 |
-| ZeroClaw | 0.6361 | 0.7595 | 0.5685 | 0.4756 | 0.7000 |
+| Harness | Overall | Software | Data/BI | Long-running | Median | Mean time/task | Mean tokens/task |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Codex | 0.8880 | 0.9312 | 0.8459 | 0.8553 | 0.9685 | — | — |
+| Prime Agent | 0.8873 | 0.9310 | 0.8309 | 0.8718 | 0.9800 | 74.5s | 61,975 |
+| NanoBot | 0.8631 | 0.8828 | 0.8547 | 0.8342 | 0.9524 | — | — |
+| Moltis | 0.8343 | 0.8857 | 0.7705 | 0.8129 | 0.9186 | — | — |
+| OpenClaw | 0.8284 | 0.8285 | 0.8277 | 0.8292 | 0.9615 | — | — |
+| Hermes | 0.8280 | 0.8476 | 0.8098 | 0.8120 | 0.9186 | — | — |
+| NullClaw | 0.7551 | 0.8769 | 0.6409 | 0.6570 | 0.7391 | — | — |
+| ZeroClaw | 0.6361 | 0.7595 | 0.5685 | 0.4756 | 0.7000 | — | — |
 
 Prime Agent and Codex are effectively tied overall: **0.8873 versus 0.8880**, a difference of **−0.0007** (−0.07 percentage points). Their software means are nearly identical (**0.9310 vs 0.9312**). Prime is **+1.65 points** on long-running autonomy and **−1.50 points** on data/BI. Prime is **+2.43 points** over the next overall configurable harness, NanoBot, on this subset.
+
+The public score file has no per-task timing or usage. Its separate usage file publishes only full-106 aggregates, and published token totals use different cache accounting from Prime. I therefore leave resource cells blank rather than mix scopes or definitions. Prime's category-level resource breakdown is:
+
+| Prime subset | Tasks | Outcome | Mean time/task | Median time/task | Mean tokens/task | Median tokens/task |
+|---|---:|---:|---:|---:|---:|---:|
+| Overall | 47 | 0.8873 | 74.5s | 69.2s | 61,975 | 51,222 |
+| Software engineering | 22 | 0.9310 | 73.8s | 59.3s | 68,189 | 52,747 |
+| Data/BI | 14 | 0.8309 | 67.4s | 68.9s | 57,351 | 51,002 |
+| Long-running autonomy | 11 | 0.8718 | 84.8s | 76.3s | 55,435 | 42,079 |
 
 ![Paired Prime Agent and Codex task outcomes](prime-vs-codex-gpt54-taskwise.png)
 

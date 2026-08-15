@@ -20,11 +20,11 @@ The subset was frozen before additional subset execution as the union of three u
 
 ## Category results
 
-| Category | Tasks | Mean outcome | Median | Perfect | Wall time | Total tokens |
+| Category | Tasks | Mean outcome | Median | Perfect | Mean time/task | Mean tokens/task |
 |---|---:|---:|---:|---:|---:|---:|
-| Data, BI & Finance Analytics | 14 | 0.8308 | 0.8462 | 4 | 943.821s | 802,908 |
-| Long-running Autonomy & State Adaptation | 11 | 0.8718 | 0.8594 | 4 | 932.457s | 609,784 |
-| Software Engineering & Codebase Maintenance | 22 | 0.9310 | 0.9827 | 8 | 1624.079s | 1,500,153 |
+| Data, BI & Finance Analytics | 14 | 0.8308 | 0.8462 | 4 | 67.4s | 57,351 |
+| Long-running Autonomy & State Adaptation | 11 | 0.8718 | 0.8594 | 4 | 84.8s | 55,435 |
+| Software Engineering & Codebase Maintenance | 22 | 0.9310 | 0.9827 | 8 | 73.8s | 68,189 |
 
 ## Per-task results
 
