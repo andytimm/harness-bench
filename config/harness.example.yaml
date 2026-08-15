@@ -32,7 +32,7 @@
     "pi-gpt-5.4-medium": {
       "adapter": "pi",
       "command": "pi",
-      "user_agent_dir": "~/.prime/agent",
+      "user_agent_dir": "~/.pi/agent",
       "session_prefix": "harnessbench-pi",
       "timeout_sec": 2400,
       "timeout_grace_sec": 5,
