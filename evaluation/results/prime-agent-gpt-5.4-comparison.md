@@ -12,16 +12,23 @@ Only completion/oracle outcome is compared. Prime intentionally skipped process 
 
 ![Exact-subset harness and category comparison](prime-vs-published-gpt54-subset.png)
 
-| Harness | Overall | Software | Data/BI | Long-running | Median | Mean time/task | Mean tokens/task |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| Codex | 0.8880 | 0.9312 | 0.8459 | 0.8553 | 0.9685 | — | — |
-| Prime Agent | 0.8873 | 0.9310 | 0.8309 | 0.8718 | 0.9800 | 74.5s | 61,975 |
-| NanoBot | 0.8631 | 0.8828 | 0.8547 | 0.8342 | 0.9524 | — | — |
-| Moltis | 0.8343 | 0.8857 | 0.7705 | 0.8129 | 0.9186 | — | — |
-| OpenClaw | 0.8284 | 0.8285 | 0.8277 | 0.8292 | 0.9615 | — | — |
-| Hermes | 0.8280 | 0.8476 | 0.8098 | 0.8120 | 0.9186 | — | — |
-| NullClaw | 0.7551 | 0.8769 | 0.6409 | 0.6570 | 0.7391 | — | — |
-| ZeroClaw | 0.6361 | 0.7595 | 0.5685 | 0.4756 | 0.7000 | — | — |
+### Overall means
+
+| Harness | Mean outcome | Mean time/task | Mean tokens/task |
+|---|---:|---:|---:|
+| Codex | 0.8880 | — | — |
+| Prime Agent | 0.8873 | 74.5s | 61,975 |
+| NanoBot | 0.8631 | — | — |
+| Hermes | 0.8280 | — | — |
+
+### Overall medians
+
+| Harness | Median outcome | Median time/task | Median tokens/task |
+|---|---:|---:|---:|
+| Prime Agent | 0.9800 | 69.2s | 51,222 |
+| Codex | 0.9685 | — | — |
+| NanoBot | 0.9524 | — | — |
+| Hermes | 0.9186 | — | — |
 
 Prime Agent and Codex are effectively tied overall: **0.8873 versus 0.8880**, a difference of **−0.0007** (−0.07 percentage points). Their software means are nearly identical (**0.9310 vs 0.9312**). Prime is **+1.65 points** on long-running autonomy and **−1.50 points** on data/BI. Prime is **+2.43 points** over the next overall configurable harness, NanoBot, on this subset.
 
