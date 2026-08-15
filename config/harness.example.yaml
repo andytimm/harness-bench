@@ -3,19 +3,21 @@
     "demo-local": {
       "adapter": "demo"
     },
-    "codex-gpt-5.4-medium": {
+    "codex-gpt-5.4-medium-current-0.139": {
       "adapter": "codex",
       "command": "codex",
-      "user_config": "~/.codex/config.toml",
-      "session_prefix": "harnessbench-codex",
+      "expected_version": "codex-cli 0.139.0",
+      "user_codex_home": "~/.codex",
+      "session_prefix": "harnessbench-codex-current-0139",
       "timeout_sec": 2400,
+      "timeout_grace_sec": 5,
+      "provider": "openai",
+      "billing_mode": "subscription_oauth",
       "model": "gpt-5.4",
+      "model_reasoning_effort": "medium",
       "sandbox": "workspace-write",
-      "json": true,
-      "stream_to_console": false,
-      "config_overrides": [
-        "model_reasoning_effort=\"medium\""
-      ]
+      "sync_refreshed_auth": true,
+      "stream_to_console": false
     },
     "prime-agent-gpt-5.4-medium": {
       "adapter": "prime_agent",

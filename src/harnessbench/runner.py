@@ -482,7 +482,10 @@ def _collect_proxy_usage_summary(log_file: Path, session_id: str) -> dict[str, A
             row = json.loads(line)
         except json.JSONDecodeError:
             continue
-        summary["request_count"] += 1
+        # Most proxy rows represent one model request. Native adapters may only
+        # expose aggregate turn usage; their explicit call_count preserves the
+        # exact underlying model-call count without duplicating token totals.
+        summary["request_count"] += max(1, int(row.get("call_count", 1) or 1))
         summary["input_tokens"] += int(row.get("input_tokens", 0) or 0)
         summary["output_tokens"] += int(row.get("output_tokens", 0) or 0)
         summary["cache_read_tokens"] += int(row.get("cache_read_tokens", 0) or 0)
