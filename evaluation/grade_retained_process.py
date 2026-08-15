@@ -190,6 +190,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--harness", action="append", required=True)
     parser.add_argument("--task", action="append", help="grade only selected task id(s)")
+    parser.add_argument("--exclude-task", action="append", default=[], help="omit selected task id(s)")
     parser.add_argument("--credential-file", type=Path, default=Path("~/.config/harnessbench/rubric.env"))
     parser.add_argument("--output-root", type=Path, default=Path("evaluation/process-grades/claude-sonnet-4.6"))
     parser.add_argument("--manifest", type=Path, default=Path("reports/process-grade-claude-sonnet-4.6-manifest.json"))
@@ -209,7 +210,7 @@ def main() -> int:
 
     app = load_app_config()
     tasks = load_tasks(app.tasks_dir)
-    task_ids = args.task or sorted(tasks)
+    task_ids = [task_id for task_id in (args.task or sorted(tasks)) if task_id not in set(args.exclude_task)]
     unknown = [task_id for task_id in task_ids if task_id not in tasks]
     if unknown:
         raise SystemExit(f"unknown tasks: {unknown}")
@@ -298,12 +299,46 @@ def main() -> int:
             break
 
         print(f"[grade {index}/{len(jobs)}] {job['harness']} {job['task_id']}", flush=True)
-        if weight > 0 and not isinstance(oracle_result.get("quality"), (int, float)):
-            oracle_result = run_oracle(job["task"], job["workspace"])
-            if not isinstance(oracle_result.get("quality"), (int, float)):
-                raise RuntimeError(f"quality judgment missing for {job['harness']} {job['task_id']}")
-        scoring = compute_scoring(job["task"], job["sandbox"], oracle_result)
-        validate_scoring(scoring, expected_model)
+        scoring: dict[str, Any] = {}
+        try:
+            if weight > 0 and not isinstance(oracle_result.get("quality"), (int, float)):
+                oracle_result = run_oracle(job["task"], job["workspace"])
+                if not isinstance(oracle_result.get("quality"), (int, float)):
+                    raise RuntimeError(f"quality judgment missing for {job['harness']} {job['task_id']}")
+            scoring = compute_scoring(job["task"], job["sandbox"], oracle_result)
+            validate_scoring(scoring, expected_model)
+        except Exception as exc:
+            failed_cost = numeric_cost({"oracle_result": oracle_result, "scoring": scoring})
+            attempt_name = utc_now().replace(":", "").replace("+", "_") + ".json"
+            attempt_file = job["output"].parent / ".attempts" / job["task_id"] / attempt_name
+            write_json(attempt_file, {
+                "schema_version": SCHEMA_VERSION,
+                "status": "failed_validation",
+                "created_at": utc_now(),
+                "harness": job["harness"],
+                "task_id": job["task_id"],
+                "judge_model": expected_model,
+                "source_result_sha256": job["source_hash"],
+                "proxy_trace_sha256": job["trace_hash"],
+                "workspace_sha256": job["workspace_hash"],
+                "process_request": job["request_provenance"],
+                "oracle_result": oracle_result,
+                "scoring": scoring,
+                "error": str(exc),
+                "reported_cost_usd": failed_cost,
+            })
+            running_cost += failed_cost
+            manifest["results"].append({
+                "harness": job["harness"], "task_id": job["task_id"],
+                "status": "failed_validation", "attempt_file": str(attempt_file),
+                "error": str(exc), "reported_cost_usd": failed_cost,
+            })
+            manifest["status"] = "stopped_on_failure"
+            manifest["reported_cost_usd"] = running_cost
+            manifest["updated_at"] = utc_now()
+            write_json(args.manifest, manifest)
+            print(f"[grade] stopping on validation failure: {exc}; artifact={attempt_file}", flush=True)
+            return 1
         reported_cost = numeric_cost({"oracle_result": oracle_result, "scoring": scoring})
         if reported_cost <= 0:
             reported_cost = reservation
