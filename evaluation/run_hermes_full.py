@@ -19,6 +19,7 @@ DEFAULT_HARNESS = "hermes-gpt-5.4-medium"
 EXPECTED_PROVIDER = "openai-codex"
 EXPECTED_MODEL = "gpt-5.4"
 EXPECTED_TASK_COUNT = 106
+EXPECTED_HERMES_VERSION = "0.20.1"
 DEPENDENCY_MARKERS = (
     "No module named pytest",
     "No module named 'pytest'",
@@ -67,10 +68,16 @@ def validate_result(path: Path, task_id: str, harness_id: str = DEFAULT_HARNESS)
         errors.append(f"proxy_trace_error={(data.get('scoring') or {}).get('proxy_trace_error')!r}")
 
     evidence = json.dumps(oracle, ensure_ascii=False)
-    for adapter_round in data.get("adapter_results") or []:
+    adapter_rounds = data.get("adapter_results") or []
+    if not adapter_rounds:
+        errors.append("result has no adapter rounds")
+    for adapter_round in adapter_rounds:
         metadata = adapter_round.get("metadata") or {}
-        if not metadata.get("hermes_version"):
-            errors.append("adapter round has no Hermes version")
+        if not adapter_round.get("ok"):
+            errors.append("adapter round is not successful")
+        version = str(metadata.get("hermes_version") or "")
+        if EXPECTED_HERMES_VERSION not in version:
+            errors.append(f"unexpected Hermes version: {version!r}")
         if metadata.get("provider") != EXPECTED_PROVIDER or metadata.get("model") != EXPECTED_MODEL:
             errors.append("adapter round did not pin openai-codex/gpt-5.4")
         if metadata.get("reasoning") != "medium":
@@ -78,10 +85,17 @@ def validate_result(path: Path, task_id: str, harness_id: str = DEFAULT_HARNESS)
         if metadata.get("timed_out"):
             errors.append("adapter round timed out")
         native = metadata.get("native_session") or {}
-        if not metadata.get("hermes_session_id") or not native.get("end_reason"):
-            errors.append("adapter round lacks a completed native Hermes session")
+        if not metadata.get("hermes_session_id"):
+            errors.append("adapter round lacks a native Hermes session")
         if int(native.get("assistant_message_count", 0) or 0) < 1:
             errors.append("native Hermes session has no assistant message")
+        if native.get("billing_mode") != "subscription_included":
+            errors.append(f"native billing_mode={native.get('billing_mode')!r}")
+        trace = metadata.get("synthetic_trace") or {}
+        if int(trace.get("response_count", 0) or 0) < 1:
+            errors.append("adapter round has no retained native proxy responses")
+        if trace.get("final_finish_reason") != "stop":
+            errors.append(f"final native finish_reason={trace.get('final_finish_reason')!r}")
         if not metadata.get("staged_auth_removed"):
             errors.append("staged Hermes credential was not removed")
         for log_key in ("stdout_log_file", "stderr_log_file"):

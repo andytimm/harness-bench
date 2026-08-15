@@ -243,47 +243,82 @@ def _create_sandbox_dir(
     raise OSError("could not create unique sandbox directory under work_root")
 
 def _collect_hermes_usage_summary(db_file: Path, session_id: str, session_root: Path) -> dict[str, Any]:
-    """Collect usage for the adapter-selected Hermes session, never the latest global row."""
+    """Collect all task-local Hermes usage from its isolated SQLite database.
+
+    Main-loop counters live on ``sessions`` rows. Auxiliary model work such as
+    compression and title generation is recorded only in ``session_model_usage``
+    rows whose task is non-empty, so include those exactly once as well.
+    """
     import sqlite3
 
+    token_fields = (
+        "input_tokens", "output_tokens", "cache_read_tokens",
+        "cache_write_tokens", "reasoning_tokens", "api_call_count",
+    )
     try:
         connection = sqlite3.connect(f"file:{db_file}?mode=ro", uri=True)
         connection.row_factory = sqlite3.Row
-        row = connection.execute(
-            "SELECT id, model, billing_provider, billing_mode, input_tokens, output_tokens, "
-            "cache_read_tokens, cache_write_tokens, reasoning_tokens, message_count, "
-            "api_call_count, estimated_cost_usd, actual_cost_usd, cost_status, end_reason "
-            "FROM sessions WHERE id = ?",
-            (session_id,),
+        primary = connection.execute(
+            "SELECT * FROM sessions WHERE id = ?", (session_id,)
         ).fetchone()
-        connection.close()
-        if row is None:
+        if primary is None:
             raise sqlite3.DatabaseError(f"Hermes session {session_id!r} is absent")
-        record = dict(row)
-        input_tokens = int(record.get("input_tokens") or 0)
-        output_tokens = int(record.get("output_tokens") or 0)
+        sessions = connection.execute("SELECT * FROM sessions ORDER BY started_at, id").fetchall()
+        try:
+            auxiliary = connection.execute(
+                "SELECT * FROM session_model_usage WHERE COALESCE(task, '') <> '' "
+                "ORDER BY first_seen, session_id, task"
+            ).fetchall()
+        except sqlite3.OperationalError:
+            auxiliary = []
+        connection.close()
+
+        totals = {field: 0 for field in token_fields}
+        for record in [*sessions, *auxiliary]:
+            for field in token_fields:
+                totals[field] += int(record[field] or 0)
+        providers = list(dict.fromkeys(
+            str(record["billing_provider"] or "hermes") for record in [*sessions, *auxiliary]
+        ))
+        models = list(dict.fromkeys(
+            str(record["model"] or "unknown") for record in [*sessions, *auxiliary]
+        ))
+        billing_modes = list(dict.fromkeys(
+            str(record["billing_mode"] or "") for record in [*sessions, *auxiliary]
+            if str(record["billing_mode"] or "")
+        ))
+        aggregate_total = (
+            totals["input_tokens"] + totals["output_tokens"]
+            + totals["cache_read_tokens"] + totals["cache_write_tokens"]
+        )
         return {
             "available": True,
             "source": "hermes_sqlite",
-            "session_id": record["id"],
+            "session_id": session_id,
+            "session_ids": [str(record["id"]) for record in sessions],
+            "session_count": len(sessions),
+            "auxiliary_usage_rows": len(auxiliary),
             "usage_root": str(session_root),
             "database_file": str(db_file),
-            "message_count": int(record.get("message_count") or 0),
-            "usage_message_count": int(record.get("api_call_count") or 0),
-            "request_count": int(record.get("api_call_count") or 0),
-            "input_tokens": input_tokens,
-            "output_tokens": output_tokens,
-            "cache_read_tokens": int(record.get("cache_read_tokens") or 0),
-            "cache_write_tokens": int(record.get("cache_write_tokens") or 0),
-            "reasoning_tokens": int(record.get("reasoning_tokens") or 0),
-            "total_tokens": input_tokens + output_tokens,
-            "providers": [record.get("billing_provider") or "hermes"],
-            "models": [record.get("model") or "unknown"],
-            "billing_mode": record.get("billing_mode"),
-            "estimated_cost_usd": record.get("estimated_cost_usd"),
-            "actual_cost_usd": record.get("actual_cost_usd"),
-            "cost_status": record.get("cost_status"),
-            "end_reason": record.get("end_reason"),
+            "message_count": sum(int(record["message_count"] or 0) for record in sessions),
+            "tool_call_count": sum(int(record["tool_call_count"] or 0) for record in sessions),
+            "usage_message_count": totals["api_call_count"],
+            "request_count": totals["api_call_count"],
+            "input_tokens": totals["input_tokens"],
+            "output_tokens": totals["output_tokens"],
+            "cache_read_tokens": totals["cache_read_tokens"],
+            "cache_write_tokens": totals["cache_write_tokens"],
+            "reasoning_tokens": totals["reasoning_tokens"],
+            # Reasoning tokens are a subset of output and are not added twice.
+            "total_tokens": aggregate_total,
+            "providers": providers,
+            "models": models,
+            "billing_mode": billing_modes[0] if len(billing_modes) == 1 else None,
+            "billing_modes": billing_modes,
+            "estimated_cost_usd": sum(float(record["estimated_cost_usd"] or 0) for record in [*sessions, *auxiliary]),
+            "actual_cost_usd": sum(float(record["actual_cost_usd"] or 0) for record in [*sessions, *auxiliary]),
+            "cost_status": primary["cost_status"],
+            "end_reason": primary["end_reason"],
         }
     except sqlite3.Error as exc:
         return {
@@ -314,9 +349,8 @@ def _collect_usage_summary(adapter_result: Any, session_id: str) -> dict[str, An
 
     session_root = Path(usage_root_raw)
 
-    # 检查是否是 Hermes SQLite 数据库
     db_file = session_root / "state.db"
-    if db_file.exists():
+    if metadata.get("usage_source") == "hermes_sqlite":
         hermes_session_id = str(metadata.get("hermes_session_id") or "").strip()
         if not hermes_session_id:
             return {
