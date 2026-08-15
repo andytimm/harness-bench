@@ -41,6 +41,21 @@ The public score file has no per-task timing or usage. Its separate usage file p
 | Data/BI | 14 | 0.8309 | 67.4s | 68.9s | 57,351 | 51,002 |
 | Long-running autonomy | 11 | 0.8718 | 84.8s | 76.3s | 55,435 | 42,079 |
 
+### Closest published efficiency data
+
+The paper materials do contain useful resource proxies, just not exact-subset timing or medians. The website's [`usage_summary.json`](https://www.harness-bench.ai/assets/usage_summary.json) publishes full-106 token totals by harness/model, from which these means can be computed:
+
+| Configuration | Scope | Input/task | Cache-read/task | Output/task | Source total/task |
+|---|---|---:|---:|---:|---:|
+| Prime Agent + GPT-5.4 | our 47-task subset | 14.5K | 44.0K | 3.5K | 62.0K |
+| Codex + GPT-5.4 | published full 106 | 83.4K | 67.7K | 2.7K | 86.1K |
+| NanoBot + GPT-5.4 | published full 106 | 33.5K | 2.0K | 2.9K | 38.4K |
+| Hermes + GPT-5.4 | published full 106 | 56.4K | 46.9K | 3.4K | 106.7K |
+
+These are context rather than a clean comparison: the task scopes differ, no per-task rows or medians are exposed, and cache accounting is adapter-dependent. In particular, the source's Codex `total_tokens` equals input plus output and treats cache reads as a subset of input, whereas several configurable-harness totals add cache reads separately. Prime's native fields separate uncached input and cache reads.
+
+The paper additionally reports mean **turns**, but NanoBot and Hermes are averaged across eight model backends rather than isolated to GPT-5.4: Codex 5.0, NanoBot 7.3, and Hermes 22.6 turns/task. Prime made 7.3 native model calls/task (and 1.26 benchmark rounds/task), which is only an approximate analogue. Neither the paper, arXiv source bundle, public score/usage assets, nor repository contains wall-clock duration results.
+
 ![Paired Prime Agent and Codex task outcomes](prime-vs-codex-gpt54-taskwise.png)
 
 Against Codex task-by-task, Prime wins 10, ties 25 exactly, and loses 12. The large number of exact ties is evidence that the common GPT-5.4 backend and deterministic task contracts explain much of the result; harness differences are concentrated in a smaller set of tasks.
@@ -80,6 +95,7 @@ One important sensitivity check: task `007-session-memory` alone gives Prime a +
 
 - Authors’ leaderboard: <https://www.harness-bench.ai/leaderboard.html>
 - Authors’ run-level scores: <https://www.harness-bench.ai/assets/leaderboard_scores.json>
+- Authors’ aggregate usage data: <https://www.harness-bench.ai/assets/usage_summary.json>
 - Paper: <https://arxiv.org/abs/2605.27922>
 - Released GPT-5.4 medium config: <https://github.com/Qihoo360/harness-bench/blob/1025086a446653702b80cfb48babbeec35db6b2c/config/harness.example.yaml>
 - Plot generator: `evaluation/plot_prime_comparison.py`
