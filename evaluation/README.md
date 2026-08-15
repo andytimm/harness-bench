@@ -21,3 +21,11 @@ PYTHONPATH=src .venv/bin/python evaluation/summarize_results.py --selection subs
 ```
 
 The relevant subset is derived from the three upstream task classes recorded in `NOTES.md`, yielding 47 tasks at the pinned benchmark commit.
+
+Run the frozen 47-task GPT-5.4 subset sequentially, reusing only validated existing results:
+
+```bash
+PYTHONPATH=src .venv/bin/python evaluation/run_prime_subset.py
+```
+
+The runner writes its manifest atomically after every task and stops on the first command or validation failure. Rerunning it resumes from validated result JSON files, so completed tasks are not repeated.
