@@ -17,6 +17,18 @@
         "model_reasoning_effort=\"medium\""
       ]
     },
+    "prime-agent-gpt-5.4-medium": {
+      "adapter": "prime_agent",
+      "command": "prime-agent",
+      "user_agent_dir": "~/.prime/agent",
+      "session_prefix": "harnessbench-prime-agent",
+      "timeout_sec": 2400,
+      "timeout_grace_sec": 5,
+      "provider": "openai-codex",
+      "model": "gpt-5.4",
+      "thinking": "medium",
+      "stream_to_console": false
+    },
     "nanoclaw-local": {
       "adapter": "nanoclaw",
       "command": "./scripts/bench-nanoclaw.sh",

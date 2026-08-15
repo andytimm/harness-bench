@@ -11,6 +11,7 @@ from harnessbench.adapters import (
     NanoClawAdapter,
     OpenClawAdapter,
     PicoClawAdapter,
+    PrimeAgentAdapter,
     ZeroClawAdapter,
     HermesAgentAdapter,
 )
@@ -36,6 +37,8 @@ def build_adapter(adapter_name: str) -> BaseAdapter:
         return FairyClawAdapter()
     if adapter_name == "picoclaw":
         return PicoClawAdapter()
+    if adapter_name == "prime_agent":
+        return PrimeAgentAdapter()
     if adapter_name == "zeroclaw":
         return ZeroClawAdapter()
     if adapter_name == "hermes_agent":
