@@ -49,6 +49,9 @@ def main() -> int:
         raise SystemExit(f"Refusing to overwrite existing pilot results; use --allow-existing explicitly:\n{rendered}")
 
     env = os.environ.copy()
+    # Oracles invoke `python3`, `pytest`, and other console scripts by name.
+    # Prepending this interpreter's bin directory reproduces an activated venv.
+    env["PATH"] = os.pathsep.join([str(Path(sys.executable).resolve().parent), env.get("PATH", "")])
     env["HARNESSBENCH_SKIP_PROCESS_GRADE"] = "1"
     env["HARNESSBENCH_SKIP_ORACLE_QUALITY_LLM"] = "1"
     started_at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
