@@ -29,6 +29,18 @@
       "thinking": "medium",
       "stream_to_console": false
     },
+    "pi-gpt-5.4-medium": {
+      "adapter": "pi",
+      "command": "pi",
+      "user_agent_dir": "~/.prime/agent",
+      "session_prefix": "harnessbench-pi",
+      "timeout_sec": 2400,
+      "timeout_grace_sec": 5,
+      "provider": "openai-codex",
+      "model": "gpt-5.4",
+      "thinking": "medium",
+      "stream_to_console": false
+    },
     "nanoclaw-local": {
       "adapter": "nanoclaw",
       "command": "./scripts/bench-nanoclaw.sh",

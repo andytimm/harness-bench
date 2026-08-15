@@ -12,6 +12,7 @@ from harnessbench.adapters import (
     OpenClawAdapter,
     PicoClawAdapter,
     PrimeAgentAdapter,
+    PiAdapter,
     ZeroClawAdapter,
     HermesAgentAdapter,
 )
@@ -39,6 +40,8 @@ def build_adapter(adapter_name: str) -> BaseAdapter:
         return PicoClawAdapter()
     if adapter_name == "prime_agent":
         return PrimeAgentAdapter()
+    if adapter_name == "pi":
+        return PiAdapter()
     if adapter_name == "zeroclaw":
         return ZeroClawAdapter()
     if adapter_name == "hermes_agent":
