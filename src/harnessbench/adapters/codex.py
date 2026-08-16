@@ -28,7 +28,7 @@ _ALLOWED_MODEL_CONFIG_KEYS = {
     "expected_resolved_executable", "expected_native_executable", "expected_native_sha256",
     "benchmark_auth_file", "session_prefix", "timeout_sec", "timeout_grace_sec",
     "provider", "billing_mode", "model", "model_reasoning_effort", "sandbox",
-    "sync_refreshed_auth", "stream_to_console", "allowed_hook_env", "use_usage_proxy",
+    "sync_refreshed_auth", "stream_to_console", "allowed_hook_env", "sandbox_network_access", "use_usage_proxy",
 }
 
 
@@ -572,12 +572,13 @@ def _terminate_process_group(proc: subprocess.Popen[str], grace_sec: float) -> i
 
 
 
-def _offline_argument_parse(executable: str, model: str, reasoning: str) -> dict[str, Any]:
+def _offline_argument_parse(executable: str, model: str, reasoning: str, network_access: bool = False) -> dict[str, Any]:
     """Ask clap to parse both invocation shapes with --help; never starts a turn."""
     with tempfile.TemporaryDirectory(prefix="harnessbench-codex-parse-") as tmp:
         root = Path(tmp); output = root / "last.txt"
         common = ["--json", "--model", model, "--strict-config", "--ignore-user-config",
                   "--ignore-rules", "--config", f"model_reasoning_effort={json.dumps(reasoning)}",
+                  "--config", f"sandbox_workspace_write.network_access={json.dumps(network_access)}",
                   "--output-last-message", str(output)]
         commands = [
             [executable, "exec", "--cd", str(root), "--skip-git-repo-check",
@@ -605,6 +606,9 @@ def codex_preflight(model_config: dict[str, Any]) -> dict[str, Any]:
     provider = str(model_config.get("provider") or "openai").strip()
     billing = str(model_config.get("billing_mode") or "subscription_oauth").strip()
     expected_version = str(model_config.get("expected_version") or EXPECTED_CODEX_VERSION).strip()
+    network_raw = model_config.get("sandbox_network_access", False)
+    network_config_valid = isinstance(network_raw, bool)
+    network_access = network_raw if network_config_valid else False
     unknown_keys = sorted(set(model_config) - _ALLOWED_MODEL_CONFIG_KEYS)
     controls_ok = not unknown_keys and not model_config.get("extra_args") and not model_config.get("config_overrides")
     provenance = _command_provenance(
@@ -614,7 +618,7 @@ def codex_preflight(model_config: dict[str, Any]) -> dict[str, Any]:
         str(model_config.get("expected_native_executable") or "").strip(),
         str(model_config.get("expected_native_sha256") or "").strip(),
     )
-    parse = _offline_argument_parse(str(provenance.get("resolved") or model_config.get("command") or "codex"), model, reasoning) if provenance.get("valid") else {"ok": False, "results": []}
+    parse = _offline_argument_parse(str(provenance.get("resolved") or model_config.get("command") or "codex"), model, reasoning, network_access) if provenance.get("valid") else {"ok": False, "results": []}
     auth = _benchmark_auth_file(model_config)
     dedicated_auth = _is_dedicated_auth_file(auth)
     auth_kind = _auth_kind(auth) if dedicated_auth and auth is not None else ("rejected_normal_host_path" if auth is not None else "missing")
@@ -628,6 +632,7 @@ def codex_preflight(model_config: dict[str, Any]) -> dict[str, Any]:
         "model_pin": model == "gpt-5.4", "reasoning_pin": reasoning == "medium",
         "provider_pin": provider == "openai", "billing_pin": billing == "subscription_oauth",
         "sandbox_pin": str(model_config.get("sandbox") or "workspace-write") == "workspace-write",
+        "sandbox_network_config_valid": network_config_valid,
         "controls_allowlisted": controls_ok, "hook_env_valid": hook_env_valid, "hook_env_safe": hook_env_safe,
         "dedicated_auth_path": dedicated_auth,
         "auth_exists": bool(dedicated_auth and auth is not None and auth.is_file() and not auth.is_symlink()),
@@ -637,6 +642,7 @@ def codex_preflight(model_config: dict[str, Any]) -> dict[str, Any]:
             "argument_parse": parse, "unknown_config_keys": unknown_keys,
             "benchmark_auth_file": str(auth or ""), "normal_host_auth_file": str(_normal_host_auth_file()),
             "auth_kind": auth_kind, "allowed_hook_env": approved_hook_env,
+            "sandbox_network_access": network_access,
             "model": model, "reasoning": reasoning, "provider": provider, "billing_mode": billing}
 
 
@@ -662,7 +668,8 @@ class CodexAdapter(BaseAdapter):
             prior_session = str(state.get("session_id") or "").strip()
             executable = str(preflight["provenance"]["resolved"])
             common = ["--json", "--model", model, "--strict-config", "--ignore-user-config", "--ignore-rules",
-                      "--config", f"model_reasoning_effort={json.dumps(reasoning)}"]
+                      "--config", f"model_reasoning_effort={json.dumps(reasoning)}",
+                      "--config", f"sandbox_workspace_write.network_access={json.dumps(preflight['sandbox_network_access'])}"]
             last_message = ctx.sandbox / f"codex-round{round_number}.last-message.txt"
             if prior_session:
                 cmd = [executable, "exec", "resume", *common, "--output-last-message", str(last_message),

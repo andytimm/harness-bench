@@ -8,7 +8,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from harnessbench.codex_current_runner import (
-    CORRECTION_023_PLAN, NAMESPACE, _acquire_run_lock, _binary_pin, _correction_basis,
+    CORRECTION_023_NETWORK_PLAN, CORRECTION_023_PLAN, NAMESPACE, _acquire_run_lock, _binary_pin, _correction_basis,
     _correction_visit_validation, _execution_config, _manifest_dir_allowed, _parser,
     _prepend_interpreter_bin_to_path, _tree_hash,
 )
@@ -20,19 +20,24 @@ class CodexCurrentRunnerTests(unittest.TestCase):
         smoke = _parser().parse_args(["--plan", "smoke"])
         full = _parser().parse_args(["--plan", "full"])
         correction = _parser().parse_args(["--plan", CORRECTION_023_PLAN])
+        network_correction = _parser().parse_args(["--plan", CORRECTION_023_NETWORK_PLAN])
         self.assertIsNone(smoke.manifest_dir)
         self.assertIsNone(full.manifest_dir)
         self.assertIsNone(correction.manifest_dir)
+        self.assertIsNone(network_correction.manifest_dir)
         self.assertEqual(smoke.harness_config, Path("config/harness.example.yaml"))
         self.assertNotEqual(Path("evaluation/runs") / NAMESPACE / smoke.plan,
                             Path("evaluation/runs") / NAMESPACE / full.plan)
         self.assertNotEqual(Path("evaluation/runs") / NAMESPACE / correction.plan,
                             Path("evaluation/runs") / NAMESPACE / full.plan)
+        self.assertNotEqual(Path("evaluation/runs") / NAMESPACE / network_correction.plan,
+                            Path("evaluation/runs") / NAMESPACE / correction.plan)
 
     def test_current_config_allows_only_required_nonsensitive_hook_url(self) -> None:
         repository = Path(__file__).resolve().parents[1]
         config = load_model_config(repository / "config" / "harness.example.yaml")[NAMESPACE]
         self.assertEqual(config.get("allowed_hook_env"), ["MOCK_FORM_URL"])
+        self.assertIs(config.get("sandbox_network_access"), True)
 
     def test_correction_basis_is_bound_to_preserved_audit(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

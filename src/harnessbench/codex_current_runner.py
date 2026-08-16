@@ -21,6 +21,7 @@ EXPECTED_TASK_COUNT = 106
 SMOKE_TASKS = ("001-file", "044-ci-config-repair")
 CORRECTION_023_TASKS = ("023-web-form-extraction",)
 CORRECTION_023_PLAN = "correction-023-missing-hook-env"
+CORRECTION_023_NETWORK_PLAN = "correction-023-loopback-network"
 
 
 def _prepend_interpreter_bin_to_path() -> None:
@@ -104,7 +105,7 @@ def _manifest_provenance(*, app: Any, config: dict[str, Any], ordered: list[str]
 
 
 def _correction_basis(project_root: Path, plan: str, original_results_dir: Path | None = None) -> dict[str, Any] | None:
-    if plan != CORRECTION_023_PLAN:
+    if plan not in {CORRECTION_023_PLAN, CORRECTION_023_NETWORK_PLAN}:
         return None
     run_root = project_root / "evaluation" / "runs" / NAMESPACE / "full"
     manifest_path = run_root / "manifest.json"
@@ -136,7 +137,7 @@ def _correction_basis(project_root: Path, plan: str, original_results_dir: Path 
     result_path = result_root / NAMESPACE / "gpt-5.4" / f"{CORRECTION_023_TASKS[0]}.json"
     if not result_path.is_file():
         raise SystemExit("task 023 correction requires the preserved canonical initial result")
-    return {
+    basis = {
         "task_id": CORRECTION_023_TASKS[0],
         "rationale": "MOCK_FORM_URL was filtered from the initial child environment; correction is operational, not score-driven",
         "initial_attempt_retained": True,
@@ -149,17 +150,50 @@ def _correction_basis(project_root: Path, plan: str, original_results_dir: Path 
         "provenance_audit": str(audit_path),
         "provenance_audit_sha256": _file_hash(audit_path),
     }
+    if plan == CORRECTION_023_NETWORK_PLAN:
+        prior_root = project_root / "evaluation" / "runs" / NAMESPACE / CORRECTION_023_PLAN
+        prior_manifest = prior_root / "manifest.json"
+        prior_audit = prior_root / "CORRECTION_ATTEMPT_AUDIT.json"
+        if not prior_manifest.is_file() or not prior_audit.is_file():
+            raise SystemExit("loopback correction requires the preserved failed hook-env correction and audit")
+        prior = json.loads(prior_manifest.read_text(encoding="utf-8"))
+        prior_review = json.loads(prior_audit.read_text(encoding="utf-8"))
+        prior_entry = (prior.get("entries") or {}).get(CORRECTION_023_TASKS[0]) or {}
+        if (
+            prior.get("plan") != CORRECTION_023_PLAN
+            or prior_entry.get("status") != "failed"
+            or prior_entry.get("adapter_ok") is not True
+            or (prior_entry.get("correction_validation") or {}).get("valid") is not False
+            or prior_review.get("verdict") != "operational_failure_preserved"
+            or prior_review.get("score_driven") is not False
+            or (prior_review.get("root_cause") or {}).get("kind") != "adapter_sandbox_integration"
+            or (prior_review.get("validated") or {}).get("native_sandbox_network_access") is not False
+            or (prior_review.get("run") or {}).get("manifest_sha256") != _file_hash(prior_manifest)
+        ):
+            raise SystemExit("failed hook-env correction does not match the reviewed loopback-network failure")
+        basis.update({
+            "rationale": "MOCK_FORM_URL was passed in correction one, but pinned Codex workspace-write network access was false; second correction enables the task-owned loopback service and is not score-driven",
+            "prior_correction_manifest": str(prior_manifest),
+            "prior_correction_manifest_sha256": _file_hash(prior_manifest),
+            "prior_correction_audit": str(prior_audit),
+            "prior_correction_audit_sha256": _file_hash(prior_audit),
+            "prior_correction_sandbox": str(prior_entry.get("sandbox") or ""),
+        })
+    return basis
 
 
 def _correction_sources_unchanged(basis: dict[str, Any]) -> bool:
-    return all(
-        _file_hash(Path(basis[path_key])) == basis[hash_key]
-        for path_key, hash_key in (
-            ("initial_manifest", "initial_manifest_sha256"),
-            ("initial_result", "initial_result_sha256"),
-            ("provenance_audit", "provenance_audit_sha256"),
-        )
-    )
+    pairs = [
+        ("initial_manifest", "initial_manifest_sha256"),
+        ("initial_result", "initial_result_sha256"),
+        ("provenance_audit", "provenance_audit_sha256"),
+    ]
+    if "prior_correction_manifest" in basis:
+        pairs.extend([
+            ("prior_correction_manifest", "prior_correction_manifest_sha256"),
+            ("prior_correction_audit", "prior_correction_audit_sha256"),
+        ])
+    return all(_file_hash(Path(basis[path_key])) == basis[hash_key] for path_key, hash_key in pairs)
 
 
 def _correction_visit_validation(result: Any) -> dict[str, Any]:
@@ -204,7 +238,7 @@ def _acquire_run_lock(run_dir: Path):
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Pinned, sequential, no-retry Codex 0.139 benchmark runner")
-    parser.add_argument("--plan", choices=("smoke", "full", CORRECTION_023_PLAN), default="smoke")
+    parser.add_argument("--plan", choices=("smoke", "full", CORRECTION_023_PLAN, CORRECTION_023_NETWORK_PLAN), default="smoke")
     parser.add_argument("--execute", action="store_true", help="required to invoke Codex; omit for a dry run")
     parser.add_argument("--resume", action="store_true", help="skip terminal manifest entries; never retries them")
     parser.add_argument("--continue-on-failure", action="store_true")
@@ -227,14 +261,16 @@ def main(argv: list[str] | None = None) -> int:
     config = models[NAMESPACE]
     if config.get("adapter") != "codex":
         raise SystemExit(f"{NAMESPACE}: adapter must be 'codex'")
-    if args.plan == CORRECTION_023_PLAN and config.get("allowed_hook_env") != ["MOCK_FORM_URL"]:
+    if args.plan in {CORRECTION_023_PLAN, CORRECTION_023_NETWORK_PLAN} and config.get("allowed_hook_env") != ["MOCK_FORM_URL"]:
         raise SystemExit("task 023 correction requires exactly allowed_hook_env=[MOCK_FORM_URL]")
+    if args.plan == CORRECTION_023_NETWORK_PLAN and config.get("sandbox_network_access") is not True:
+        raise SystemExit("task 023 loopback correction requires pinned workspace-write network access")
     tasks = load_tasks(app.tasks_dir); ordered = sorted(tasks, key=_sort_key)
     if len(ordered) != EXPECTED_TASK_COUNT:
         raise SystemExit(f"expected exactly {EXPECTED_TASK_COUNT} tasks, found {len(ordered)}")
     if args.plan == "smoke":
         selected = list(SMOKE_TASKS)
-    elif args.plan == CORRECTION_023_PLAN:
+    elif args.plan in {CORRECTION_023_PLAN, CORRECTION_023_NETWORK_PLAN}:
         selected = list(CORRECTION_023_TASKS)
     else:
         selected = list(ordered)
@@ -265,7 +301,7 @@ def main(argv: list[str] | None = None) -> int:
     run_lock = _acquire_run_lock(run_dir)
     try:
         execution_app = app
-        if args.plan == CORRECTION_023_PLAN:
+        if args.plan in {CORRECTION_023_PLAN, CORRECTION_023_NETWORK_PLAN}:
             execution_app = replace(
                 app,
                 data_dir=run_dir / "data",
