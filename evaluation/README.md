@@ -140,8 +140,9 @@ mutation, model call, or network service other than its loopback fixture):
 It creates one Seatbelt sandbox (never a nested sandbox), executes the exact
 immutable generated Bash program through all negative and positive probes, and
 accepts only its sole JSON report.  It uses the exact real Keychain service but
-never requests or prints the secret.  Parent lookup equality is checked only by
-status, and the credential file by SHA-256 before/after.  The live security
+never requests or prints the secret. Parent exact-service availability is checked
+status-only before and after; no credential file is expected or accessed. A harmless
+workspace-local denied sentinel is created without following links and hash-checked. The live security
 smoke separately proves explicit denial for every file-capable built-in and
 arbitrary Bash cat/Python/Node/`security`/Security.framework access, plus
 workspace, image, subprocess, literal venv Python, pytest, Node, and loopback

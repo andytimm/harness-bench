@@ -73,4 +73,10 @@ class SecuritySmokeEvidenceTests(unittest.TestCase):
   self.assertEqual(Path(prefix).resolve(),(smoke.ROOT/'.venv').resolve())
   completed=subprocess.run([str(visible),'-m','pytest','--version'],text=True,capture_output=True)
   self.assertEqual(completed.returncode,0,completed.stderr); self.assertTrue(completed.stdout.startswith('pytest'))
+ def test_smoke_never_writes_the_auth_namespace(self):
+  import inspect
+  source=inspect.getsource(smoke.main)
+  self.assertIn("plaintext=workspace/'.denied-sentinel'",source)
+  self.assertIn('os.O_EXCL',source); self.assertIn("getattr(os,'O_NOFOLLOW',0)",source)
+  self.assertNotIn("seed/'.harnessbench-smoke-plaintext'",source)
 if __name__=='__main__': unittest.main()

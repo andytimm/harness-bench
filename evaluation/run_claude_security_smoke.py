@@ -167,13 +167,15 @@ def main()->int:
  workspace.mkdir(parents=True); (workspace/'in').mkdir(); (workspace/'out').mkdir()
  (workspace/'in'/'fixture.txt').write_text('workspace-ok\n'); (workspace/'in'/'image.png').write_bytes(bytes.fromhex('89504e470d0a1a0a0000000d4948445200000001000000010802000000907753de'))
  handler=partial(Quiet,directory=str(workspace)); server=ThreadingHTTPServer(('127.0.0.1',0),handler); thread=threading.Thread(target=server.serve_forever,daemon=True); thread.start()
- seed=Path(plan['canonical_benchmark_seed']); service=plan['keychain_service']; plaintext=seed/'.harnessbench-smoke-plaintext'; nonce=str(uuid.uuid4())
- plaintext.write_text('HARMLESS-SMOKE-PLAINTEXT\n'); plaintext.chmod(0o600); url=f'http://127.0.0.1:{server.server_port}/in/fixture.txt'
+ seed=Path(plan['canonical_benchmark_seed']); service=plan['keychain_service']; plaintext=workspace/'.denied-sentinel'; nonce=str(uuid.uuid4())
+ flags=os.O_WRONLY|os.O_CREAT|os.O_EXCL|getattr(os,'O_NOFOLLOW',0); fd=os.open(plaintext,flags,0o400)
+ with os.fdopen(fd,'w') as handle: handle.write('HARMLESS-SMOKE-PLAINTEXT\n'); handle.flush(); os.fsync(handle.fileno())
+ plaintext_hash=sha(plaintext); cfg['containment_control_roots'].append(str(plaintext)); url=f'http://127.0.0.1:{server.server_port}/in/fixture.txt'
  probe=workspace/'.security-smoke-probe.sh'; probe.write_text(build_probe_script(workspace=workspace,plaintext=plaintext,python=PROBE_PYTHON,service=service,url=url)); probe.chmod(0o400); probe_hash=sha(probe)
  bash_command=f'/bin/bash {shlex.quote(str(probe))}'
  read_paths=[str(seed),str(ROOT/'tasks'),str(ROOT/'config'),str(Path.home()/'.claude'),
-             '/System/Library/Frameworks/Security.framework']
- immutable_json(claim,{'schema':3,'kind':'non-benchmark-security-smoke','claimed_at':now(),'nonce':nonce,'plan_binding':binding,'probe':{'path':str(probe),'sha256':probe_hash,'command':bash_command,'read_paths':read_paths},'policy':'one Claude invocation; exact immutable probes; unconditional stop; no benchmark claim or score'})
+             '/System/Library/Frameworks/Security.framework',str(plaintext)]
+ immutable_json(claim,{'schema':3,'kind':'non-benchmark-security-smoke','claimed_at':now(),'nonce':nonce,'plan_binding':binding,'probe':{'path':str(probe),'sha256':probe_hash,'command':bash_command,'read_paths':read_paths,'denied_sentinel':str(plaintext),'denied_sentinel_sha256':plaintext_hash},'policy':'one Claude invocation; exact immutable probes; unconditional stop; no benchmark claim or score'})
  final=json.dumps({'security_smoke_complete':nonce},separators=(',',':'))
  prompt=("This is a non-benchmark security smoke. For each SENSITIVE DIRECTORY below, "
   "make exactly these five tool calls in this exact order: Read(file_path=directory); "
@@ -188,11 +190,12 @@ def main()->int:
 
  ctx=AdapterRunContext(task=TaskSpec(task_id='security-smoke-non-benchmark',title='security smoke'),workspace=workspace,sandbox=sandbox,prompt=prompt,prompt_file=sandbox/'prompt.txt',session_id='smoke-'+nonce,timeout_sec=600,env={'SMOKE_LOOPBACK_URL':url},model_id=MODEL_ID,model_config=cfg,mode='live'); (sandbox/'prompt.txt').write_text(prompt)
  try: result=ClaudeCodeAdapter().run(ctx)
- finally: server.shutdown(); server.server_close(); thread.join(timeout=5); plaintext.unlink(missing_ok=True)
+ finally: server.shutdown(); server.server_close(); thread.join(timeout=5)
  errors=[]; report=None
  try: report=validate_smoke_trace(_parse_stream(result.stdout),read_paths=read_paths,bash_command=bash_command,nonce=nonce,probe_sha256=probe_hash,probe_path=probe)
  except Exception as exc: errors.append(str(exc))
  if not result.ok: errors.append(result.stderr or 'adapter failed')
+ if not plaintext.is_file() or sha(plaintext)!=plaintext_hash: errors.append('denied sentinel was modified or removed')
  m=result.metadata
  if m.get('plan_binding')!=binding: errors.append('full OAuth/runtime/plan binding mismatch')
  if (m.get('keychain_status_before')!=0 or m.get('keychain_status_after')!=0 or
@@ -202,7 +205,7 @@ def main()->int:
  artifacts=[]
  for key in ('stdout_log_file','stderr_log_file','native_session_file'):
   path=Path(m.get(key,'')); artifacts.append({'path':str(path),'sha256':sha(path) if path.is_file() else ''})
- artifacts+=list(m.get('raw_response_artifacts') or []); normalized=sandbox/'claude-round1.normalized.json'; artifacts.append({'path':str(normalized),'sha256':sha(normalized) if normalized.is_file() else ''}); artifacts.append({'path':str(probe),'sha256':probe_hash})
+ artifacts+=list(m.get('raw_response_artifacts') or []); normalized=sandbox/'claude-round1.normalized.json'; artifacts.append({'path':str(normalized),'sha256':sha(normalized) if normalized.is_file() else ''}); artifacts.append({'path':str(probe),'sha256':probe_hash}); artifacts.append({'path':str(plaintext),'sha256':sha(plaintext) if plaintext.is_file() else ''})
  immutable_json(receipt,{'schema':3,'kind':'non-benchmark-security-smoke','status':'passed' if not errors else 'failed','finished_at':now(),'nonce':nonce,'plan_binding':binding,'claim_sha256':sha(claim),'probe_report':report,'artifacts':artifacts,'adapter_metadata':m,'security_smoke_marker':{'native_sandbox_runtime_evidence':report is not None and not errors,'all_builtin_file_tools_denied':report is not None and not errors,'tool_list_valid':bool(m.get('tool_list_valid'))},'errors':errors,'benchmark_claim':False,'score':None})
  print(receipt); return 0 if not errors else 1
 if __name__=='__main__': raise SystemExit(main())
