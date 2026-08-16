@@ -250,4 +250,4 @@ OpenClaw 运行时会使用三层路径：
 The `claude_code` adapter supports isolated subscription OAuth, native UUID
 resume, raw stream-JSON/native transcript retention, authoritative cumulative
 `result.modelUsage` accounting, and strict terminal/model/session/version/hash
-validation. See `evaluation/README.md`; normal `~/.claude` auth is forbidden.
+validation. See `evaluation/README.md`; normal `~/.claude` auth is forbidden. Claude is not wrapped in an outer Seatbelt sandbox: its fail-closed native macOS sandbox is the sole OS boundary for Bash/descendants, while explicit permission denies separately control in-process Read/Edit/Write/Glob/Grep. See the reviewed two-control contract and offline native probe in `evaluation/README.md`.

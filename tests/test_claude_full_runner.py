@@ -4,7 +4,7 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('run_claude_full',ROOT/'evaluation/run_claude_full.py'); module=importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
-from harnessbench.macos_containment import containment_paths, seatbelt_profile, verify_repo_containment, verify_task_capabilities
+from harnessbench.macos_containment import native_sandbox_policy, native_seatbelt_profile, verify_repo_containment, verify_task_capabilities, FILE_TOOLS
 from harnessbench.adapters.claude_code import EXPECTED_SHA256
 
 class ClaudePlanTests(unittest.TestCase):
@@ -14,10 +14,20 @@ class ClaudePlanTests(unittest.TestCase):
   with tempfile.TemporaryDirectory() as tmp:
    cmd=[sys.executable,str(ROOT/'evaluation/run_claude_full.py'),'--run-root',tmp,'--tranche','1','--dry-plan']; first=subprocess.run(cmd,text=True,capture_output=True); second=subprocess.run(cmd,text=True,capture_output=True); self.assertEqual(first.returncode,0,first.stderr); self.assertEqual(second.returncode,0,second.stderr); self.assertEqual(json.loads((Path(tmp)/'plan.json').read_text())['sha256'],EXPECTED_SHA256)
    bad=subprocess.run([sys.executable,str(ROOT/'evaluation/run_claude_full.py'),'--run-root',str(ROOT/'inside'),'--tranche','1','--dry-plan'],text=True,capture_output=True); self.assertNotEqual(bad.returncode,0)
- def test_settings_schema_and_outer_profile_contract(self):
-  source=(ROOT/'src/harnessbench/adapters/claude_code.py').read_text(); self.assertIn('"failIfUnavailable": True',source); self.assertIn('"credentials": {',source); self.assertIn('"mode": "deny"',source); self.assertIn('"/usr/bin/security"',source); self.assertIn('"allowUnsandboxedCommands": False',source)
+ def test_settings_schema_and_native_two_control_contract(self):
+  source=(ROOT/'src/harnessbench/adapters/claude_code.py').read_text()
+  self.assertIn('"failIfUnavailable": True',source); self.assertIn('"credentials": {',source)
+  self.assertIn('"mode": "deny"',source); self.assertIn('"allowUnsandboxedCommands": False',source)
+  self.assertNotIn('[str(sandbox_exec), "-p", profile, *cmd]',source)
   with tempfile.TemporaryDirectory() as tmp:
-   auth=Path(tmp)/'auth'; auth.write_text('{}'); reads,writes=containment_paths(ROOT,auth); profile=seatbelt_profile(reads,writes); self.assertIn(str(ROOT/'tasks'),profile); self.assertIn(str(auth),profile); self.assertIn('(deny file-write* (subpath '+json.dumps(str(ROOT.resolve()))+'))',profile); self.assertIn('(deny file-read* (require-all (subpath ',profile)
+   workspace=Path(tmp)/'workspace'; workspace.mkdir(); auth=Path(tmp)/'auth'; auth.write_text('{}')
+   control=Path(tmp)/'run'; prior=control/'results'/'prior.json'; prior.parent.mkdir(parents=True); prior.write_text('{}')
+   policy=native_sandbox_policy(ROOT,auth,workspace=workspace,sandbox=workspace,control_paths=[control])
+   profile=native_seatbelt_profile(policy)
+   self.assertIn(str(ROOT/'tasks'),profile); self.assertIn(str(auth),profile); self.assertIn(str(control.resolve()),profile)
+   self.assertIn(str(ROOT/'.venv'),policy['allowRead'])
+   self.assertIn(str((ROOT/'.venv/bin/python').resolve().parents[1]),policy['allowRead'])
+  self.assertEqual(FILE_TOOLS,("Read","Edit","Write","Glob","Grep"))
  def test_plan_binds_canonical_namespace_keychain_and_binary(self):
   with tempfile.TemporaryDirectory() as tmp:
    seed=Path(tmp)/'café'; plan=module.build_plan(ROOT,seed)

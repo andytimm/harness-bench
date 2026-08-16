@@ -1,214 +1,142 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import os
-import subprocess
 import shutil
+import subprocess
 import sys
-import tempfile
-import threading
-from functools import partial
-from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from typing import Iterable
 
-CONTAINMENT_CONTRACT = "macos-seatbelt-home-deny-capability-allow-native-credential-deny"
-
-
-class _DenyPaths(list[Path]):
-    def __init__(self, values: list[Path], allow_read: list[Path] | None = None):
-        super().__init__(values)
-        self.allow_read = allow_read or []
-        self.auth_display: Path | None = None
-
-
-
-class _QuietHandler(SimpleHTTPRequestHandler):
-    def log_message(self, format: str, *args: object) -> None:
-        pass
+# This is deliberately not an outer containment claim.  Claude itself is the
+# parent (and OAuth principal); its native Bash sandbox is the only OS boundary.
+CONTAINMENT_CONTRACT = "claude-native-macos-bash-sandbox-plus-builtin-permission-denies"
+FILE_TOOLS = ("Read", "Edit", "Write", "Glob", "Grep")
+EXPOSED_TOOLS = (*FILE_TOOLS, "Bash")
 
 
 def repository_control_plane_paths(root: Path) -> list[Path]:
-    # Deny every current checkout entry except the benchmark's read-only venv.
-    root = root.resolve()
-    venv = root / ".venv"
+    """Every checkout entry except the visible, read-only benchmark venv."""
+    root = root.resolve(); venv = root / ".venv"
     if not (venv / "bin" / "python").is_file() or not (venv / "bin" / "pytest").is_file():
         raise RuntimeError("benchmark .venv Python/pytest toolchain is unavailable")
-    paths = sorted((entry.resolve() for entry in root.iterdir() if entry.name != ".venv"), key=str)
-    required = [root / name for name in ("tasks", "src", "tests", "config", "grading", "evaluation", ".git")]
-    if any(not any(path == item.resolve() for path in paths) for item in required):
+    paths = sorted((p.resolve() for p in root.iterdir() if p.name != ".venv"), key=str)
+    required = [root / n for n in ("tasks", "src", "tests", "config", "grading", "evaluation", ".git")]
+    if any(p.resolve() not in paths for p in required):
         raise RuntimeError("repository control-plane deny set is incomplete")
     return paths
 
 
-def _selector(path: Path) -> str:
-    return "subpath" if path.is_dir() else "literal"
+def _within(path: Path, parent: Path) -> bool:
+    try: path.relative_to(parent); return True
+    except ValueError: return False
 
 
-def _filter(selector: str, path: Path) -> str:
-    return f"({selector} {json.dumps(str(path.resolve()))})"
+def _frontier(directory: Path, capabilities: Iterable[Path]) -> list[Path]:
+    """Enumerate a deny frontier, descending only toward explicit capabilities."""
+    directory = directory.resolve(); allowed = sorted({p.resolve() for p in capabilities}, key=str)
+    if not directory.is_dir(): return []
+    result: list[Path] = []
+    for entry in directory.iterdir():
+        resolved = entry.resolve()
+        if any(resolved == cap or _within(resolved, cap) for cap in allowed):
+            continue
+        below = [cap for cap in allowed if _within(cap, resolved)]
+        if below and resolved.is_dir(): result.extend(_frontier(resolved, below))
+        else: result.append(resolved)
+    return result
 
 
-def seatbelt_profile(read_write_denies: list[Path], write_denies: list[Path]) -> str:
-    """Create a deny-by-capability profile for host/home data.
+def other_worktrees(root: Path) -> list[Path]:
+    completed = subprocess.run(["git", "-C", str(root), "worktree", "list", "--porcelain"],
+                               text=True, capture_output=True, timeout=10, check=False)
+    if completed.returncode: raise RuntimeError("cannot enumerate benchmark worktrees")
+    paths = [Path(line[9:]).resolve() for line in completed.stdout.splitlines() if line.startswith("worktree ")]
+    return sorted({p for p in paths if p != root.resolve()}, key=str)
 
-    Seatbelt deny rules win over allow rules, so exceptions are expressed as
-    ``require-not`` filters within the broad home deny rather than later allows.
+
+def native_sandbox_policy(root: Path, auth_path: Path, *, workspace: Path, sandbox: Path,
+                          binary: Path | None = None, capability_paths: list[Path] | None = None,
+                          control_paths: list[Path] | None = None) -> dict:
+    """Build the exact reviewed policy passed to Claude 2.1.227 flag settings.
+
+    Read protection is deny-by-enumeration because Claude's native allowRead
+    takes precedence over denyRead.  No broad denied ancestor is re-opened.
     """
-    clauses = ["(version 1)", "(allow default)"]
-    if getattr(read_write_denies, "auth_display", None) is not None:
-        clauses.append("; canonical parent auth capability " + str(read_write_denies.auth_display))
-    allowed = [p.resolve() for p in getattr(read_write_denies, "allow_read", [])]
-    home = Path.home().resolve()
-    if allowed:
-        # Seatbelt accepts one filter expression; explicitly conjoin HOME with
-        # every capability exception rather than passing adjacent filters.
-        filters = " ".join(
-            [f"(subpath {json.dumps(str(home))})"]
-            + [f"(require-not (subpath {json.dumps(str(p))}))" for p in allowed]
-        )
-        clauses.append(f"(deny file-read* (require-all {filters}))")
-    for path in read_write_denies:
-        path = path.resolve()
-        clauses.append(f"(deny file-read* file-write* ({_selector(path)} {json.dumps(str(path))}))")
-    for path in write_denies:
-        path = path.resolve()
-        clauses.append(f"(deny file-write* ({_selector(path)} {json.dumps(str(path))}))")
-    return "\n".join(clauses) + "\n"
+    root=root.resolve(); workspace=workspace.resolve(); sandbox=sandbox.resolve(); auth_path=auth_path.resolve()
+    visible_venv=root/".venv"; visible_python=visible_venv/"bin"/"python"
+    runtime_python=visible_python.resolve(); runtime_root=runtime_python.parents[1]
+    node=Path(shutil.which("node") or "").resolve()
+    caps=[workspace,sandbox,visible_venv,runtime_root]
+    if binary is not None: caps.append(binary.resolve())
+    if node.is_file(): caps.extend([node,node.parent])
+    caps.extend(p.resolve() for p in (capability_paths or []))
+    # Enumerate HOME recursively around capability roots, plus every checkout
+    # control-plane entry and every sibling worktree.  Explicit high-value
+    # paths are retained even if an ancestor frontier entry already covers them.
+    home_denies=_frontier(Path.home(),caps)
+    control_denies=[]
+    for control in (control_paths or []):
+        resolved=control.resolve()
+        below=[cap for cap in caps if cap==resolved or _within(cap,resolved)]
+        control_denies.extend(_frontier(resolved,below) if below and resolved.is_dir() else [resolved])
+    explicit=repository_control_plane_paths(root)+other_worktrees(root)+control_denies+[
+        auth_path, Path.home()/".claude", Path.home()/".ssh", Path.home()/".aws", Path.home()/".config",
+        Path("/usr/bin/security"), Path("/System/Library/Frameworks/Security.framework"),
+    ]
+    deny=sorted({p.resolve() for p in home_denies+explicit if p.exists() or p.is_symlink()},key=str)
+    if auth_path not in deny or not all(p.resolve() in deny for p in repository_control_plane_paths(root)):
+        raise RuntimeError("native sandbox sensitive-path enumeration is incomplete")
+    return {"allowRead":[str(visible_venv),str(runtime_root)],
+            "allowWrite":[str(workspace)], "denyRead":[str(p) for p in deny],
+            "denyWrite":[str(p) for p in deny]}
 
 
-def containment_paths(root: Path, auth_path: Path | None = None, *, workspace: Path | None = None,
-                      sandbox: Path | None = None, binary: Path | None = None,
-                      capability_paths: list[Path] | None = None) -> tuple[list[Path], list[Path]]:
-    root = root.resolve()
-    denied = repository_control_plane_paths(root)
-    venv_python = (root / ".venv" / "bin" / "python").resolve()
-    # uv/venv Python is commonly a symlink into a HOME-managed runtime.  Bind
-    # the resolved interpreter installation as a read capability as well as
-    # the visible .venv tree.
-    allowed = [root / ".venv", venv_python, venv_python.parents[1]]
-    for value in (workspace, sandbox, binary):
-        if value is not None: allowed.append(value.resolve())
-    allowed.extend(p.resolve() for p in (capability_paths or []))
-    # The parent Claude process must read its one canonical OAuth namespace.
-    # Native sandbox credentials + permissions deny that namespace to Read and
-    # Bash descendants.  It must therefore be an exception to the outer profile.
-    if auth_path is not None:
-        candidate = auth_path if auth_path.is_dir() else auth_path.parent
-        allowed.append(candidate.resolve())
-    result = _DenyPaths(denied, allowed)
-    result.auth_display = auth_path
-    return result, [root]
+def builtin_permission_denies(paths: Iterable[str | Path]) -> list[str]:
+    rules=[]
+    for path in sorted({str(Path(p).resolve()) for p in paths}):
+        for tool in FILE_TOOLS: rules.extend([f"{tool}({path})",f"{tool}({path}/**)"])
+    return rules
 
 
-def _capability_paths_from_env(env: dict[str, str]) -> list[Path]:
-    paths = []
-    for key, value in env.items():
-        if key.endswith(("_FILE", "_DIR", "_PATH")) and value and Path(value).is_absolute():
-            paths.append(Path(value))
-    return paths
+def _q(path: Path) -> str: return json.dumps(str(path.resolve()))
+def native_seatbelt_profile(policy: dict) -> str:
+    """Offline probe profile equivalent to the native filesystem policy.
+
+    This is used only to test the policy without launching Claude or a model;
+    production never wraps Claude in sandbox-exec.
+    """
+    out=["(version 1)","(allow default)"]
+    for value in policy["denyRead"]: out.append(f"(deny file-read* (subpath {_q(Path(value))}))")
+    for value in policy["denyWrite"]: out.append(f"(deny file-write* (subpath {_q(Path(value))}))")
+    return "\n".join(out)+"\n"
 
 
 def _sandbox_exec() -> Path:
-    executable = Path("/usr/bin/sandbox-exec")
-    if sys.platform != "darwin" or not executable.is_file():
-        raise RuntimeError("reviewed macOS sandbox-exec containment is unavailable")
+    executable=Path("/usr/bin/sandbox-exec")
+    if sys.platform!="darwin" or not executable.is_file():
+        raise RuntimeError("reviewed Claude native macOS sandbox is unavailable")
     return executable
 
 
 def verify_repo_containment(root: Path) -> None:
-    read_write, write_only = containment_paths(root)
-    profile = seatbelt_profile(read_write, write_only)
-    probe = root / "tasks" / "001-file" / "oracle_grade.py"
-    completed = subprocess.run(
-        [str(_sandbox_exec()), "-p", profile, "/bin/sh", "-c",
-         'exec /bin/cat "$1"', "containment-probe", str(probe)],
-        text=True, capture_output=True, timeout=10, check=False,
-    )
-    if completed.returncode == 0:
-        raise RuntimeError("repo containment descendant unexpectedly read benchmark oracle data")
+    # Structural preflight only; the real offline native probe is the security
+    # smoke script.  Avoid a misleading, second outer Seatbelt here.
+    repository_control_plane_paths(root); other_worktrees(root)
 
 
 def verify_task_capabilities(root: Path, auth_path: Path, *, binary: Path | None = None) -> None:
-    # Realistic offline smoke: task tools/resources work while control plane stays denied.
-    root = root.resolve()
-    auth_path = auth_path.resolve()
-    binary = (binary or Path("/bin/sh")).resolve()
-    node = Path(shutil.which("node") or "").resolve()
-    if not binary.is_file() or not node.is_file():
-        raise RuntimeError("Claude binary/runtime or Node capability is unavailable")
-    with tempfile.TemporaryDirectory(prefix="harnessbench-contained-smoke-") as temporary:
-        workspace = Path(temporary).resolve()
-        read_write, write_only = containment_paths(
-            root, auth_path, workspace=workspace, sandbox=workspace, binary=binary,
-            capability_paths=[node, node.parent, binary.parent],
-        )
-        profile = seatbelt_profile(read_write, write_only)
-        (workspace / "in").mkdir()
-        (workspace / "out").mkdir()
-        (workspace / "in" / "input.txt").write_text("fixture-data\n", encoding="utf-8")
-        (workspace / "in" / "image.png").write_bytes(
-            bytes.fromhex("89504e470d0a1a0a0000000d4948445200000001000000010802000000907753de")
-        )
-        (workspace / "test_smoke.py").write_text(
-            "def test_workspace_fixture():\n"
-            "    from pathlib import Path\n"
-            "    assert Path('in/input.txt').read_text() == 'fixture-data\\n'\n",
-            encoding="utf-8",
-        )
-        handler = partial(_QuietHandler, directory=str(workspace))
-        server = ThreadingHTTPServer(("127.0.0.1", 0), handler)
-        thread = threading.Thread(target=server.serve_forever, daemon=True)
-        thread.start()
-        try:
-            url = f"http://127.0.0.1:{server.server_port}/in/input.txt"
-            script = r'''set -eu
-[ "$(cat in/input.txt)" = "fixture-data" ]
-printf 'workspace-write
-' > out/result.txt
-"$5" -c 'from pathlib import Path; import subprocess; assert Path("in/image.png").read_bytes().startswith(b"\x89PNG"); assert subprocess.run(["/bin/echo", "child"], capture_output=True, text=True, check=True).stdout.strip() == "child"'
-"$7" --version >/dev/null
-"$8" --version >/dev/null
-"$5" -c 'import sys, urllib.request; assert urllib.request.urlopen(sys.argv[1], timeout=5).read() == b"fixture-data\n"' "$1"
-if /bin/cat "$2" >/dev/null 2>&1; then exit 91; fi
-if /usr/bin/touch "$4" >/dev/null 2>&1; then exit 93; fi
-if /bin/cat "$9" >/dev/null 2>&1; then exit 94; fi
-'''
-            env = os.environ.copy()
-            env.pop("VIRTUAL_ENV", None)
-            env.pop("PYTHONPATH", None)
-            home_probe = Path.home() / ".harnessbench-containment-home-probe"
-            home_probe.write_text("deny-me\n", encoding="utf-8")
-            try:
-                completed = subprocess.run(
-                    [str(_sandbox_exec()), "-p", profile, "/bin/sh", "-c", script,
-                     "capability-smoke", url,
-                     str(root / "tasks" / "079-smallfile-batch-reject-ledger" / "oracle_grade.py"),
-                     str(auth_path), str(root / ".containment-write-probe"),
-                     str((root / ".venv" / "bin" / "python").resolve()), str(root / ".venv" / "bin" / "pytest"),
-                     str(node), str(binary), str(home_probe)],
-                    cwd=workspace, env=env, text=True, capture_output=True, timeout=30, check=False,
-                )
-            finally:
-                home_probe.unlink(missing_ok=True)
-        finally:
-            server.shutdown()
-            server.server_close()
-            thread.join(timeout=5)
-        if completed.returncode != 0:
-            raise RuntimeError(
-                "contained task-capability smoke failed "
-                f"(rc={completed.returncode}): {completed.stdout[-1000:]} {completed.stderr[-1000:]}"
-            )
-        if (root / ".containment-write-probe").exists():
-            raise RuntimeError("containment smoke unexpectedly wrote into benchmark checkout")
-        # The production outer profile must exempt the parent OAuth namespace;
-        # Claude's native descendant sandbox denies it.  Independently prove
-        # Seatbelt can enforce the exact auth-file denial used by that layer.
-        auth_denies, auth_writes = containment_paths(root)
-        auth_denies.append(auth_path)
-        auth_probe = subprocess.run(
-            [str(_sandbox_exec()), "-p", seatbelt_profile(auth_denies, auth_writes),
-             "/bin/cat", str(auth_path)], capture_output=True, timeout=10, check=False,
-        )
-        if auth_probe.returncode == 0:
-            raise RuntimeError("auth containment probe unexpectedly read credential")
+    # Compatibility preflight used by tranche runner; proves policy construction
+    # and venv/runtime visibility without nesting a sandbox around Claude.
+    import tempfile
+    with tempfile.TemporaryDirectory(prefix="harnessbench-native-preflight-") as td:
+        workspace=Path(td); policy=native_sandbox_policy(root,auth_path,workspace=workspace,
+            sandbox=workspace,binary=binary)
+        visible=root/".venv/bin/python"
+        completed=subprocess.run([str(visible),"-m","pytest","--version"],text=True,
+                                 capture_output=True,timeout=30,check=False)
+        if completed.returncode or not completed.stdout.startswith("pytest"):
+            raise RuntimeError("visible benchmark venv Python cannot execute pytest")
+        if str(root/".venv") not in policy["allowRead"] or str(visible.resolve().parents[1]) not in policy["allowRead"]:
+            raise RuntimeError("native sandbox venv/runtime read capabilities missing")

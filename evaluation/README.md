@@ -106,21 +106,52 @@ round/session/resume/native-stream correlation.
 A claim without a receipt is never retried automatically, no result is
 overwritten, and a rejected quota event writes a censored receipt and stops.
 
-Offline-proven controls include exact arguments (`--safe-mode`, `--no-chrome`,
-empty setting sources, strict empty MCP, disabled slash commands), settings
-schema fixtures, environment scrubbing, path ancestor/mode checks, home/control
-plane Seatbelt profile generation, immutable planning/resume validation, quota
-stop logic, and malformed/out-of-order/duplicate/realistic transcript parsing.
-The lossless normalized trace preserves raw thinking, tool use/results, errors,
-UUIDs, session, round, resume and actual model; the native transcript and both
-hashes are retained.
+## Reviewed Claude containment contract
 
-A launch remains blocked unless the macOS Seatbelt capability smoke passes.
-The smoke protocol verifies OAuth/init/policy state, adversarial built-in Read
-and Bash `cat`/Python/Node/direct Security.framework/`security` attempts against
-plaintext authentication and the exact namespaced Keychain service, and positive
-workspace/image/subprocess/resolved `.venv` Python/Node/loopback capabilities.
-It stops unconditionally after one Claude invocation. Managed JSON, plist and
-`managed-settings.d` sources (including the per-user Managed Preferences plist)
-are enumerated and rejected before launch. Offline tests do not make these live
-claims and never access authentication.
+Claude 2.1.227 is **not** launched under an outer `sandbox-exec`: macOS
+Seatbelt sandboxes cannot be safely nested with Claude's native Bash sandbox.
+Claude's exact native sandbox (`enabled: true`, `failIfUnavailable: true`,
+`allowUnsandboxedCommands: false`) is the sole OS boundary for Bash and every
+Bash descendant.  The parent Claude process remains outside that tool sandbox
+only so it can access the dedicated namespaced OAuth item.
+
+This is an explicit two-control threat model, not an outer-OS-sandbox claim.
+Bash/descendants are controlled by the native macOS sandbox.  The in-process
+Read, Edit, Write, Glob, and Grep tools are controlled by explicit built-in
+permission denies; they are not claimed to have a separate OS boundary.  The
+only exposed tools are exactly those five plus Bash.  `--safe-mode`, empty
+setting sources, strict empty MCP, disabled skills/slash commands, and the exact
+init tool list are runtime-validated.  Invalid or silently ignored settings,
+missing init evidence, or a changed tool list fail closed.
+
+Sensitive paths are enumerated at launch: the host HOME deny frontier except
+explicit capability roots, every checkout/control-plane entry except the
+read-only visible `.venv`, every other Git worktree, normal and benchmark auth,
+prior run claims/results visible on the host, and oracle/grading roots.  Native
+read capabilities include both the literal `.venv` and the resolved uv Python
+runtime; the probe executes literal `ROOT/.venv/bin/python -m pytest --version`.
+
+Run the production-equivalent offline native probe before review (no auth
+mutation, model call, or network service other than its loopback fixture):
+
+```sh
+.venv/bin/python evaluation/run_claude_native_sandbox_probe.py \
+  --benchmark-seed /absolute/dedicated/seed
+```
+
+It creates one Seatbelt sandbox (never a nested sandbox), executes the exact
+immutable generated Bash program through all negative and positive probes, and
+accepts only its sole JSON report.  It uses the exact real Keychain service but
+never requests or prints the secret.  Parent lookup equality is checked only by
+status, and the credential file by SHA-256 before/after.  The live security
+smoke separately proves explicit denial for every file-capable built-in and
+arbitrary Bash cat/Python/Node/`security`/Security.framework access, plus
+workspace, image, subprocess, literal venv Python, pytest, Node, and loopback
+capabilities.  Its immutable receipt carries a native-security marker required
+by both tranche gates.
+
+Managed JSON, plist, and `managed-settings.d` sources (including per-user
+Managed Preferences) are enumerated and rejected before launch.  Offline tests
+make no live claim and never access or mutate authentication.  A live launch
+still remains unresolved until an independently reviewed, passing one-shot
+security smoke produces the plan-bound approval marker described above.

@@ -132,7 +132,7 @@ def validate_result(path:Path,task:str,plan_digest:str='',expected_binding:dict[
   native_session=current or native_session
   if not all(m.get(k) for k in ('session_ids_valid','init_valid','terminal_valid','disabled_features_valid',
                                   'staged_credential_removed','native_session_file','native_transcript_sha256',
-                                  'normalized_trace_sha256','stdout_sha256','stderr_sha256','safe_mode','chrome_disabled','canonical_config_namespace')):
+                                  'normalized_trace_sha256','stdout_sha256','stderr_sha256','safe_mode','chrome_disabled','canonical_config_namespace','native_sandbox_settings_valid','native_sandbox_runtime_evidence','builtin_file_tool_denies_valid','tool_list_valid')):
    errors.append('native terminal/session/security validation failed')
   if m.get('keychain_cleanup_proven') is not False or m.get('stream_parse_error') or m.get('normalization_error'):
    errors.append('credential/transcript proof invalid')
@@ -202,7 +202,8 @@ def main()->int:
  if (sha(smoke_claim)!=approval.get('smoke_claim_sha256') or sha(smoke_receipt)!=approval.get('smoke_receipt_sha256')
      or smoke_data.get('status')!='passed' or smoke_data.get('plan_binding')!=binding
      or smoke_data.get('claim_sha256')!=sha(smoke_claim) or smoke_data.get('benchmark_claim') is not False
-     or smoke_data.get('score') is not None): raise SystemExit('audited smoke evidence hash/binding failed')
+     or smoke_data.get('score') is not None
+     or smoke_data.get('security_smoke_marker')!={'native_sandbox_runtime_evidence':True,'all_builtin_file_tools_denied':True,'tool_list_valid':True}): raise SystemExit('audited smoke evidence hash/binding/native-security-marker failed')
  seed=Path(plan['canonical_benchmark_seed']); cred=seed/'.credentials.json'
  resolved_seed=seed.resolve()
  if resolved_seed==(Path.home()/'.claude').resolve() or (Path.home()/'.claude').resolve() in resolved_seed.parents or seed.is_symlink() or cred.is_symlink() or not cred.is_file(): raise SystemExit('dedicated non-symlink benchmark OAuth seed is required; normal ~/.claude is forbidden')
@@ -215,7 +216,8 @@ def main()->int:
  if ver.returncode or ver.stdout.strip()!=VERSION: raise SystemExit('Claude Code exact version pin failed')
  from harnessbench.macos_containment import verify_repo_containment, verify_task_capabilities
  verify_repo_containment(root); verify_task_capabilities(root,cred,binary=binary)
- cfg={'models':{MODEL_ID:adapter_model_config(plan)}}
+ paid_cfg=adapter_model_config(plan); paid_cfg['containment_control_roots']=[str(run)]
+ cfg={'models':{MODEL_ID:paid_cfg}}
  external=run/'control'; external.mkdir(parents=True,exist_ok=True)
  harness_cfg=external/'harness.json'; harness_cfg.write_text(json.dumps(cfg,indent=2)+'\n')
  app_cfg=external/'app.json'; app_cfg.write_text(json.dumps({'tasks_dir':str(root/'tasks'),'data_dir':str(run/'data'),'results_dir':str(run/'results'),'work_root':str(run/'work'),'default_timeout_sec':2400})+'\n')

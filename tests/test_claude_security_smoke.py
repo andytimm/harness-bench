@@ -19,11 +19,12 @@ def report():
 
 def trace(paths,command,nonce,value=None):
  rows=[{'type':'system','subtype':'init'}]; ids=[]
- for index,(name,input_) in enumerate([*[("Read",{'file_path':x}) for x in paths],('Bash',{'command':command})]):
+ calls=[('Read',{'file_path':paths[0]}),('Edit',{'file_path':paths[1],'old_string':'__HB_NEVER_PRESENT__','new_string':'x'}),('Write',{'file_path':paths[2],'content':'HB_DENY_PROBE'}),('Glob',{'path':str(Path(paths[3]).parent),'pattern':'**/*'}),('Grep',{'path':str(Path(paths[4]).parent),'pattern':'HB_DENY_PROBE'}),('Bash',{'command':command})]
+ for index,(name,input_) in enumerate(calls):
   tid=f'tool-{index}'; ids.append(tid)
   rows.append({'type':'assistant','message':{'content':[{'type':'tool_use','id':tid,'name':name,'input':input_}]}})
-  content='Permission denied by sandbox' if name=='Read' else json.dumps(value or report(),separators=(',',':'))
-  rows.append({'type':'user','message':{'content':[{'type':'tool_result','tool_use_id':tid,'content':content,'is_error':name=='Read'}]}})
+  content='Permission denied by sandbox' if name!='Bash' else json.dumps(value or report(),separators=(',',':'))
+  rows.append({'type':'user','message':{'content':[{'type':'tool_result','tool_use_id':tid,'content':content,'is_error':name!='Bash'}]}})
  rows.append({'type':'assistant','message':{'content':[{'type':'text','text':json.dumps({'security_smoke_complete':nonce},separators=(',',':'))}]}})
  rows.append({'type':'result','subtype':'success','is_error':False})
  return rows
@@ -58,9 +59,16 @@ class SecuritySmokeEvidenceTests(unittest.TestCase):
   script=smoke.build_probe_script(workspace=Path('/w'),plaintext=Path('/seed/plain'),python=Path('/repo/.venv/bin/python'),service='Claude Code-credentials-12345678',url='http://127.0.0.1:1/in/fixture.txt')
   for name in smoke.DENIAL_PROBES+smoke.POSITIVE_PROBES: self.assertIn(name,script)
   self.assertNotIn(self.nonce,script)
- def test_live_probe_uses_resolved_executable_interpreter(self):
+ def test_live_probe_uses_visible_venv_interpreter(self):
   visible=smoke.ROOT/'.venv/bin/python'
-  self.assertEqual(smoke.PROBE_PYTHON,visible.resolve())
+  self.assertEqual(smoke.PROBE_PYTHON,visible)
   self.assertTrue(smoke.PROBE_PYTHON.is_file())
-  self.assertFalse(smoke.PROBE_PYTHON.is_symlink())
+  self.assertTrue(smoke.PROBE_PYTHON.is_symlink())
+ def test_actual_visible_python_is_venv_aware_and_pytest_works(self):
+  import subprocess
+  visible=smoke.ROOT/'.venv/bin/python'
+  prefix=subprocess.check_output([str(visible),'-c','import sys;print(sys.prefix)'],text=True).strip()
+  self.assertEqual(Path(prefix).resolve(),(smoke.ROOT/'.venv').resolve())
+  completed=subprocess.run([str(visible),'-m','pytest','--version'],text=True,capture_output=True)
+  self.assertEqual(completed.returncode,0,completed.stderr); self.assertTrue(completed.stdout.startswith('pytest'))
 if __name__=='__main__': unittest.main()

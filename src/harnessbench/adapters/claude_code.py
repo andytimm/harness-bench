@@ -483,52 +483,53 @@ class ClaudeCodeAdapter(BaseAdapter):
         except ValueError as exc:
             return AdapterRunResult(ok=False, stderr=str(exc))
 
-        # CLAUDE_CONFIG_DIR is itself the OAuth namespace on macOS.  Using the
-        # stable, dedicated seed as the canonical namespace avoids creating a
-        # Keychain service/account per task.  The outer sandbox denies tools
-        # this directory while the parent Claude process can refresh OAuth.
+        # Claude remains outside its tool sandbox solely to use the dedicated
+        # namespaced OAuth identity.  Its native macOS Bash sandbox is the sole
+        # OS boundary for Bash and descendants; in-process file tools are
+        # separately constrained by explicit permission rules.
         config_dir = config_dir_resolved
         staged = ctx.sandbox / ".claude-benchmark" / _CREDENTIAL  # legacy cleanup probe; never created
         settings_dir = ctx.sandbox / ".claude-benchmark"
         settings_dir.mkdir(parents=True, exist_ok=True)
         settings = settings_dir / "benchmark-settings.json"
+        from harnessbench.macos_containment import builtin_permission_denies, native_sandbox_policy
+        try:
+            filesystem = native_sandbox_policy(_project_root(), seed_dir, workspace=ctx.workspace,
+                sandbox=ctx.sandbox, binary=binary,
+                capability_paths=[Path(v) for k,v in ctx.env.items()
+                                  if k.endswith(("_FILE","_DIR","_PATH")) and v and Path(v).is_absolute()],
+                control_paths=[Path(v) for v in cfg.get("containment_control_roots",[])])
+        except (OSError, RuntimeError) as exc:
+            return AdapterRunResult(ok=False, stderr=str(exc))
+        sensitive = filesystem["denyRead"]
+        permission_denies = builtin_permission_denies(sensitive)
         settings_payload = {
             "hooks": {}, "enabledPlugins": {}, "extraKnownMarketplaces": {},
             "permissions": {
-                "allow": [f"Read({ctx.workspace}/**)", f"Write({ctx.workspace}/**)", f"Edit({ctx.workspace}/**)",
-                          f"Glob({ctx.workspace}/**)", f"Grep({ctx.workspace}/**)", "Bash"],
-                "deny": [f"Read({seed_dir})", f"Read({seed_dir}/**)",
-                         f"Read({_project_root()}/**)", f"Write({_project_root()}/**)",
-                         f"Read({Path.home()}/.claude/**)",
-                         "Read(/usr/bin/security)",
-                         "Read(/System/Library/Frameworks/Security.framework/**)"],
-                "additionalDirectories": [],
+                "allow": [f"Read({ctx.workspace}/**)", f"Write({ctx.workspace}/**)",
+                          f"Edit({ctx.workspace}/**)", f"Glob({ctx.workspace}/**)",
+                          f"Grep({ctx.workspace}/**)", "Bash"],
+                "deny": permission_denies, "additionalDirectories": [],
             },
             "sandbox": {
-                "enabled": True, "failIfUnavailable": True, "autoAllowBashIfSandboxed": True,
-                "allowUnsandboxedCommands": False, "excludedCommands": [],
+                "enabled": True, "failIfUnavailable": True,
+                "autoAllowBashIfSandboxed": True, "allowUnsandboxedCommands": False,
+                "excludedCommands": [], "filesystem": filesystem,
                 "credentials": {
-                    "files": [{"path": str(seed_credential), "mode": "deny"},
-                              {"path": str(seed_dir), "mode": "deny"},
-                              {"path": str(Path.home() / ".claude"), "mode": "deny"},
-                              {"path": "/usr/bin/security", "mode": "deny"},
-                              {"path": "/System/Library/Frameworks/Security.framework", "mode": "deny"}],
-                    "envVars": [
-                        {"name": "CLAUDE_CONFIG_DIR", "mode": "deny"},
-                        {"name": "CLAUDE_SECURESTORAGE_CONFIG_DIR", "mode": "deny"},
-                    ],
-                },
-                "filesystem": {
-                    "allowWrite": [str(ctx.workspace)],
-                    "allowRead": [str(ctx.workspace), str(ctx.sandbox), str(_project_root() / ".venv")],
-                    "denyRead": [str(seed_dir), str(_project_root()), str(Path.home() / ".claude"),
-                                 str(Path.home() / ".ssh"), str(Path.home() / ".aws"),
-                                 str(Path.home() / ".config"), "/usr/bin/security",
-                                 "/System/Library/Frameworks/Security.framework"],
-                    "denyWrite": [str(seed_dir), str(_project_root()), str(Path.home() / ".claude")],
+                    "files": [{"path": value, "mode": "deny"} for value in sensitive],
+                    "envVars": [{"name": "CLAUDE_CONFIG_DIR", "mode": "deny"},
+                                {"name": "CLAUDE_SECURESTORAGE_CONFIG_DIR", "mode": "deny"}],
                 },
             },
         }
+        # Pin the exact shape before launch.  Claude -p silently ignores invalid
+        # settings, so runtime init/tool evidence below is also mandatory.
+        if (settings_payload["sandbox"].get("enabled") is not True or
+            settings_payload["sandbox"].get("failIfUnavailable") is not True or
+            settings_payload["sandbox"].get("allowUnsandboxedCommands") is not False or
+            any(not any(rule.startswith(tool+"(") for rule in permission_denies)
+                for tool in ("Read","Edit","Write","Glob","Grep"))):
+            return AdapterRunResult(ok=False, stderr="native sandbox settings invariant failed")
         _atomic_json(settings, settings_payload)
         mcp = settings_dir / "empty-mcp.json"; mcp.write_text('{"mcpServers": {}}\n', encoding="utf-8")
         state_file = settings_dir / "adapter-state.json"
@@ -567,28 +568,19 @@ class ClaudeCodeAdapter(BaseAdapter):
         cmd = [str(binary), "-p", "--verbose", "--output-format", "stream-json", "--model", model,
                "--effort", effort, "--permission-mode", "dontAsk", "--safe-mode", "--no-chrome",
                "--disable-slash-commands", "--setting-sources", "", "--settings", str(settings),
-               "--strict-mcp-config", "--mcp-config", str(mcp)]
+               "--strict-mcp-config", "--mcp-config", str(mcp),
+               "--tools", ",".join(("Read","Edit","Write","Glob","Grep","Bash"))]
         if prior: cmd += ["--resume", native_session]
         else: cmd += ["--session-id", native_session]
         cmd += extras + [ctx.prompt]
         env = _clean_env(ctx.env, config_dir, ctx)
+        # Never wrap Claude in sandbox-exec: 2.1.227 must create its one native
+        # sandbox itself, and Seatbelt cannot be safely nested.
         execution_cmd = cmd
-        containment_contract = ""
-        if bool(cfg.get("require_macos_containment", False)):
-            try:
-                from harnessbench.macos_containment import (containment_paths, seatbelt_profile,
-                                                            CONTAINMENT_CONTRACT, _capability_paths_from_env)
-                sandbox_exec = Path("/usr/bin/sandbox-exec")
-                if sys.platform != "darwin" or not sandbox_exec.is_file():
-                    raise RuntimeError("reviewed macOS sandbox-exec containment is unavailable")
-                read_write, write_only = containment_paths(
-                    _project_root(), seed_dir, workspace=ctx.workspace, sandbox=ctx.sandbox,
-                    binary=binary, capability_paths=_capability_paths_from_env(ctx.env))
-                profile = seatbelt_profile(read_write, write_only)
-                execution_cmd = [str(sandbox_exec), "-p", profile, *cmd]
-                containment_contract = CONTAINMENT_CONTRACT
-            except RuntimeError as exc:
-                _unlink(staged); return AdapterRunResult(ok=False, command=cmd, stderr=str(exc))
+        containment_contract = "claude-native-macos-bash-sandbox-plus-builtin-permission-denies"
+        if bool(cfg.get("require_macos_containment", False)) and sys.platform != "darwin":
+            _unlink(staged)
+            return AdapterRunResult(ok=False, command=cmd, stderr="Claude native macOS sandbox is required")
         stdout_log = ctx.sandbox / f"claude-round{round_number}.stdout.jsonl"
         stderr_log = ctx.sandbox / f"claude-round{round_number}.stderr.log"
         credential_hash_before = _sha256(seed_credential)
@@ -629,13 +621,17 @@ class ClaudeCodeAdapter(BaseAdapter):
         ids = {str(r.get("session_id")) for r in rows if r.get("session_id")}
         session_ok = ids == {native_session}
         disabled_fields_ok = all(init.get(key) == [] for key in ("mcp_servers", "plugins", "skills", "slash_commands"))
+        expected_tools = ["Read", "Edit", "Write", "Glob", "Grep", "Bash"]
+        init_tools = init.get("tools")
+        tool_list_ok = (isinstance(init_tools, list) and len(init_tools) == len(expected_tools)
+                        and set(init_tools) == set(expected_tools))
         # Fields which would prove customization escaped safe mode are rejected;
         # absent fields are accepted because 2.1.227 does not emit all of them.
         unexpected_effective = {key: init.get(key) for key in ("hooks", "agents", "commands")
                                 if init.get(key) not in (None, [], {})}
         init_ok = (init.get("model") == model and init.get("claude_code_version") == "2.1.227"
                    and init.get("session_id") == native_session and init.get("permissionMode") == "dontAsk"
-                   and disabled_fields_ok and not unexpected_effective)
+                   and disabled_fields_ok and tool_list_ok and not unexpected_effective)
         model_usage = terminal.get("modelUsage") if isinstance(terminal.get("modelUsage"), dict) else {}
         terminal_ok = (terminal.get("subtype") == "success" and terminal.get("is_error") is False and
                        terminal.get("session_id") == native_session and set(model_usage) == {model}
@@ -696,5 +692,9 @@ class ClaudeCodeAdapter(BaseAdapter):
             "refreshed_auth_synced": True, "credential_hash_before": credential_hash_before,
             "credential_hash_after": credential_hash_after, "benchmark_config_seed": str(seed_dir),
             "settings_sources": [], "safe_mode": True, "chrome_disabled": True, "mcp_disabled": True,
+            "native_sandbox_settings_valid": True, "native_sandbox_runtime_evidence": init_ok,
+            "builtin_file_tool_denies_valid": all(any(rule.startswith(tool+"(") for rule in permission_denies)
+                                                   for tool in ("Read","Edit","Write","Glob","Grep")),
+            "exposed_tools": expected_tools, "init_tools": init_tools, "tool_list_valid": tool_list_ok,
             "containment_contract": containment_contract, "execution_command": execution_cmd,
         })

@@ -24,7 +24,7 @@ config=pathlib.Path(os.environ["CLAUDE_CONFIG_DIR"]); assert not (config/".crede
 settings=json.loads(pathlib.Path(value("--settings")).read_text()); assert settings["sandbox"]["failIfUnavailable"] is True; assert settings["sandbox"]["credentials"]["files"][0]["mode"]=="deny"
 session=value("--resume") if "--resume" in args else value("--session-id"); prompt=args[-1]
 if prompt=="SLEEP": time.sleep(30)
-print(json.dumps({{"type":"system","subtype":"init","session_id":session,"model":"claude-opus-4-6","claude_code_version":"2.1.227","permissionMode":"dontAsk","mcp_servers":[],"plugins":[],"skills":[],"slash_commands":[]}}))
+print(json.dumps({{"type":"system","subtype":"init","session_id":session,"model":"claude-opus-4-6","claude_code_version":"2.1.227","permissionMode":"dontAsk","mcp_servers":[],"plugins":[],"skills":[],"slash_commands":[],"tools":["Read","Edit","Write","Glob","Grep","Bash"]}}))
 print(json.dumps({{"type":"assistant","session_id":session,"uuid":"shared-event","message":{{"role":"assistant","content":[{{"type":"text","text":"done"}}]}}}}))
 resumed="--resume" in args; turns=4 if resumed else 2; inp=20 if resumed else 10; out=6 if resumed else 3
 print(json.dumps({{"type":"result","subtype":"success" if prompt!="BAD" else "error_max_turns","is_error":prompt=="BAD","session_id":session,"num_turns":turns,"modelUsage":{{"claude-opus-4-6":{{"inputTokens":inp,"outputTokens":out,"cacheReadInputTokens":4,"cacheCreationInputTokens":1}}}}}}))
