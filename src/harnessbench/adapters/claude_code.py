@@ -516,16 +516,21 @@ class ClaudeCodeAdapter(BaseAdapter):
         settings_dir.mkdir(parents=True, exist_ok=True)
         settings = settings_dir / "benchmark-settings.json"
         from harnessbench.macos_containment import (builtin_permission_denies,
+            builtin_sensitive_paths, native_credential_paths,
             validate_builtin_permission_denies, native_sandbox_policy)
         try:
+            capability_paths=[Path(v) for k,v in ctx.env.items()
+                              if k.endswith(("_FILE","_DIR","_PATH")) and v and Path(v).is_absolute()]
+            control_paths=[Path(v) for v in cfg.get("containment_control_roots",[])]
             filesystem = native_sandbox_policy(_project_root(), seed_dir, workspace=ctx.workspace,
-                sandbox=ctx.sandbox, binary=binary,
-                capability_paths=[Path(v) for k,v in ctx.env.items()
-                                  if k.endswith(("_FILE","_DIR","_PATH")) and v and Path(v).is_absolute()],
-                control_paths=[Path(v) for v in cfg.get("containment_control_roots",[])])
+                sandbox=ctx.sandbox, binary=binary, capability_paths=capability_paths,
+                control_paths=control_paths)
+            sensitive = builtin_sensitive_paths(_project_root(), seed_dir,
+                workspace=ctx.workspace, control_paths=control_paths)
+            credential_sensitive = native_credential_paths(seed_dir,
+                workspace=ctx.workspace, control_paths=control_paths)
         except (OSError, RuntimeError) as exc:
             return AdapterRunResult(ok=False, stderr=str(exc))
-        sensitive = filesystem["denyRead"]
         permission_denies = builtin_permission_denies(sensitive)
         settings_payload = {
             "hooks": {}, "enabledPlugins": {}, "extraKnownMarketplaces": {},
@@ -540,7 +545,7 @@ class ClaudeCodeAdapter(BaseAdapter):
                 "autoAllowBashIfSandboxed": True, "allowUnsandboxedCommands": False,
                 "excludedCommands": [], "filesystem": filesystem,
                 "credentials": {
-                    "files": [{"path": value, "mode": "deny"} for value in sensitive],
+                    "files": [{"path": value, "mode": "deny"} for value in credential_sensitive],
                     "envVars": [{"name": "HOME", "mode": "deny"},
                                 {"name": "CLAUDE_CONFIG_DIR", "mode": "deny"},
                                 {"name": "CLAUDE_SECURESTORAGE_CONFIG_DIR", "mode": "deny"}],
@@ -552,6 +557,8 @@ class ClaudeCodeAdapter(BaseAdapter):
         if (settings_payload["sandbox"].get("enabled") is not True or
             settings_payload["sandbox"].get("failIfUnavailable") is not True or
             settings_payload["sandbox"].get("allowUnsandboxedCommands") is not False or
+            len(filesystem["denyRead"]) > 32 or len(credential_sensitive) > 32 or
+            str(ctx.workspace.resolve()) not in filesystem["allowRead"] or
             not validate_builtin_permission_denies(sensitive, permission_denies)):
             return AdapterRunResult(ok=False, stderr="native sandbox settings invariant failed")
         _atomic_json(settings, settings_payload)
@@ -655,14 +662,19 @@ class ClaudeCodeAdapter(BaseAdapter):
         disabled_fields_ok = all(init.get(key) == [] for key in ("mcp_servers", "plugins", "skills", "slash_commands"))
         expected_tools = ["Read", "Edit", "Write", "Glob", "Grep", "Bash"]
         init_tools = init.get("tools")
-        tool_list_ok = init_tools == expected_tools
+        tool_list_ok = (isinstance(init_tools, list) and len(init_tools) == len(expected_tools)
+                        and set(init_tools) == set(expected_tools))
         # Fields which would prove customization escaped safe mode are rejected;
         # absent fields are accepted because 2.1.227 does not emit all of them.
-        unexpected_effective = {key: init.get(key) for key in ("hooks", "agents", "commands")
+        inert_agents = ["claude", "Explore", "general-purpose", "Plan"]
+        agents_ok = init.get("agents") in (None, [], inert_agents)
+        unexpected_effective = {key: init.get(key) for key in ("hooks", "commands")
                                 if init.get(key) not in (None, [], {})}
         init_ok = (init.get("model") == model and init.get("claude_code_version") == "2.1.227"
                    and init.get("session_id") == native_session and init.get("permissionMode") == "dontAsk"
-                   and disabled_fields_ok and tool_list_ok and not unexpected_effective)
+                   and disabled_fields_ok and tool_list_ok and agents_ok
+                   and not any(tool in init_tools for tool in ("Agent", "Task"))
+                   and not unexpected_effective)
         model_usage = terminal.get("modelUsage") if isinstance(terminal.get("modelUsage"), dict) else {}
         terminal_ok = (terminal.get("subtype") == "success" and terminal.get("is_error") is False and
                        terminal.get("session_id") == native_session and set(model_usage) == {model}
@@ -706,7 +718,8 @@ class ClaudeCodeAdapter(BaseAdapter):
             "effort": effort, "native_session_id": native_session, "round_number": round_number,
             "resumed": bool(prior), "session_ids_valid": session_ok, "init_valid": init_ok,
             "terminal_valid": terminal_ok, "disabled_features_valid": disabled_fields_ok,
-            "unexpected_effective_init_fields": unexpected_effective, "quota_censored": quota_censored,
+            "unexpected_effective_init_fields": unexpected_effective, "inert_agents_valid": agents_ok,
+            "init_agents": init.get("agents"), "quota_censored": quota_censored,
             "rate_limit_event_count": len(rate_limit_rows), "stream_parse_error": parse_error,
             "normalization_error": normalization_error,
             "native_session_file": str(retained_native) if native_trace_ok else "",

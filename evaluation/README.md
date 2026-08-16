@@ -126,14 +126,22 @@ permission denies; they are not claimed to have a separate OS boundary.  The
 only exposed tools are exactly those five plus Bash.  `--safe-mode`, empty
 setting sources, strict empty MCP, disabled skills/slash commands, and the exact
 init tool list are runtime-validated.  Invalid or silently ignored settings,
-missing init evidence, or a changed tool list fail closed.
+missing init evidence, or a changed tool list fail closed. Claude 2.1.227's exact
+inert built-in agent-name list (`claude`, `Explore`, `general-purpose`, `Plan`) is
+accepted only while neither `Agent` nor `Task` is exposed; any other agent list
+fails closed.
 
-Sensitive paths are enumerated at launch: the host HOME deny frontier except
-explicit capability roots, every checkout/control-plane entry except the
-read-only visible `.venv`, every other Git worktree, normal and benchmark auth,
-prior run claims/results visible on the host, and oracle/grading roots.  Native
-read capabilities include both the literal `.venv` and the resolved uv Python
-runtime; the probe executes literal `ROOT/.venv/bin/python -m pytest --version`.
+Sensitive paths are enumerated at launch. The production native policy uses a
+prefix-minimal HOME/control-plane deny plus explicit workspace/runtime allows;
+this prevents Claude from expanding hundreds of redundant entries into a profile
+above macOS `ARG_MAX`. Built-in file tools retain a complete HOME frontier and
+exact checkout, control-plane, normal/benchmark auth, `.claude.json`, and Keychain
+denies. Native credential-file entries are a small exact high-value set and never
+deny an ancestor of the workspace. The offline Seatbelt probe expands broad denies
+into an equivalent frontier because raw Seatbelt denies cannot be reopened.
+Native read capabilities include the workspace, literal `.venv`, resolved uv
+Python runtime, pinned binary, Node, and explicit task capabilities; the probe
+executes literal `ROOT/.venv/bin/python -m pytest --version`.
 
 Run the production-equivalent offline native probe before review (no auth
 mutation, model call, or network service other than its loopback fixture):
@@ -148,10 +156,12 @@ immutable generated Bash program through all negative and positive probes, and
 accepts only its sole JSON report.  It uses the exact real Keychain service but
 never requests or prints the secret. Parent exact-service availability is checked
 status-only before and after; no credential file is expected or accessed. Its
-cat/Python/Node probes target harmless checkout plaintext and fail without
-emitting its contents. The live security smoke uses a harmless workspace-local
-denied sentinel created without following links and hash-checked, and separately
-proves explicit denial for every file-capable built-in and
+cat/Python/Node probes target a harmless synthetic private-evidence file outside
+the allowed workspace and fail without emitting its contents. The live security smoke uses a harmless `sandbox/private-evidence` sentinel
+outside the allowed workspace, created without following links and hash-checked.
+Read/Edit/Write target that existing file while Glob/Grep target sensitive
+directories, and validation requires explicit policy-denial text rather than
+incidental file-shape/tool errors. It separately proves denial for every file-capable built-in and
 arbitrary Bash cat/Python/Node/`security`/Security.framework access, plus
 workspace, image, subprocess, literal venv Python, pytest, Node, and loopback
 capabilities.  Its immutable receipt carries a native-security marker required

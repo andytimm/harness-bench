@@ -56,51 +56,79 @@ def other_worktrees(root: Path) -> list[Path]:
     return sorted({p for p in paths if p != root.resolve()}, key=str)
 
 
-def native_sandbox_policy(root: Path, auth_path: Path, *, workspace: Path, sandbox: Path,
-                          binary: Path | None = None, capability_paths: list[Path] | None = None,
-                          control_paths: list[Path] | None = None) -> dict:
-    """Build the exact reviewed policy passed to Claude 2.1.227 flag settings.
+def _prefix_minimize(paths: Iterable[Path]) -> list[Path]:
+    """Drop paths already covered by an ancestor deny."""
+    result: list[Path] = []
+    for path in sorted({p.resolve() for p in paths}, key=lambda p: (len(p.parts), str(p))):
+        if not any(path == parent or _within(path, parent) for parent in result):
+            result.append(path)
+    return sorted(result, key=str)
 
-    Read protection is deny-by-enumeration because Claude's native allowRead
-    takes precedence over denyRead.  No broad denied ancestor is re-opened.
-    """
-    root=root.resolve(); workspace=workspace.resolve(); sandbox=sandbox.resolve(); auth_path=auth_path.resolve()
-    visible_venv=root/".venv"; visible_python=visible_venv/"bin"/"python"
-    runtime_python=visible_python.resolve(); runtime_root=runtime_python.parents[1]
+
+def _runtime_capabilities(root: Path, workspace: Path, *, binary: Path | None,
+                          capability_paths: list[Path] | None) -> list[Path]:
+    visible_venv=root/".venv"; runtime_root=(visible_venv/"bin"/"python").resolve().parents[1]
     node=Path(shutil.which("node") or "").resolve()
-    caps=[workspace,sandbox,visible_venv,runtime_root]
+    caps=[workspace.resolve(),visible_venv.resolve(),runtime_root]
     if binary is not None: caps.append(binary.resolve())
     if node.is_file(): caps.extend([node,node.parent])
     caps.extend(p.resolve() for p in (capability_paths or []))
-    # Enumerate HOME recursively around capability roots, plus every checkout
-    # control-plane entry and every sibling worktree.  Explicit high-value
-    # paths are retained even if an ancestor frontier entry already covers them.
-    home_denies=_frontier(Path.home(),caps)
-    control_denies=[]
+    return sorted(set(caps),key=str)
+
+
+def builtin_sensitive_paths(root: Path, auth_path: Path, *, workspace: Path,
+                            control_paths: list[Path] | None = None) -> list[str]:
+    """Complete task-file-tool deny frontier, excluding only the workspace."""
+    root=root.resolve(); workspace=workspace.resolve(); auth_path=auth_path.resolve()
+    home_denies=_frontier(Path.home(),[workspace])
+    controls=[]
     for control in (control_paths or []):
         resolved=control.resolve()
-        below=[cap for cap in caps if cap==resolved or _within(cap,resolved)]
-        control_denies.extend(_frontier(resolved,below) if below and resolved.is_dir() else [resolved])
-    normal_state=Path.home()/".claude.json"
-    normal_claude=Path.home()/".claude"
-    normal_keychains=Path.home()/"Library"/"Keychains"
-    always_deny={auth_path,normal_state.resolve(),normal_claude.resolve(),normal_keychains.resolve()}
-    explicit=repository_control_plane_paths(root)+other_worktrees(root)+control_denies+[
-        auth_path, normal_state, normal_claude, normal_keychains, Path.home()/".ssh",
-        Path.home()/".aws", Path.home()/".config", Path("/usr/bin/security"),
-        Path("/System/Library/Frameworks/Security.framework"),
-    ]
-    # The HOME frontier covers every host-home path except explicit task/runtime
-    # capabilities. Retain these exact high-value paths even if absent so both
-    # native Bash and every built-in file tool receive literal denies.
-    deny=sorted({p.resolve() for p in home_denies+explicit
-                 if p.resolve() in always_deny or p.exists() or p.is_symlink()},key=str)
-    if (not always_deny.issubset(set(deny)) or
-            not all(p.resolve() in deny for p in repository_control_plane_paths(root))):
+        controls.extend(_frontier(resolved,[workspace]) if _within(workspace,resolved) else [resolved])
+    explicit=[root,*other_worktrees(root),*controls,auth_path,Path.home()/".claude",
+              Path.home()/".claude.json",Path.home()/"Library"/"Keychains",
+              Path.home()/".ssh",Path.home()/".aws",Path.home()/".config",
+              Path("/usr/bin/security"),Path("/System/Library/Frameworks/Security.framework")]
+    minimized=_prefix_minimize([*home_denies,*explicit])
+    exact=[auth_path,(Path.home()/".claude").resolve(),(Path.home()/".claude.json").resolve(),
+           (Path.home()/"Library"/"Keychains").resolve(),root,
+           *(p.resolve() for p in (control_paths or []) if not _within(workspace,p.resolve()))]
+    return [str(p) for p in sorted(set([*minimized,*exact]),key=str)]
+
+
+def native_credential_paths(auth_path: Path, *, workspace: Path,
+                            control_paths: list[Path] | None = None) -> list[str]:
+    """Small exact credential set; never deny an ancestor of the workspace."""
+    workspace=workspace.resolve(); auth_path=auth_path.resolve()
+    paths=[auth_path,Path.home()/".claude",Path.home()/".claude.json",
+           Path.home()/"Library"/"Keychains",Path("/usr/bin/security"),
+           Path("/System/Library/Frameworks/Security.framework")]
+    paths.extend(p.resolve() for p in (control_paths or [])
+                 if not _within(workspace,p.resolve()))
+    return [str(p) for p in _prefix_minimize(paths)]
+
+
+def native_sandbox_policy(root: Path, auth_path: Path, *, workspace: Path, sandbox: Path,
+                          binary: Path | None = None, capability_paths: list[Path] | None = None,
+                          control_paths: list[Path] | None = None) -> dict:
+    """Build a prefix-minimal native policy for Claude 2.1.227.
+
+    Native allowRead/allowWrite take precedence, so one HOME deny is safely
+    reopened only for the explicit workspace and runtime capabilities. This
+    avoids Claude expanding hundreds of frontier entries into an E2BIG profile.
+    """
+    root=root.resolve(); workspace=workspace.resolve(); auth_path=auth_path.resolve()
+    caps=_runtime_capabilities(root,workspace,binary=binary,capability_paths=capability_paths)
+    denies=[Path.home(),root,auth_path,*other_worktrees(root),
+            *(p.resolve() for p in (control_paths or [])),Path("/usr/bin/security"),
+            Path("/System/Library/Frameworks/Security.framework")]
+    deny=_prefix_minimize(denies)
+    required=[Path.home().resolve(),Path("/usr/bin/security").resolve(),
+              Path("/System/Library/Frameworks/Security.framework").resolve()]
+    if not all(any(item == parent or _within(item,parent) for parent in deny) for item in required):
         raise RuntimeError("native sandbox sensitive-path enumeration is incomplete")
-    return {"allowRead":[str(visible_venv),str(runtime_root)],
-            "allowWrite":[str(workspace)], "denyRead":[str(p) for p in deny],
-            "denyWrite":[str(p) for p in deny]}
+    return {"allowRead":[str(p) for p in caps],"allowWrite":[str(workspace)],
+            "denyRead":[str(p) for p in deny],"denyWrite":[str(p) for p in deny]}
 
 
 def builtin_permission_denies(paths: Iterable[str | Path]) -> list[str]:
@@ -118,14 +146,23 @@ def validate_builtin_permission_denies(paths: Iterable[str | Path], rules: objec
 
 def _q(path: Path) -> str: return json.dumps(str(path.resolve()))
 def native_seatbelt_profile(policy: dict) -> str:
-    """Offline probe profile equivalent to the native filesystem policy.
+    """Seatbelt probe with semantics equivalent to native allow precedence.
 
-    This is used only to test the policy without launching Claude or a model;
-    production never wraps Claude in sandbox-exec.
+    Raw Seatbelt denies cannot be reopened. Expand each broad production deny
+    into a frontier around explicit allows only for this offline probe.
     """
+    def frontier(values: list[str], allows: list[str]) -> list[Path]:
+        result=[]; caps=[Path(value).resolve() for value in allows]
+        for value in values:
+            denied=Path(value).resolve(); below=[cap for cap in caps if cap == denied or _within(cap,denied)]
+            if below and denied.is_dir(): result.extend(_frontier(denied,below))
+            elif denied not in below: result.append(denied)
+        return _prefix_minimize(result)
+    read=frontier(policy["denyRead"],policy["allowRead"])
+    write=frontier(policy["denyWrite"],policy["allowWrite"])
     out=["(version 1)","(allow default)"]
-    for value in policy["denyRead"]: out.append(f"(deny file-read* (subpath {_q(Path(value))}))")
-    for value in policy["denyWrite"]: out.append(f"(deny file-write* (subpath {_q(Path(value))}))")
+    for value in read: out.append(f"(deny file-read* (subpath {_q(value)}))")
+    for value in write: out.append(f"(deny file-write* (subpath {_q(value)}))")
     return "\n".join(out)+"\n"
 
 

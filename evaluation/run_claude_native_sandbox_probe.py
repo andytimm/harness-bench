@@ -55,19 +55,20 @@ def main()->int:
  service=_keychain_service(seed); status_before=keychain_status(service)
  if status_before!=0: raise SystemExit('dedicated exact Keychain service is unavailable')
  with tempfile.TemporaryDirectory(prefix='harnessbench-real-native-probe-') as td:
-  sandbox=Path(td).resolve(); workspace=sandbox/'workspace'; (workspace/'in').mkdir(parents=True); (workspace/'out').mkdir()
+  sandbox=Path(td).resolve(); workspace=sandbox/'workspace'; (workspace/'in').mkdir(parents=True); (workspace/'out').mkdir(); private=sandbox/'private-evidence'; private.mkdir(); plaintext=private/'.read-sentinel'; plaintext.write_text('HARMLESS-NATIVE-PROBE\n'); plaintext.chmod(0o400); plaintext_hash=sha(plaintext)
   (workspace/'in'/'fixture.txt').write_text('workspace-ok\n'); (workspace/'in'/'image.png').write_bytes(bytes.fromhex('89504e470d0a1a0a0000000d4948445200000001000000010802000000907753de'))
   handler=partial(Quiet,directory=str(workspace)); server=ThreadingHTTPServer(('127.0.0.1',0),handler); thread=threading.Thread(target=server.serve_forever,daemon=True); thread.start()
   try:
    url=f'http://127.0.0.1:{server.server_port}/in/fixture.txt'
    probe=workspace/'.native-sandbox-probe.sh'
-   probe.write_text(build_probe_script(workspace=workspace,plaintext=ROOT/'config/app.yaml',python=PROBE_PYTHON,service=service,url=url)); probe.chmod(0o400); probe_hash=sha(probe)
-   policy=native_sandbox_policy(ROOT,seed,workspace=workspace,sandbox=sandbox,binary=Path('/bin/bash'))
+   probe.write_text(build_probe_script(workspace=workspace,plaintext=plaintext,python=PROBE_PYTHON,service=service,url=url)); probe.chmod(0o400); probe_hash=sha(probe)
+   policy=native_sandbox_policy(ROOT,seed,workspace=workspace,sandbox=sandbox,binary=Path('/bin/bash'),control_paths=[private])
    completed=subprocess.run([str(_sandbox_exec()),'-p',native_seatbelt_profile(policy),'/bin/bash',str(probe)],cwd=workspace,text=True,capture_output=True,stdin=subprocess.DEVNULL,timeout=60,check=False)
   finally: server.shutdown(); server.server_close(); thread.join(timeout=5)
   if completed.returncode: raise SystemExit(f'native probe failed rc={completed.returncode}: {completed.stderr[-1000:]}')
   report=validate_report(completed.stdout)
   if sha(probe)!=probe_hash or stat.S_IMODE(probe.stat().st_mode)&0o222: raise SystemExit('immutable probe changed')
+  if not plaintext.is_file() or sha(plaintext)!=plaintext_hash: raise SystemExit('private denied sentinel changed')
  status_after=keychain_status(service)
  if status_after!=status_before:
   raise SystemExit('parent exact-service lookup status changed')

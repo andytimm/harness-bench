@@ -4,7 +4,7 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('run_claude_full',ROOT/'evaluation/run_claude_full.py'); module=importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
-from harnessbench.macos_containment import native_sandbox_policy, native_seatbelt_profile, verify_repo_containment, verify_task_capabilities, FILE_TOOLS, builtin_permission_denies, validate_builtin_permission_denies
+from harnessbench.macos_containment import native_sandbox_policy, native_seatbelt_profile, verify_repo_containment, verify_task_capabilities, FILE_TOOLS, builtin_permission_denies, builtin_sensitive_paths, native_credential_paths, validate_builtin_permission_denies
 from harnessbench.adapters.claude_code import EXPECTED_SHA256
 
 class ClaudePlanTests(unittest.TestCase):
@@ -21,17 +21,20 @@ class ClaudePlanTests(unittest.TestCase):
   self.assertNotIn('[str(sandbox_exec), "-p", profile, *cmd]',source)
   with tempfile.TemporaryDirectory() as tmp:
    workspace=Path(tmp)/'workspace'; workspace.mkdir(); auth=Path(tmp)/'seed'; auth.mkdir(mode=0o700)
-   control=Path(tmp)/'run'; prior=control/'results'/'prior.json'; prior.parent.mkdir(parents=True); prior.write_text('{}')
-   policy=native_sandbox_policy(ROOT,auth,workspace=workspace,sandbox=workspace,control_paths=[control])
+   control=Path(tmp)/'run'; prior=control/'results'/'prior.json'; prior.parent.mkdir(parents=True); prior.write_text('{}'); denied=Path(tmp)/'private'/'sentinel'; denied.parent.mkdir(); denied.write_text('safe')
+   policy=native_sandbox_policy(ROOT,auth,workspace=workspace,sandbox=workspace,control_paths=[control,denied])
    profile=native_seatbelt_profile(policy)
    normal_state=Path.home()/'.claude.json'; keychains=Path.home()/'Library'/'Keychains'
-   self.assertIn(str(ROOT/'tasks'),profile); self.assertIn(str(auth),profile); self.assertIn(str(normal_state),profile); self.assertIn(str(keychains),profile); self.assertIn(str(control.resolve()),profile)
-   self.assertIn(str(normal_state),policy['denyRead']); self.assertIn(str(keychains),policy['denyWrite'])
-   rules=builtin_permission_denies(policy['denyRead']); self.assertTrue(validate_builtin_permission_denies(policy['denyRead'],rules))
+   self.assertIn(str(Path.home()),profile); self.assertIn(str(auth.resolve()),profile); self.assertIn(str(control.resolve()),profile)
+   self.assertLess(len(policy['denyRead']),12); self.assertIn(str(workspace.resolve()),policy['allowRead'])
+   sensitive=builtin_sensitive_paths(ROOT,auth,workspace=workspace,control_paths=[control,denied])
+   credentials=native_credential_paths(auth,workspace=workspace,control_paths=[control,denied])
+   self.assertIn(str(normal_state),sensitive); self.assertIn(str(denied.resolve()),sensitive); self.assertIn(str(keychains),credentials); self.assertIn(str(denied.resolve()),credentials); self.assertLess(len(credentials),12)
+   rules=builtin_permission_denies(sensitive); self.assertTrue(validate_builtin_permission_denies(sensitive,rules))
    for path in (normal_state,keychains):
     for tool in FILE_TOOLS:
      self.assertIn(f'{tool}({path})',rules); self.assertIn(f'{tool}({path}/**)',rules)
-   expected=[f'{tool}({path}{suffix})' for path in sorted(set(policy['denyRead'])) for tool in FILE_TOOLS for suffix in ('','/**')]
+   expected=[f'{tool}({path}{suffix})' for path in sorted(set(sensitive)) for tool in FILE_TOOLS for suffix in ('','/**')]
    self.assertEqual(rules,expected)
    self.assertIn(str(ROOT/'.venv'),policy['allowRead'])
    self.assertIn(str((ROOT/'.venv/bin/python').resolve().parents[1]),policy['allowRead'])
