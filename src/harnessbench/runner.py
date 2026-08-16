@@ -485,7 +485,14 @@ def _collect_proxy_usage_summary(log_file: Path, session_id: str) -> dict[str, A
         # Most proxy rows represent one model request. Native adapters may only
         # expose aggregate turn usage; their explicit call_count preserves the
         # exact underlying model-call count without duplicating token totals.
-        summary["request_count"] += max(1, int(row.get("call_count", 1) or 1))
+        raw_call_count = row.get("call_count", 1)
+        try:
+            call_count = int(raw_call_count)
+        except (TypeError, ValueError):
+            return {"available": False, "reason": "invalid proxy call_count", "session_id": session_id, "log_file": str(log_file)}
+        if isinstance(raw_call_count, bool) or not 1 <= call_count <= 10_000:
+            return {"available": False, "reason": "proxy call_count out of bounds", "session_id": session_id, "log_file": str(log_file)}
+        summary["request_count"] += call_count
         summary["input_tokens"] += int(row.get("input_tokens", 0) or 0)
         summary["output_tokens"] += int(row.get("output_tokens", 0) or 0)
         summary["cache_read_tokens"] += int(row.get("cache_read_tokens", 0) or 0)

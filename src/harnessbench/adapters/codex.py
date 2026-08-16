@@ -3,7 +3,6 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-import re
 import platform
 import shutil
 import signal
@@ -11,6 +10,9 @@ import subprocess
 import sys
 import tempfile
 import threading
+import stat
+from contextlib import contextmanager
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, TextIO
 
@@ -20,11 +22,13 @@ from harnessbench.models import AdapterRunContext, AdapterRunResult
 EXPECTED_CODEX_VERSION = "codex-cli 0.139.0"
 _SUCCESS_EVENT = "turn.completed"
 _FAILURE_EVENTS = {"turn.failed", "error"}
-_SECRET_NAMES = {
-    "ANTHROPIC_API_KEY", "OPENAI_API_KEY", "GH_TOKEN", "GITHUB_TOKEN",
-    "SSH_AUTH_SOCK", "GOOGLE_APPLICATION_CREDENTIALS", "DATABASE_URL",
+_ALLOWED_MODEL_CONFIG_KEYS = {
+    "adapter", "command", "expected_version", "expected_executable_sha256",
+    "expected_resolved_executable", "expected_native_executable", "expected_native_sha256",
+    "user_codex_home", "session_prefix", "timeout_sec", "timeout_grace_sec",
+    "provider", "billing_mode", "model", "model_reasoning_effort", "sandbox",
+    "sync_refreshed_auth", "stream_to_console", "allowed_hook_env", "use_usage_proxy",
 }
-_RESERVED_CONFIG_KEYS = {"model", "model_reasoning_effort", "model_provider"}
 
 
 def _project_root() -> Path:
@@ -78,12 +82,14 @@ def _native_codex_binary(launcher: Path) -> Path | None:
     return next((candidate.resolve() for candidate in candidates if candidate.is_file()), None)
 
 
-def _command_provenance(command: str, expected_version: str, expected_sha256: str = "") -> dict[str, Any]:
+def _command_provenance(command: str, expected_version: str, expected_sha256: str = "", expected_resolved: str = "", expected_native: str = "", expected_native_sha256: str = "") -> dict[str, Any]:
     resolved = _resolve_command(command)
     result: dict[str, Any] = {
         "requested": command, "resolved": str(resolved or ""), "version": "",
         "sha256": "", "expected_version": expected_version,
-        "expected_sha256": expected_sha256, "native_executable": "", "native_sha256": "", "valid": False,
+        "expected_sha256": expected_sha256, "expected_resolved": expected_resolved,
+        "expected_native_executable": expected_native, "expected_native_sha256": expected_native_sha256,
+        "native_executable": "", "native_sha256": "", "valid": False,
     }
     if resolved is None or not resolved.is_file():
         result["error"] = "executable not found"
@@ -99,13 +105,19 @@ def _command_provenance(command: str, expected_version: str, expected_sha256: st
         version = output[0].strip() if completed.returncode == 0 and output else ""
         signature = _sha256(resolved)
         native = _native_codex_binary(resolved)
+        if native is None and resolved.suffix.lower() != ".js":
+            native = resolved  # direct native/test executable rather than npm launcher
         native_signature = _sha256(native) if native is not None else ""
     except (OSError, subprocess.TimeoutExpired) as exc:
         result["error"] = str(exc)
         return result
     result.update(version=version, sha256=signature, native_executable=str(native or ""), native_sha256=native_signature)
-    result["valid"] = version == expected_version and (
-        not expected_sha256 or signature.lower() == expected_sha256.lower()
+    result["valid"] = (
+        version == expected_version
+        and (not expected_sha256 or signature.lower() == expected_sha256.lower())
+        and (not expected_resolved or str(resolved) == expected_resolved)
+        and (not expected_native or str(native or "") == expected_native)
+        and (not expected_native_sha256 or native_signature.lower() == expected_native_sha256.lower())
     )
     if not result["valid"]:
         result["error"] = "Codex executable version/signature does not match the configured pin"
@@ -122,11 +134,32 @@ def _source_codex_home(model_config: dict[str, Any]) -> Path:
     return _resolve_path("~/.codex")
 
 
-def _auth_kind(path: Path) -> str:
-    """Classify auth without retaining or reporting credential values."""
+def _read_regular_bytes(path: Path) -> bytes:
+    """Read a regular file without following a final-component symlink."""
+    before = path.lstat()
+    if not stat.S_ISREG(before.st_mode) or path.is_symlink():
+        raise ValueError(f"refusing non-regular credential file: {path}")
+    flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0)
+    fd = os.open(path, flags)
     try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
+        current = os.fstat(fd)
+        if not stat.S_ISREG(current.st_mode) or (current.st_dev, current.st_ino) != (before.st_dev, before.st_ino):
+            raise ValueError(f"credential file changed while opening: {path}")
+        chunks: list[bytes] = []
+        while True:
+            chunk = os.read(fd, 1024 * 1024)
+            if not chunk:
+                break
+            chunks.append(chunk)
+        return b"".join(chunks)
+    finally:
+        os.close(fd)
+
+
+def _auth_kind_bytes(raw: bytes) -> str:
+    try:
+        data = json.loads(raw)
+    except (UnicodeDecodeError, json.JSONDecodeError):
         return "invalid"
     if not isinstance(data, dict):
         return "invalid"
@@ -138,42 +171,80 @@ def _auth_kind(path: Path) -> str:
     return "unknown"
 
 
-def _stage_auth(source: Path, target_home: Path) -> Path:
-    target_home.mkdir(parents=True, exist_ok=True)
-    target = target_home / "auth.json"
-    shutil.copy2(source, target)
-    target.chmod(0o600)
-    return target
-
-
-def _sync_staged_auth(source: Path, staged: Path) -> bool:
-    """Atomically persist a refresh made by Codex while keeping the sandbox copy isolated."""
-    if not staged.is_file():
-        return False
+def _auth_kind(path: Path) -> str:
     try:
-        # Refuse to replace a subscription source with a malformed or different auth mode.
-        if _auth_kind(source) != "subscription_oauth" or _auth_kind(staged) != "subscription_oauth":
-            return False
-        if source.read_bytes() == staged.read_bytes():
-            return False
-        lock_path = source.with_suffix(source.suffix + ".lock")
-        with lock_path.open("a+", encoding="utf-8") as lock:
+        return _auth_kind_bytes(_read_regular_bytes(path))
+    except (OSError, ValueError):
+        return "invalid"
+
+
+@dataclass(frozen=True)
+class StagedAuth:
+    source: Path
+    target: Path
+    source_sha256: str
+
+
+def _stage_auth(source: Path, target_home: Path) -> StagedAuth:
+    raw = _read_regular_bytes(source)
+    if _auth_kind_bytes(raw) != "subscription_oauth":
+        raise ValueError(f"source auth is not regular subscription OAuth state: {source}")
+    target_home.mkdir(parents=True, exist_ok=True, mode=0o700)
+    target_stat = target_home.lstat()
+    if target_home.is_symlink() or not stat.S_ISDIR(target_stat.st_mode):
+        raise ValueError(f"refusing unsafe credential staging directory: {target_home}")
+    target = target_home / "auth.json"
+    if target.exists() or target.is_symlink():
+        target.unlink()
+    fd = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0), 0o600)
+    try:
+        os.write(fd, raw)
+        os.fsync(fd)
+    except BaseException:
+        os.close(fd)
+        _remove_auth(target)
+        raise
+    else:
+        os.close(fd)
+    return StagedAuth(source=source, target=target, source_sha256=hashlib.sha256(raw).hexdigest())
+
+
+def _sync_staged_auth(stage: StagedAuth) -> tuple[bool, str]:
+    """CAS copy-back: never replace host auth if it changed since staging."""
+    try:
+        staged_raw = _read_regular_bytes(stage.target)
+        if _auth_kind_bytes(staged_raw) != "subscription_oauth":
+            return False, "staged_auth_invalid"
+        if hashlib.sha256(staged_raw).hexdigest() == stage.source_sha256:
+            return False, "unchanged"
+        lock_path = stage.source.with_suffix(stage.source.suffix + ".harnessbench.lock")
+        if lock_path.exists() and lock_path.is_symlink():
+            return False, "lock_is_symlink"
+        lock_fd = os.open(lock_path, os.O_RDWR | os.O_CREAT | getattr(os, "O_NOFOLLOW", 0), 0o600)
+        with os.fdopen(lock_fd, "a+", encoding="utf-8") as lock:
             if os.name == "posix":
                 import fcntl
                 fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
-            fd, temporary = tempfile.mkstemp(prefix=source.name + ".tmp.", dir=source.parent)
+            current_raw = _read_regular_bytes(stage.source)
+            if hashlib.sha256(current_raw).hexdigest() != stage.source_sha256:
+                return False, "source_changed"
+            if _auth_kind_bytes(current_raw) != "subscription_oauth":
+                return False, "source_auth_invalid"
+            fd, temporary = tempfile.mkstemp(prefix=stage.source.name + ".tmp.", dir=stage.source.parent)
             try:
                 os.fchmod(fd, 0o600)
-                with os.fdopen(fd, "wb") as out, staged.open("rb") as inp:
-                    shutil.copyfileobj(inp, out)
-                    out.flush(); os.fsync(out.fileno())
-                os.replace(temporary, source)
+                with os.fdopen(fd, "wb") as out:
+                    out.write(staged_raw); out.flush(); os.fsync(out.fileno())
+                # Recheck immediately before the atomic replacement (CAS under our lock).
+                if hashlib.sha256(_read_regular_bytes(stage.source)).hexdigest() != stage.source_sha256:
+                    return False, "source_changed"
+                os.replace(temporary, stage.source)
             finally:
                 if os.path.exists(temporary):
                     os.unlink(temporary)
-        return True
-    except OSError:
-        return False
+        return True, "updated"
+    except (OSError, ValueError):
+        return False, "io_or_safety_error"
 
 
 def _remove_auth(path: Path) -> None:
@@ -184,20 +255,37 @@ def _remove_auth(path: Path) -> None:
         pass
 
 
-def _filtered_env(overrides: dict[str, str]) -> tuple[dict[str, str], list[str]]:
-    env = os.environ.copy()
-    removed: list[str] = []
-    for key in list(env):
-        upper = key.upper()
-        if (
-            key in _SECRET_NAMES
-            or upper.endswith(("_API_KEY", "_ACCESS_TOKEN", "_AUTH_TOKEN", "_PASSWORD", "_SECRET"))
-            or upper.startswith(("AWS_SECRET_", "AZURE_CLIENT_SECRET"))
-        ):
-            removed.append(key); env.pop(key, None)
-    # Runtime hook variables are benchmark inputs and deliberately overlaid after filtering.
-    env.update(overrides)
-    return env, sorted(removed)
+@contextmanager
+def _staged_auth_lifetime(source: Path, target_home: Path):
+    stage = _stage_auth(source, target_home)
+    try:
+        yield stage
+    finally:
+        _remove_auth(stage.target)
+
+
+_FORBIDDEN_ENV_PARTS = ("TOKEN", "SECRET", "COOKIE", "CREDENTIAL", "PASSWORD", "PASSWD", "DSN", "API_KEY", "AUTH")
+_BASE_ENV_ALLOWLIST = {"PATH", "TMPDIR", "TMP", "TEMP", "LANG", "TZ", "SYSTEMROOT", "COMSPEC", "PATHEXT"}
+_BENCH_ENV_ALLOWLIST = {"HARNESSBENCH_LLM_PROXY_URL", "HARNESSBENCH_LLM_PROXY_ROUTES"}
+
+
+def _sensitive_env_name(name: str) -> bool:
+    upper = name.upper()
+    return any(part in upper for part in _FORBIDDEN_ENV_PARTS)
+
+
+def _filtered_env(overrides: dict[str, str], approved_hook_vars: list[str] | None = None) -> tuple[dict[str, str], list[str]]:
+    approved = set(approved_hook_vars or [])
+    unsafe_approved = sorted(name for name in approved if _sensitive_env_name(name))
+    if unsafe_approved:
+        raise ValueError(f"sensitive hook env names cannot be approved: {unsafe_approved}")
+    env = {key: value for key, value in os.environ.items() if key in _BASE_ENV_ALLOWLIST or key.startswith("LC_")}
+    for key in _BENCH_ENV_ALLOWLIST | approved:
+        if key in overrides and not _sensitive_env_name(key):
+            env[key] = str(overrides[key])
+    removed = sorted(set(os.environ) - set(env))
+    removed.extend(sorted(key for key in overrides if key not in env))
+    return env, sorted(set(removed))
 
 
 def _json_rows(text: str) -> list[dict[str, Any]]:
@@ -211,6 +299,22 @@ def _json_rows(text: str) -> list[dict[str, Any]]:
             rows.append(row)
     return rows
 
+
+
+def _json_diagnostics(text: str) -> dict[str, int]:
+    nonempty = malformed = non_objects = 0
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        nonempty += 1
+        try:
+            value = json.loads(line)
+        except json.JSONDecodeError:
+            malformed += 1
+            continue
+        if not isinstance(value, dict):
+            non_objects += 1
+    return {"nonempty_lines": nonempty, "malformed_lines": malformed, "non_object_lines": non_objects}
 
 def _session_id_from_rows(rows: list[dict[str, Any]]) -> str:
     for row in rows:
@@ -310,6 +414,7 @@ def write_codex_events_as_proxy_trace(*, stdout_text: str, stdout_log_file: Path
     response_paths: list[Path] = []
     completed = failed = False
     final_message_seen = False
+    final_assistant_text = ""
     usage: dict[str, int] | None = None
     for row in _json_rows(stdout_text):
         row_type = str(row.get("type") or "")
@@ -323,6 +428,8 @@ def write_codex_events_as_proxy_trace(*, stdout_text: str, stdout_log_file: Path
         if item_type == "agent_message":
             text = str(item.get("text") or "")
             final_message_seen = final_message_seen or bool(text.strip())
+            if text.strip():
+                final_assistant_text = text
         elif item_type in {"command_execution", "mcp_tool_call", "web_search"}:
             name = "shell" if item_type == "command_execution" else item_type
             args = {k: item.get(k) for k in ("command", "status", "exit_code", "server", "tool", "query") if k in item}
@@ -352,7 +459,8 @@ def write_codex_events_as_proxy_trace(*, stdout_text: str, stdout_log_file: Path
     return {"proxy_dir": str(proxy_dir), "requests_log": str(requests_log),
             "response_count": len(response_paths), "turn_completed": completed,
             "failure_event_seen": failed, "final_assistant_seen": final_message_seen,
-            "usage_available": usage is not None}
+            "usage_available": usage is not None, "final_assistant_text": final_assistant_text,
+            "stdout_json_diagnostics": _json_diagnostics(stdout_text)}
 
 
 def _terminate_process_group(proc: subprocess.Popen[str], grace_sec: float) -> int:
@@ -369,23 +477,67 @@ def _terminate_process_group(proc: subprocess.Popen[str], grace_sec: float) -> i
         return proc.wait()
 
 
+
+def _offline_argument_parse(executable: str, model: str, reasoning: str) -> dict[str, Any]:
+    """Ask clap to parse both invocation shapes with --help; never starts a turn."""
+    with tempfile.TemporaryDirectory(prefix="harnessbench-codex-parse-") as tmp:
+        root = Path(tmp); output = root / "last.txt"
+        common = ["--json", "--model", model, "--strict-config", "--ignore-user-config",
+                  "--ignore-rules", "--config", f"model_reasoning_effort={json.dumps(reasoning)}",
+                  "--output-last-message", str(output)]
+        commands = [
+            [executable, "exec", "--cd", str(root), "--skip-git-repo-check",
+             "--sandbox", "workspace-write", *common, "--help"],
+            [executable, "exec", "resume", *common, "--help"],
+        ]
+        results = []
+        env = {"PATH": os.environ.get("PATH", ""), "HOME": str(root),
+               "CODEX_HOME": str(root / ".codex"), "NO_COLOR": "1"}
+        for command in commands:
+            try:
+                completed = subprocess.run(command, text=True, capture_output=True, timeout=10,
+                                           check=False, env=env)
+                results.append({"returncode": completed.returncode,
+                    "help_seen": "Usage:" in completed.stdout or "Usage:" in completed.stderr,
+                    "stderr": completed.stderr[:500]})
+            except (OSError, subprocess.TimeoutExpired) as exc:
+                results.append({"returncode": None, "help_seen": False, "stderr": str(exc)})
+    return {"ok": all(item["returncode"] == 0 and item["help_seen"] for item in results),
+            "results": results}
+
 def codex_preflight(model_config: dict[str, Any]) -> dict[str, Any]:
     model = str(model_config.get("model") or "gpt-5.4").strip()
     reasoning = str(model_config.get("model_reasoning_effort") or "medium").strip()
     provider = str(model_config.get("provider") or "openai").strip()
     billing = str(model_config.get("billing_mode") or "subscription_oauth").strip()
     expected_version = str(model_config.get("expected_version") or EXPECTED_CODEX_VERSION).strip()
-    provenance = _command_provenance(str(model_config.get("command") or "codex"), expected_version,
-                                     str(model_config.get("expected_executable_sha256") or "").strip())
+    unknown_keys = sorted(set(model_config) - _ALLOWED_MODEL_CONFIG_KEYS)
+    controls_ok = not unknown_keys and not model_config.get("extra_args") and not model_config.get("config_overrides")
+    provenance = _command_provenance(
+        str(model_config.get("command") or "codex"), expected_version,
+        str(model_config.get("expected_executable_sha256") or "").strip(),
+        str(model_config.get("expected_resolved_executable") or "").strip(),
+        str(model_config.get("expected_native_executable") or "").strip(),
+        str(model_config.get("expected_native_sha256") or "").strip(),
+    )
+    parse = _offline_argument_parse(str(provenance.get("resolved") or model_config.get("command") or "codex"), model, reasoning) if provenance.get("valid") else {"ok": False, "results": []}
     source_home = _source_codex_home(model_config); auth = source_home / "auth.json"
     auth_kind = _auth_kind(auth)
+    approved_hook_env = [str(x) for x in (model_config.get("allowed_hook_env") or [])]
+    hook_env_safe = not any(_sensitive_env_name(name) for name in approved_hook_env)
     checks = {
-        "executable": bool(provenance.get("valid")), "model_pin": model == "gpt-5.4",
-        "reasoning_pin": reasoning == "medium", "provider_pin": provider == "openai",
-        "billing_pin": billing == "subscription_oauth", "auth_exists": auth.is_file(),
+        "executable": bool(provenance.get("valid")),
+        "native_binary": bool(provenance.get("native_executable") and provenance.get("native_sha256")),
+        "offline_argument_parse": bool(parse["ok"]),
+        "model_pin": model == "gpt-5.4", "reasoning_pin": reasoning == "medium",
+        "provider_pin": provider == "openai", "billing_pin": billing == "subscription_oauth",
+        "sandbox_pin": str(model_config.get("sandbox") or "workspace-write") == "workspace-write",
+        "controls_allowlisted": controls_ok, "hook_env_safe": hook_env_safe,
+        "auth_exists": auth.is_file() and not auth.is_symlink(),
         "subscription_oauth": auth_kind == "subscription_oauth",
     }
     return {"ok": all(checks.values()), "checks": checks, "provenance": provenance,
+            "argument_parse": parse, "unknown_config_keys": unknown_keys,
             "source_codex_home": str(source_home), "auth_kind": auth_kind,
             "model": model, "reasoning": reasoning, "provider": provider, "billing_mode": billing}
 
@@ -401,114 +553,115 @@ class CodexAdapter(BaseAdapter):
         provider = preflight["provider"]; billing = preflight["billing_mode"]
         source_home = Path(preflight["source_codex_home"]); source_auth = source_home / "auth.json"
         codex_home = ctx.sandbox / ".codex"; codex_home.mkdir(parents=True, exist_ok=True)
-        staged_auth = _stage_auth(source_auth, codex_home)
-        state_file = codex_home / "harnessbench-state.json"; state = _read_state(state_file)
-        round_number = int(state.get("rounds", 0) or 0) + 1
-        prior_session = str(state.get("session_id") or "").strip()
-        extra_args = [str(x) for x in (ctx.model_config.get("extra_args") or [])]
-        overrides = [str(x) for x in (ctx.model_config.get("config_overrides") or [])]
-        conflicts = []
-        for value in overrides:
-            key = value.split("=", 1)[0].strip()
-            if key in _RESERVED_CONFIG_KEYS: conflicts.append(value)
-        reserved_flags = {"-m", "--model", "-c", "--config", "--profile", "-p", "--ephemeral", "--ignore-user-config"}
-        conflicts.extend(x for x in extra_args if x in reserved_flags or any(x.startswith(f + "=") for f in reserved_flags if f.startswith("--")))
-        if conflicts:
-            _remove_auth(staged_auth)
-            return AdapterRunResult(ok=False, stderr=f"reserved Codex overrides are not allowed: {conflicts}", metadata={"preflight": preflight})
-        executable = str(preflight["provenance"]["resolved"])
-        common = ["--json", "--model", model, "--strict-config", "--ignore-user-config", "--ignore-rules",
-                  "--config", f"model_reasoning_effort={json.dumps(reasoning)}"]
-        last_message = ctx.sandbox / f"codex-round{round_number}.last-message.txt"
-        if prior_session:
-            cmd = [executable, "exec", "resume", *common, "--output-last-message", str(last_message),
-                   prior_session, "-"]
-        else:
-            cmd = [executable, "exec", "--cd", str(ctx.workspace), "--skip-git-repo-check",
-                   "--sandbox", str(ctx.model_config.get("sandbox") or "workspace-write"),
-                   "--ask-for-approval", "never", *common, "--output-last-message", str(last_message), "-"]
-        # Place non-reserved additions before stdin sentinel.
-        cmd[-1:-1] = [part for value in overrides for part in ("--config", value)] + extra_args
-        env, removed_secrets = _filtered_env(ctx.env)
-        env.update({"HOME": str(ctx.sandbox), "CODEX_HOME": str(codex_home), "NO_COLOR": "1",
-            "CODEX_TELEMETRY_DISABLED": "1", "WORKSPACE": str(ctx.workspace),
-            "HARNESSBENCH_TASK_ID": ctx.task.task_id, "HARNESSBENCH_WORKSPACE": str(ctx.workspace),
-            "HARNESSBENCH_SANDBOX": str(ctx.sandbox), "HARNESSBENCH_SESSION_ID": ctx.session_id,
-            "HARNESSBENCH_PROMPT_FILE": str(ctx.prompt_file), "HARNESSBENCH_MODEL_ID": ctx.model_id})
-        env.pop("FORCE_COLOR", None)
-        stdout_log = ctx.sandbox / f"codex-round{round_number}.stdout.jsonl"
-        stderr_log = ctx.sandbox / f"codex-round{round_number}.stderr.log"
-        stdout_chunks: list[str] = []; stderr_chunks: list[str] = []
-        proc: subprocess.Popen[str] | None = None; timed_out = False
         try:
-            proc = subprocess.Popen(cmd, cwd=str(ctx.workspace), text=True, stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env, bufsize=1,
-                start_new_session=(os.name == "posix"))
-            def reader(pipe: TextIO | None, sink: list[str], path: Path, mirror: TextIO | None) -> None:
-                try:
-                    assert pipe is not None
-                    with path.open("w", encoding="utf-8", buffering=1) as handle:
-                        for line in iter(pipe.readline, ""):
-                            sink.append(line); handle.write(line)
-                            if mirror: mirror.write(line); mirror.flush()
-                finally:
-                    if pipe: pipe.close()
-            mirror = bool(ctx.model_config.get("stream_to_console", False))
-            out_thread = threading.Thread(target=reader, args=(proc.stdout, stdout_chunks, stdout_log, sys.stdout if mirror else None), daemon=True)
-            err_thread = threading.Thread(target=reader, args=(proc.stderr, stderr_chunks, stderr_log, sys.stderr if mirror else None), daemon=True)
-            out_thread.start(); err_thread.start()
-            if proc.stdin:
-                try: proc.stdin.write(ctx.prompt); proc.stdin.close()
-                except BrokenPipeError: pass
-            try: returncode = proc.wait(timeout=ctx.timeout_sec)
-            except subprocess.TimeoutExpired:
-                timed_out = True
-                returncode = _terminate_process_group(proc, float(ctx.model_config.get("timeout_grace_sec", 5) or 5))
-            out_thread.join(timeout=2 if timed_out else None); err_thread.join(timeout=2 if timed_out else None)
-        except OSError as exc:
-            _remove_auth(staged_auth)
-            return AdapterRunResult(ok=False, command=cmd, stderr=str(exc), metadata={"preflight": preflight})
-        except BaseException:
-            if proc is not None and proc.poll() is None: _terminate_process_group(proc, 1)
-            _remove_auth(staged_auth); raise
+            auth_context = _staged_auth_lifetime(source_auth, codex_home)
+            auth_stage = auth_context.__enter__()
+        except (OSError, ValueError) as exc:
+            return AdapterRunResult(ok=False, stderr=f"unsafe Codex auth state: {exc}", metadata={"preflight": preflight})
         try:
+            state_file = codex_home / "harnessbench-state.json"; state = _read_state(state_file)
+            round_number = int(state.get("rounds", 0) or 0) + 1
+            prior_session = str(state.get("session_id") or "").strip()
+            executable = str(preflight["provenance"]["resolved"])
+            common = ["--json", "--model", model, "--strict-config", "--ignore-user-config", "--ignore-rules",
+                      "--config", f"model_reasoning_effort={json.dumps(reasoning)}"]
+            last_message = ctx.sandbox / f"codex-round{round_number}.last-message.txt"
+            if prior_session:
+                cmd = [executable, "exec", "resume", *common, "--output-last-message", str(last_message),
+                       prior_session, "-"]
+            else:
+                cmd = [executable, "exec", "--cd", str(ctx.workspace), "--skip-git-repo-check",
+                       "--sandbox", "workspace-write", *common,
+                       "--output-last-message", str(last_message), "-"]
+            env, removed_secrets = _filtered_env(ctx.env, [str(x) for x in (ctx.model_config.get("allowed_hook_env") or [])])
+            env.update({"HOME": str(ctx.sandbox), "CODEX_HOME": str(codex_home), "NO_COLOR": "1",
+                "CODEX_TELEMETRY_DISABLED": "1", "WORKSPACE": str(ctx.workspace),
+                "HARNESSBENCH_TASK_ID": ctx.task.task_id, "HARNESSBENCH_WORKSPACE": str(ctx.workspace),
+                "HARNESSBENCH_SANDBOX": str(ctx.sandbox), "HARNESSBENCH_SESSION_ID": ctx.session_id,
+                "HARNESSBENCH_PROMPT_FILE": str(ctx.prompt_file), "HARNESSBENCH_MODEL_ID": ctx.model_id})
+            env.pop("FORCE_COLOR", None)
+            stdout_log = ctx.sandbox / f"codex-round{round_number}.stdout.jsonl"
+            stderr_log = ctx.sandbox / f"codex-round{round_number}.stderr.log"
+            stdout_chunks: list[str] = []; stderr_chunks: list[str] = []
+            proc: subprocess.Popen[str] | None = None; timed_out = False
+            try:
+                proc = subprocess.Popen(cmd, cwd=str(ctx.workspace), text=True, stdin=subprocess.PIPE,
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env, bufsize=1,
+                    start_new_session=(os.name == "posix"))
+                def reader(pipe: TextIO | None, sink: list[str], path: Path, mirror: TextIO | None) -> None:
+                    try:
+                        assert pipe is not None
+                        with path.open("w", encoding="utf-8", buffering=1) as handle:
+                            for line in iter(pipe.readline, ""):
+                                sink.append(line); handle.write(line)
+                                if mirror: mirror.write(line); mirror.flush()
+                    finally:
+                        if pipe: pipe.close()
+                mirror = bool(ctx.model_config.get("stream_to_console", False))
+                out_thread = threading.Thread(target=reader, args=(proc.stdout, stdout_chunks, stdout_log, sys.stdout if mirror else None), daemon=True)
+                err_thread = threading.Thread(target=reader, args=(proc.stderr, stderr_chunks, stderr_log, sys.stderr if mirror else None), daemon=True)
+                out_thread.start(); err_thread.start()
+                if proc.stdin:
+                    try: proc.stdin.write(ctx.prompt); proc.stdin.close()
+                    except BrokenPipeError: pass
+                try: returncode = proc.wait(timeout=ctx.timeout_sec)
+                except subprocess.TimeoutExpired:
+                    timed_out = True
+                    returncode = _terminate_process_group(proc, float(ctx.model_config.get("timeout_grace_sec", 5) or 5))
+                out_thread.join(timeout=2 if timed_out else None); err_thread.join(timeout=2 if timed_out else None)
+            except OSError as exc:
+                _remove_auth(auth_stage.target)
+                return AdapterRunResult(ok=False, command=cmd, stderr=str(exc), metadata={"preflight": preflight})
+            except BaseException:
+                if proc is not None and proc.poll() is None: _terminate_process_group(proc, 1)
+                _remove_auth(auth_stage.target); raise
             stdout = "".join(stdout_chunks); stderr = "".join(stderr_chunks); rows = _json_rows(stdout)
             native_session_id = _session_id_from_rows(rows) or prior_session
             session_file = _find_session_file(codex_home, native_session_id)
             facts = _native_session_facts(session_file)
-            native_call_count = max(1, int(facts["token_events"]) - int(state.get("native_token_events", 0) or 0))
+            native_call_count = int(facts["token_events"]) - int(state.get("native_token_events", 0) or 0)
             trace = write_codex_events_as_proxy_trace(stdout_text=stdout, stdout_log_file=stdout_log,
                 proxy_dir=ctx.sandbox / "usage-proxy", task_id=ctx.task.task_id, session_id=ctx.session_id,
                 model_id=ctx.model_id, model=model, provider=provider, initial_prompt=ctx.prompt,
                 call_count=native_call_count)
             provider_ok = facts["provider"] in {"openai", "openai-codex"}
             model_ok = bool(facts["models"]) and set(facts["models"]) == {model}
-            billing_ok = _auth_kind(staged_auth) == billing
-            reasoning_ok = not facts["reasoning_efforts"] or set(facts["reasoning_efforts"]) == {reasoning}
-            version_ok = not facts["cli_version"] or facts["cli_version"] in {"0.139.0", EXPECTED_CODEX_VERSION}
+            billing_ok = _auth_kind(auth_stage.target) == billing
+            reasoning_ok = bool(facts["reasoning_efforts"]) and set(facts["reasoning_efforts"]) == {reasoning}
+            version_ok = facts["cli_version"] == "0.139.0"
+            stdout_json_ok = trace["stdout_json_diagnostics"]["malformed_lines"] == 0 and trace["stdout_json_diagnostics"]["non_object_lines"] == 0
+            try:
+                final_message_text = last_message.read_text(encoding="utf-8")
+            except OSError:
+                final_message_text = ""
+            last_message_ok = bool(final_message_text.strip()) and final_message_text.strip() == str(trace["final_assistant_text"]).strip()
+            call_count_ok = 1 <= native_call_count <= 10_000
             ok = (returncode == 0 and not timed_out and bool(native_session_id) and session_file is not None
                   and trace["turn_completed"] and not trace["failure_event_seen"]
                   and trace["final_assistant_seen"] and trace["usage_available"]
+                  and stdout_json_ok and last_message_ok and call_count_ok
                   and provider_ok and model_ok and reasoning_ok and billing_ok and version_ok)
             if native_session_id:
                 tmp = state_file.with_suffix(".tmp")
                 tmp.write_text(json.dumps({"session_id": native_session_id, "rounds": round_number, "native_token_events": int(facts["token_events"])}, indent=2) + "\n", encoding="utf-8")
                 tmp.replace(state_file)
             auth_synced = False
+            auth_sync_status = "disabled"
             if bool(ctx.model_config.get("sync_refreshed_auth", True)):
-                auth_synced = _sync_staged_auth(source_auth, staged_auth)
+                auth_synced, auth_sync_status = _sync_staged_auth(auth_stage)
             return AdapterRunResult(ok=ok, command=cmd, stdout=stdout, stderr=stderr, metadata={
                 "returncode": returncode, "timed_out": timed_out, "preflight": preflight,
                 "executable_provenance": preflight["provenance"], "provider": provider, "model": model,
                 "model_reasoning_effort": reasoning, "billing_mode": billing, "provider_ok": provider_ok,
                 "model_ok": model_ok, "reasoning_ok": reasoning_ok, "billing_ok": billing_ok, "native_version_ok": version_ok,
+                "stdout_json_ok": stdout_json_ok, "last_message_ok": last_message_ok, "call_count_ok": call_count_ok,
                 "codex_home": str(codex_home), "state_dir": str(codex_home),
                 "native_session_id": native_session_id, "codex_session_file": str(session_file or ""),
                 "native_session_facts": facts, "native_call_count": native_call_count, "round_number": round_number, "resumed": bool(prior_session),
                 "stdout_log_file": str(stdout_log), "stderr_log_file": str(stderr_log),
                 "last_message_file": str(last_message), "synthetic_proxy_trace": trace,
-                "filtered_host_secret_names": removed_secrets, "auth_synced": auth_synced,
+                "filtered_host_secret_names": removed_secrets, "auth_synced": auth_synced, "auth_sync_status": auth_sync_status,
                 "staged_auth_removed": True, "credentials_retained_in_sandbox": False,
                 "workspace": str(ctx.workspace)})
         finally:
-            _remove_auth(staged_auth)
+            auth_context.__exit__(None, None, None)

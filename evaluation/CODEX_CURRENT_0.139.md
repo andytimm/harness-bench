@@ -16,8 +16,10 @@ uv run python -m harnessbench.codex_current_runner --plan full
 
 Preflight performs no model request and does not copy, refresh, or modify OAuth
 state. It checks all 106 tasks, the exact `codex-cli 0.139.0` version, executable
-path and SHA-256 provenance, the GPT-5.4/medium/provider/billing pins, and only a
-non-secret classification of `~/.codex/auth.json`.
+launcher and native-binary path/SHA-256 provenance, the GPT-5.4/medium/provider/billing
+pins, a real 0.139 clap argument-parse probe using `--help`, all ordered task/input
+hashes, repository cleanliness, and only a non-secret classification of
+`~/.codex/auth.json`.
 
 Current 0.139.0 help was inspected offline for `codex --help`, `codex exec
 --help`, and `codex exec resume --help`. The adapter uses supported flags:
@@ -36,7 +38,9 @@ uv run python -m harnessbench.codex_current_runner --plan full --execute --conti
 uv run python -m harnessbench.codex_current_runner --plan full --execute --resume --continue-on-failure
 ```
 
-Use a separate `--manifest-dir` for a deliberately separate run. Each manifest
+The default manifests are separate: `evaluation/runs/<namespace>/smoke` and
+`evaluation/runs/<namespace>/full`, so the commands above work without path
+collisions. Use `--manifest-dir` only for an intentionally separate run. Each manifest
 records an attempt as `started` before launch. Terminal successes and failures
 are never retried by `--resume`; a non-terminal/interrupted attempt requires
 manual investigation rather than an implicit retry. Scores never participate in
@@ -51,17 +55,32 @@ directory.
 
 * Only `auth.json` is copied (mode 0600) into task-local `CODEX_HOME`; user
   config/rules are ignored. The staged file is removed on success, timeout,
-  spawn error, and exceptions. Refreshed subscription OAuth can be atomically
-  synchronized back under a lock, without persisting credentials in results.
-* Unrelated host secrets are removed from the child environment. Hook-provided
-  task variables are overlaid afterwards by design.
+  spawn error, pre-spawn error, and post-processing exceptions. Auth source and
+  staging paths must be non-symlink regular files. Refreshed subscription OAuth is
+  copied back only with a digest compare-and-swap under a lock; a concurrent host
+  refresh is never overwritten.
+* The child environment is built from a small operating-system allowlist. Only
+  explicitly approved, non-secret benchmark hook variables may be added; names
+  containing token/secret/cookie/credential/password/DSN/auth markers are rejected.
 * Model, reasoning, provider, billing mode, CLI version, and native session
-  metadata are validated. Reserved extra args cannot weaken those pins.
+  metadata are validated. Missing native reasoning or CLI-version facts fail the
+  run. Config overrides, extra args, profiles, feature/network/provider/auth/base
+  URL/directory/positional controls, and unknown model-config keys are rejected.
 * A POSIX process group is terminated and then killed after the configured grace
   period on timeout.
 * Success requires exit zero, a native retained session, `turn.completed`, no
-  failure event, a non-empty final assistant message, usage, and all provenance
-  validations. Multi-round tasks resume the recorded native thread id.
+  failure event, strictly JSONL stdout, bounded native call counts, a non-empty
+  `--output-last-message` matching the final native agent message, usage, and all
+  provenance validations. Multi-round tasks resume the recorded native thread id.
 * Codex turn usage retains cached-input tokens while treating them as a subset
   of input (no double-counting). Native token-count events provide model-call
   counts; the turn aggregate supplies exact token totals.
+
+## Resume provenance
+
+The manifest records the exact ordered 106-task list, selected task hashes (including
+fixtures/specs/oracles), repository commit and dirty-state digest, complete model config
+pins, and resolved launcher/native paths and SHA-256s. Resume compares this structure
+strictly. Immediately before every task, the runner re-hashes the task and repository,
+re-runs offline Codex preflight, and injects the manifest launcher/native path and digest
+as mandatory adapter expectations.
