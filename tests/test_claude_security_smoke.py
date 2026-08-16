@@ -53,10 +53,18 @@ class SecuritySmokeEvidenceTests(unittest.TestCase):
   with self.assertRaisesRegex(ValueError,'correlation'): self.validate(rows)
   rows=trace(self.paths,self.denied_files,self.command,self.nonce); rows[-2]['message']['content'].insert(0,{'type':'text','text':json.dumps(report())})
   with self.assertRaisesRegex(ValueError,'exact nonce'): self.validate(rows)
+ def test_exact_edit_unread_prerequisite_is_accepted_with_external_postcheck(self):
+  rows=trace(self.paths,self.denied_files,self.command,self.nonce)
+  for row in rows:
+   blocks=row.get('message',{}).get('content',[])
+   for block in blocks:
+    if block.get('type')=='tool_result' and int(block['tool_use_id'].split('-')[1])%5==1:
+     block['content']='<tool_use_error>File has not been read yet. Read it first before writing to it.</tool_use_error>'
+  self.assertEqual(self.validate(rows)['script_exit_status'],0)
  def test_non_policy_file_error_is_rejected(self):
   rows=trace(self.paths,self.denied_files,self.command,self.nonce)
   rows[2]['message']['content'][0]['content']='<tool_use_error>EISDIR</tool_use_error>'
-  with self.assertRaisesRegex(ValueError,'policy_denied'): self.validate(rows)
+  with self.assertRaisesRegex(ValueError,'policy_denied or safely prerequisite'): self.validate(rows)
  def test_failed_or_incomplete_probe_and_early_bash_error_rejected(self):
   bad=report(); del bad['probes']['loopback']
   with self.assertRaisesRegex(ValueError,'missing, extra'): self.validate(trace(self.paths,self.denied_files,self.command,self.nonce,bad))

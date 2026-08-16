@@ -4,7 +4,7 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('run_claude_full',ROOT/'evaluation/run_claude_full.py'); module=importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
-from harnessbench.macos_containment import native_sandbox_policy, native_seatbelt_profile, verify_repo_containment, verify_task_capabilities, FILE_TOOLS, builtin_permission_denies, builtin_sensitive_paths, native_credential_paths, validate_builtin_permission_denies
+from harnessbench.macos_containment import native_sandbox_policy, native_seatbelt_profile, verify_repo_containment, verify_task_capabilities, FILE_TOOLS, builtin_permission_denies, builtin_sensitive_paths, native_credential_paths, validate_builtin_permission_denies, validate_native_policy_shape
 from harnessbench.adapters.claude_code import EXPECTED_SHA256
 
 class ClaudePlanTests(unittest.TestCase):
@@ -25,20 +25,38 @@ class ClaudePlanTests(unittest.TestCase):
    policy=native_sandbox_policy(ROOT,auth,workspace=workspace,sandbox=workspace,control_paths=[control,denied])
    profile=native_seatbelt_profile(policy)
    normal_state=Path.home()/'.claude.json'; keychains=Path.home()/'Library'/'Keychains'
-   self.assertIn(str(Path.home()),profile); self.assertIn(str(auth.resolve()),profile); self.assertIn(str(control.resolve()),profile)
-   self.assertLess(len(policy['denyRead']),12); self.assertIn(str(workspace.resolve()),policy['allowRead'])
+   self.assertNotIn(f'(subpath \"{Path.home()}\")',profile); self.assertIn(str(auth.resolve()),profile); self.assertIn(str(control.resolve()),profile)
+   self.assertLess(len(policy['denyRead']),64); self.assertIn(str(workspace.resolve()),policy['allowRead'])
+   for denied_path in map(Path,policy['denyRead']):
+    for allowed_path in map(Path,policy['allowRead']):
+     self.assertFalse(allowed_path==denied_path or allowed_path.is_relative_to(denied_path) or denied_path.is_relative_to(allowed_path))
    sensitive=builtin_sensitive_paths(ROOT,auth,workspace=workspace,control_paths=[control,denied])
    credentials=native_credential_paths(auth,workspace=workspace,control_paths=[control,denied])
-   self.assertIn(str(normal_state),sensitive); self.assertIn(str(denied.resolve()),sensitive); self.assertIn(str(keychains),credentials); self.assertIn(str(denied.resolve()),credentials); self.assertLess(len(credentials),12)
+   self.assertIn(str(normal_state),sensitive); self.assertIn(str(denied.resolve()),sensitive); self.assertIn(str(keychains),credentials); self.assertIn(str(denied.resolve()),credentials); self.assertLess(len(credentials),12); self.assertTrue(validate_native_policy_shape(policy,credentials))
    rules=builtin_permission_denies(sensitive); self.assertTrue(validate_builtin_permission_denies(sensitive,rules))
    for path in (normal_state,keychains):
     for tool in FILE_TOOLS:
      self.assertIn(f'{tool}({path})',rules); self.assertIn(f'{tool}({path}/**)',rules)
    expected=[f'{tool}({path}{suffix})' for path in sorted(set(sensitive)) for tool in FILE_TOOLS for suffix in ('','/**')]
    self.assertEqual(rules,expected)
+   overlapping={**policy,'denyRead':[str(workspace.parent)]}
+   self.assertFalse(validate_native_policy_shape(overlapping,credentials))
    self.assertIn(str(ROOT/'.venv'),policy['allowRead'])
    self.assertIn(str((ROOT/'.venv/bin/python').resolve().parents[1]),policy['allowRead'])
   self.assertEqual(FILE_TOOLS,("Read","Edit","Write","Glob","Grep"))
+ def test_production_shaped_native_profile_is_small_and_nonoverlapping(self):
+  with tempfile.TemporaryDirectory(dir=Path.home()) as tmp:
+   run=Path(tmp); sandbox=run/'security-smoke'/'sandbox'; workspace=sandbox/'workspace'; workspace.mkdir(parents=True)
+   private=sandbox/'private-evidence'; private.mkdir(); targets=[]
+   for name in ('read','edit','write'):
+    target=private/name; targets.append(target)
+   (run/'plan.json').write_text('{}'); (run/'security-smoke'/'claim.json').write_text('{}'); (sandbox/'prompt.txt').write_text(''); (sandbox/'.claude-benchmark').mkdir()
+   auth=run.parent/'.synthetic-dedicated-seed'
+   policy=native_sandbox_policy(ROOT,auth,workspace=workspace,sandbox=sandbox,control_paths=[run,*targets])
+   credentials=native_credential_paths(auth,workspace=workspace,control_paths=[run,*targets])
+   self.assertTrue(validate_native_policy_shape(policy,credentials)); self.assertLess(len(policy['denyRead']),64); self.assertLess(len(native_seatbelt_profile(policy).encode()),128_000)
+   for denied in map(Path,policy['denyRead']):
+    for allowed in map(Path,policy['allowRead']): self.assertFalse(allowed==denied or allowed.is_relative_to(denied) or denied.is_relative_to(allowed))
  def test_plan_binds_canonical_namespace_keychain_and_binary(self):
   with tempfile.TemporaryDirectory() as tmp:
    seed=Path(tmp)/'café'; plan=module.build_plan(ROOT,seed)

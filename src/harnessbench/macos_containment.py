@@ -113,22 +113,51 @@ def native_sandbox_policy(root: Path, auth_path: Path, *, workspace: Path, sandb
                           control_paths: list[Path] | None = None) -> dict:
     """Build a prefix-minimal native policy for Claude 2.1.227.
 
-    Native allowRead/allowWrite take precedence, so one HOME deny is safely
-    reopened only for the explicit workspace and runtime capabilities. This
-    avoids Claude expanding hundreds of frontier entries into an E2BIG profile.
+    Only reviewed auth/control-plane roots are denied. No deny overlaps an
+    explicit workspace/runtime allow, avoiding Claude's recursive expansion of
+    broad HOME denies into an E2BIG profile.
     """
     root=root.resolve(); workspace=workspace.resolve(); auth_path=auth_path.resolve()
     caps=_runtime_capabilities(root,workspace,binary=binary,capability_paths=capability_paths)
-    denies=[Path.home(),root,auth_path,*other_worktrees(root),
-            *(p.resolve() for p in (control_paths or [])),Path("/usr/bin/security"),
-            Path("/System/Library/Frameworks/Security.framework")]
+    controls=[]
+    for control in (control_paths or []):
+        resolved=control.resolve()
+        controls.extend(_frontier(resolved,[workspace]) if _within(workspace,resolved) else [resolved])
+    home=Path.home()
+    high_value=[auth_path,home/".harnessbench",home/".claude",home/".claude.json",
+                home/"Library"/"Keychains",home/".ssh",home/".aws",home/".config",
+                Path("/usr/bin/security"),Path("/System/Library/Frameworks/Security.framework")]
+    denies=[*repository_control_plane_paths(root),*other_worktrees(root),*controls,*high_value]
     deny=_prefix_minimize(denies)
-    required=[Path.home().resolve(),Path("/usr/bin/security").resolve(),
+    required=[auth_path.resolve(),(home/".claude").resolve(),(home/".claude.json").resolve(),
+              (home/"Library"/"Keychains").resolve(),Path("/usr/bin/security").resolve(),
               Path("/System/Library/Frameworks/Security.framework").resolve()]
-    if not all(any(item == parent or _within(item,parent) for parent in deny) for item in required):
-        raise RuntimeError("native sandbox sensitive-path enumeration is incomplete")
+    if (not all(any(item == parent or _within(item,parent) for parent in deny) for item in required)
+            or any(denied == cap or _within(cap,denied) or _within(denied,cap)
+                   for denied in deny for cap in caps)):
+        raise RuntimeError("native sandbox sensitive-path enumeration is incomplete or overlaps an allow")
     return {"allowRead":[str(p) for p in caps],"allowWrite":[str(workspace)],
             "denyRead":[str(p) for p in deny],"denyWrite":[str(p) for p in deny]}
+
+
+NATIVE_DENY_ENTRY_LIMIT = 96
+NATIVE_ESTIMATED_BYTES_PER_ENTRY = 6500
+NATIVE_ESTIMATED_PROFILE_LIMIT = 650000
+
+
+def validate_native_policy_shape(policy: dict, credential_paths: Iterable[str | Path]) -> bool:
+    """Bound the production shape using the observed Claude expansion cost."""
+    try:
+        allows=[Path(x).resolve() for x in [*policy["allowRead"],*policy["allowWrite"]]]
+        denies=[Path(x).resolve() for x in [*policy["denyRead"],*policy["denyWrite"]]]
+        credentials=[Path(x).resolve() for x in credential_paths]
+    except (KeyError,TypeError):
+        return False
+    unique=set([*denies,*credentials])
+    overlaps=any(denied == allowed or _within(allowed,denied) or _within(denied,allowed)
+                 for denied in unique for allowed in allows)
+    return (not overlaps and len(unique) <= NATIVE_DENY_ENTRY_LIMIT and
+            len(unique)*NATIVE_ESTIMATED_BYTES_PER_ENTRY <= NATIVE_ESTIMATED_PROFILE_LIMIT)
 
 
 def builtin_permission_denies(paths: Iterable[str | Path]) -> list[str]:

@@ -517,7 +517,8 @@ class ClaudeCodeAdapter(BaseAdapter):
         settings = settings_dir / "benchmark-settings.json"
         from harnessbench.macos_containment import (builtin_permission_denies,
             builtin_sensitive_paths, native_credential_paths,
-            validate_builtin_permission_denies, native_sandbox_policy)
+            validate_builtin_permission_denies, validate_native_policy_shape,
+            native_sandbox_policy)
         try:
             capability_paths=[Path(v) for k,v in ctx.env.items()
                               if k.endswith(("_FILE","_DIR","_PATH")) and v and Path(v).is_absolute()]
@@ -557,7 +558,7 @@ class ClaudeCodeAdapter(BaseAdapter):
         if (settings_payload["sandbox"].get("enabled") is not True or
             settings_payload["sandbox"].get("failIfUnavailable") is not True or
             settings_payload["sandbox"].get("allowUnsandboxedCommands") is not False or
-            len(filesystem["denyRead"]) > 32 or len(credential_sensitive) > 32 or
+            not validate_native_policy_shape(filesystem, credential_sensitive) or
             str(ctx.workspace.resolve()) not in filesystem["allowRead"] or
             not validate_builtin_permission_denies(sensitive, permission_denies)):
             return AdapterRunResult(ok=False, stderr="native sandbox settings invariant failed")

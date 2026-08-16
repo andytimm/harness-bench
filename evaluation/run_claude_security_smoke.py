@@ -125,8 +125,10 @@ def validate_smoke_trace(rows:list[dict[str,Any]],*,read_paths:list[str],denied_
   result=results[tool['id']]
   if result.get('is_error') is not True: raise ValueError('built-in file tool was not explicitly denied')
   denial=_content_text(result.get('content')).lower()
-  if 'permission to use' not in denial or 'denied' not in denial:
-   raise ValueError('built-in file tool was not policy_denied')
+  edit_prerequisite=(tool.get('name')=='Edit' and
+      'file has not been read yet. read it first before writing to it.' in denial)
+  if not edit_prerequisite and ('permission to use' not in denial or 'denied' not in denial):
+   raise ValueError('built-in file tool was not policy_denied or safely prerequisite-blocked')
  bash_result=results[tools[-1]['id']]
  if bash_result.get('is_error') not in (False,None): raise ValueError('probe Bash returned an error/early exit')
  output=_content_text(bash_result.get('content')).strip()

@@ -132,13 +132,20 @@ accepted only while neither `Agent` nor `Task` is exposed; any other agent list
 fails closed.
 
 Sensitive paths are enumerated at launch. The production native policy uses a
-prefix-minimal HOME/control-plane deny plus explicit workspace/runtime allows;
-this prevents Claude from expanding hundreds of redundant entries into a profile
-above macOS `ARG_MAX`. Built-in file tools retain a complete HOME frontier and
-exact checkout, control-plane, normal/benchmark auth, `.claude.json`, and Keychain
-denies. Native credential-file entries are a small exact high-value set and never
-deny an ancestor of the workspace. The offline Seatbelt probe expands broad denies
-into an equivalent frontier because raw Seatbelt denies cannot be reopened.
+compact explicit high-value frontier: every checkout/control-plane root except the
+runtime `.venv`, other worktrees, dedicated `.harnessbench`, normal `.claude` and
+`.claude.json`, `Library/Keychains`, `.ssh`, `.aws`, `.config`, Security.framework,
+`/usr/bin/security`, and private smoke evidence. No native deny overlaps any
+workspace/runtime allow, preventing Claude from expanding a broad HOME parent
+into a profile above macOS `ARG_MAX`. This is a calibrated trust boundary for
+authentication and benchmark integrity, not a claim that Bash is denied every
+benign file in the user's home. Built-in file tools retain the broader complete
+HOME frontier. Native credential-file entries are a small exact high-value set
+and never deny an ancestor of the workspace. A fail-closed 96-unique-entry /
+650-KB estimated profile budget uses the observed ~6.5 KB per Claude-expanded
+entry, and a production-shaped test additionally requires a small offline profile
+with no deny/allow ancestry overlap. The offline Seatbelt probe preserves the same
+effective frontier.
 Native read capabilities include the workspace, literal `.venv`, resolved uv
 Python runtime, pinned binary, Node, and explicit task capabilities; the probe
 executes literal `ROOT/.venv/bin/python -m pytest --version`.
@@ -160,8 +167,11 @@ cat/Python/Node probes target a harmless synthetic private-evidence file outside
 the allowed workspace and fail without emitting its contents. The live security smoke uses a harmless `sandbox/private-evidence` sentinel
 outside the allowed workspace, created without following links and hash-checked.
 Read/Edit/Write target that existing file while Glob/Grep target sensitive
-directories, and validation requires explicit policy-denial text rather than
-incidental file-shape/tool errors. It separately proves denial for every file-capable built-in and
+directories. Validation requires explicit policy-denial text rather than incidental
+file-shape/tool errors; Claude's Edit-only unread prerequisite is accepted because
+2.1.227 checks it before permissions, but only with the exact existing-file call,
+structurally validated Edit deny, and unchanged sentinel hash. It separately proves
+blocking for every file-capable built-in and
 arbitrary Bash cat/Python/Node/`security`/Security.framework access, plus
 workspace, image, subprocess, literal venv Python, pytest, Node, and loopback
 capabilities.  Its immutable receipt carries a native-security marker required
