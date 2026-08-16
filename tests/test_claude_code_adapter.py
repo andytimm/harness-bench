@@ -25,10 +25,10 @@ settings=json.loads(pathlib.Path(value("--settings")).read_text()); assert setti
 session=value("--resume") if "--resume" in args else value("--session-id"); prompt=args[-1]
 if prompt=="SLEEP": time.sleep(30)
 print(json.dumps({{"type":"system","subtype":"init","session_id":session,"model":"claude-opus-4-6","claude_code_version":"2.1.227","permissionMode":"dontAsk","mcp_servers":[],"plugins":[],"skills":[],"slash_commands":[]}}))
-print(json.dumps({{"type":"assistant","session_id":session,"message":{{"role":"assistant","content":[{{"type":"text","text":"done"}}]}}}}))
+print(json.dumps({{"type":"assistant","session_id":session,"uuid":"shared-event","message":{{"role":"assistant","content":[{{"type":"text","text":"done"}}]}}}}))
 resumed="--resume" in args; turns=4 if resumed else 2; inp=20 if resumed else 10; out=6 if resumed else 3
 print(json.dumps({{"type":"result","subtype":"success" if prompt!="BAD" else "error_max_turns","is_error":prompt=="BAD","session_id":session,"num_turns":turns,"modelUsage":{{"claude-opus-4-6":{{"inputTokens":inp,"outputTokens":out,"cacheReadInputTokens":4,"cacheCreationInputTokens":1}}}}}}))
-transcript=config/"projects"/"fake"/(session+".jsonl"); transcript.parent.mkdir(parents=True,exist_ok=True); transcript.write_text("{{}}\\n")
+transcript=config/"projects"/"fake"/(session+".jsonl"); transcript.parent.mkdir(parents=True,exist_ok=True); transcript.write_text(json.dumps({{"uuid":"shared-event","sessionId":session}})+"\\n")
 (config/".credentials.json").write_text('{{"claudeAiOauth":{{"accessToken":"refreshed","refreshToken":"refresh"}}}}')
 '''.format(python=sys.executable)
   self.command.write_text(script); self.command.chmod(self.command.stat().st_mode|stat.S_IXUSR)
@@ -45,6 +45,40 @@ transcript=config/"projects"/"fake"/(session+".jsonl"); transcript.parent.mkdir(
    else: os.environ['ANTHROPIC_API_KEY']=old
   self.assertTrue(first.ok,first.stderr); self.assertTrue(second.ok,second.stderr); self.assertFalse(first.metadata['resumed']); self.assertTrue(second.metadata['resumed']); self.assertEqual(first.metadata['native_session_id'],second.metadata['native_session_id']); self.assertFalse((self.sandbox/'.claude-benchmark'/'.credentials.json').exists()); self.assertEqual(json.loads((self.seed/'.credentials.json').read_text())['claudeAiOauth']['accessToken'],'refreshed')
   usage=_collect_proxy_usage_summary(self.sandbox/'usage-proxy'/'requests.jsonl','bench-session'); self.assertEqual(usage['request_count'],4); self.assertEqual(usage['total_tokens'],26); self.assertEqual(usage['models'],['claude-opus-4-6'])
+ @mock.patch('harnessbench.adapters.claude_code._sha256',return_value=EXPECTED_SHA256)
+ def test_full_plan_binding_exact_and_mismatch_fails_before_launch(self,_):
+  import hashlib, unicodedata
+  canonical=unicodedata.normalize('NFC',str(self.seed.resolve()))
+  binding={'plan_digest':'d'*64,'benchmark_git_sha':'a'*40,'canonical_benchmark_seed':canonical,
+   'canonical_config_namespace':canonical,'keychain_service':'Claude Code-credentials-'+hashlib.sha256(canonical.encode()).hexdigest()[:8],
+   'binary':str(self.command.resolve()),'binary_version':'2.1.227 (Claude Code)','binary_sha256':EXPECTED_SHA256,
+   'model':'claude-opus-4-6','effort':'medium'}
+  bad=dict(binding); bad['canonical_benchmark_seed']+='/wrong'
+  badctx=self.context(evaluation_plan_digest=binding['plan_digest'],benchmark_git_sha=binding['benchmark_git_sha'],canonical_benchmark_seed=canonical+'/wrong',canonical_config_namespace=canonical,keychain_service=binding['keychain_service'],evaluation_plan_binding=bad)
+  with mock.patch('harnessbench.adapters.claude_code._version',return_value='2.1.227 (Claude Code)'), mock.patch('harnessbench.adapters.claude_code.subprocess.Popen') as launch:
+   failed=ClaudeCodeAdapter().run(badctx)
+  self.assertFalse(failed.ok); self.assertIn('plan binding',failed.stderr); launch.assert_not_called()
+  result=ClaudeCodeAdapter().run(self.context(evaluation_plan_digest=binding['plan_digest'],benchmark_git_sha=binding['benchmark_git_sha'],canonical_benchmark_seed=canonical,canonical_config_namespace=canonical,keychain_service=binding['keychain_service'],evaluation_plan_binding=binding))
+  self.assertTrue(result.ok,result.stderr); self.assertEqual(result.metadata['plan_binding'],binding)
+ def test_valid_fully_bound_paid_result_is_receiptable(self):
+  import hashlib, importlib.util, unicodedata
+  canonical=unicodedata.normalize('NFC',str(self.seed.resolve()))
+  binding={'plan_digest':'d'*64,'benchmark_git_sha':'a'*40,'canonical_benchmark_seed':canonical,
+   'canonical_config_namespace':canonical,'keychain_service':'Claude Code-credentials-'+hashlib.sha256(canonical.encode()).hexdigest()[:8],
+   'binary':str(self.command.resolve()),'binary_version':'2.1.227 (Claude Code)','binary_sha256':EXPECTED_SHA256,'model':'claude-opus-4-6','effort':'medium'}
+  def hashes(path):
+   path=Path(path)
+   if path.resolve()==self.command.resolve(): return EXPECTED_SHA256
+   h=hashlib.sha256(); h.update(path.read_bytes()); return h.hexdigest()
+  with mock.patch('harnessbench.adapters.claude_code._sha256',side_effect=hashes):
+   result=ClaudeCodeAdapter().run(self.context(evaluation_plan_digest=binding['plan_digest'],benchmark_git_sha=binding['benchmark_git_sha'],canonical_benchmark_seed=canonical,canonical_config_namespace=canonical,keychain_service=binding['keychain_service'],evaluation_plan_binding=binding))
+  self.assertTrue(result.ok,result.stderr)
+  payload={'task_id':'001-file','model_id':'claude-code-opus-4.6-medium','sandbox':str(self.sandbox),'session_id':'bench-session','adapter_results':[{'ok':True,'metadata':result.metadata}],
+   'usage_summary':{'models':['claude-opus-4-6'],'providers':['anthropic-subscription-oauth']},'scoring':{'rubric':{'skipped':True}},'oracle_result':{'outcome_score':1}}
+  result_file=self.root/'result.json'; result_file.write_text(json.dumps(payload))
+  spec=importlib.util.spec_from_file_location('receipt_runner',Path(__file__).resolve().parents[1]/'evaluation/run_claude_full.py'); runner=importlib.util.module_from_spec(spec); spec.loader.exec_module(runner)
+  record=runner.validate_result(result_file,'001-file',binding['plan_digest'],binding)
+  self.assertEqual(record['plan_binding'],binding); self.assertEqual(record['task_id'],'001-file')
  @mock.patch('harnessbench.adapters.claude_code._sha256',return_value=EXPECTED_SHA256)
  def test_resume_rejects_plan_binding_change(self,_):
   first=ClaudeCodeAdapter().run(self.context('first',evaluation_plan_digest='plan-a',benchmark_git_sha='a'*40)); self.assertTrue(first.ok,first.stderr)

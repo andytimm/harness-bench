@@ -6,6 +6,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
+from harnessbench.adapters.claude_code import CLAUDE_PLAN_BINDING_KEYS
+
 MODEL_ID="claude-code-opus-4.6-medium"; MODEL="claude-opus-4-6"; EFFORT="medium"
 VERSION="2.1.227 (Claude Code)"; SHA256="7432511ba3be818e01f23f6eef8630d214a8b618451e188c3c7d61a987eef6c7"
 LIVE_ACK="I_ACKNOWLEDGE_CLAUDE_SUBSCRIPTION_LIVE_EVALUATION"
@@ -70,9 +74,33 @@ def build_plan(root:Path,seed:Path|None=None,binary:Path|None=None)->dict[str,An
  return {**body,'plan_digest':digest(body)}
 
 def plan_binding(plan:dict[str,Any])->dict[str,str]:
- keys=('plan_digest','benchmark_git_sha','canonical_benchmark_seed','canonical_config_namespace',
-       'keychain_service','binary','binary_version','binary_sha256','model','effort')
- return {key:str(plan[key]) for key in keys}
+ return {key:str(plan[key]) for key in CLAUDE_PLAN_BINDING_KEYS}
+
+def adapter_model_config(plan:dict[str,Any])->dict[str,Any]:
+ """Build and self-check the exact binding consumed by the paid adapter."""
+ binding=plan_binding(plan)
+ cfg={'adapter':'claude_code','command':binding['binary'],'expected_version':VERSION,
+      'expected_sha256':SHA256,'benchmark_config_seed':binding['canonical_benchmark_seed'],
+      'canonical_benchmark_seed':binding['canonical_benchmark_seed'],
+      'canonical_config_namespace':binding['canonical_config_namespace'],
+      'keychain_service':binding['keychain_service'],'model':MODEL,'effort':EFFORT,
+      'billing_mode':'subscription_oauth','timeout_sec':2400,'timeout_grace_sec':5,
+      'sync_refreshed_auth':True,'use_usage_proxy':False,'require_macos_containment':True,
+      'evaluation_plan_digest':binding['plan_digest'],'benchmark_git_sha':binding['benchmark_git_sha'],
+      'evaluation_plan_binding':binding}
+ # This check occurs before any launch claim is written.
+ canonical_seed=unicodedata.normalize('NFC',str(Path(cfg['benchmark_config_seed']).expanduser().resolve()))
+ projected={
+  'plan_digest':str(cfg['evaluation_plan_digest']),
+  'benchmark_git_sha':str(cfg['benchmark_git_sha']),
+  'canonical_benchmark_seed':canonical_seed,
+  'canonical_config_namespace':canonical_seed,
+  'keychain_service':'Claude Code-credentials-'+hashlib.sha256(canonical_seed.encode()).hexdigest()[:8],
+  'binary':str(Path(cfg['command']).resolve()),'binary_version':VERSION,
+  'binary_sha256':SHA256,'model':MODEL,'effort':EFFORT}
+ if projected!=binding or cfg['evaluation_plan_binding']!=binding:
+  raise RuntimeError('paid adapter configuration is not bound to the exact immutable plan')
+ return cfg
 
 def _contained_artifact(value:str,sandbox:Path,expected:Path)->Path:
  path=Path(value)
@@ -187,7 +215,7 @@ def main()->int:
  if ver.returncode or ver.stdout.strip()!=VERSION: raise SystemExit('Claude Code exact version pin failed')
  from harnessbench.macos_containment import verify_repo_containment, verify_task_capabilities
  verify_repo_containment(root); verify_task_capabilities(root,cred,binary=binary)
- cfg={'models':{MODEL_ID:{'adapter':'claude_code','command':str(binary.resolve()),'expected_version':VERSION,'expected_sha256':SHA256,'benchmark_config_seed':str(seed),'canonical_config_namespace':str(seed),'model':MODEL,'effort':EFFORT,'billing_mode':'subscription_oauth','timeout_sec':2400,'timeout_grace_sec':5,'sync_refreshed_auth':True,'use_usage_proxy':False,'require_macos_containment':True,'evaluation_plan_digest':plan['plan_digest'],'benchmark_git_sha':plan['benchmark_git_sha']}}}
+ cfg={'models':{MODEL_ID:adapter_model_config(plan)}}
  external=run/'control'; external.mkdir(parents=True,exist_ok=True)
  harness_cfg=external/'harness.json'; harness_cfg.write_text(json.dumps(cfg,indent=2)+'\n')
  app_cfg=external/'app.json'; app_cfg.write_text(json.dumps({'tasks_dir':str(root/'tasks'),'data_dir':str(run/'data'),'results_dir':str(run/'results'),'work_root':str(run/'work'),'default_timeout_sec':2400})+'\n')

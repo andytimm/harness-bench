@@ -24,6 +24,13 @@ class ClaudePlanTests(unittest.TestCase):
    self.assertEqual(plan['canonical_benchmark_seed'],__import__('unicodedata').normalize('NFC',str(seed.resolve())))
    self.assertEqual(plan['canonical_config_namespace'],plan['canonical_benchmark_seed']); self.assertRegex(plan['keychain_service'],r'^Claude Code-credentials-[0-9a-f]{8}$')
    self.assertTrue(Path(plan['binary']).is_absolute()); self.assertEqual(module.sha(Path(plan['binary'])),plan['binary_sha256']); self.assertEqual(module.digest({k:v for k,v in plan.items() if k!='plan_digest'}),plan['plan_digest'])
+ def test_paid_adapter_config_has_full_exact_plan_binding(self):
+  plan=module.build_plan(ROOT); binding=module.plan_binding(plan); cfg=module.adapter_model_config(plan)
+  self.assertEqual(cfg['evaluation_plan_binding'],binding)
+  self.assertEqual(tuple(binding),tuple(__import__('harnessbench.adapters.claude_code',fromlist=['CLAUDE_PLAN_BINDING_KEYS']).CLAUDE_PLAN_BINDING_KEYS))
+  self.assertEqual(cfg['canonical_benchmark_seed'],binding['canonical_benchmark_seed'])
+  self.assertEqual(cfg['canonical_config_namespace'],binding['canonical_config_namespace'])
+  self.assertEqual(cfg['keychain_service'],binding['keychain_service'])
  @unittest.skipUnless(sys.platform=='darwin' and Path('/usr/bin/sandbox-exec').is_file() and shutil.which('claude'),'real macOS containment')
  def test_real_offline_containment_verifiers(self):
   with tempfile.TemporaryDirectory() as tmp:

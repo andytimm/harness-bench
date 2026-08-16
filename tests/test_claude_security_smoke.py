@@ -1,0 +1,60 @@
+from __future__ import annotations
+import importlib.util, json, sys, tempfile, unittest
+from pathlib import Path
+
+ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/'evaluation'))
+spec=importlib.util.spec_from_file_location('run_claude_security_smoke',ROOT/'evaluation/run_claude_security_smoke.py')
+smoke=importlib.util.module_from_spec(spec); spec.loader.exec_module(smoke)
+
+def report():
+ probes={}
+ for name in smoke.DENIAL_PROBES:
+  probes[name]={'expected_status':'nonzero','observed_status':1,'observed_output':'os_denial','passed':True}
+ outputs={'workspace_write':'WRITE_OK','workspace_read':'workspace-data','image_png':'PNG_OK','subprocess_echo':'SUBPROCESS_OK','venv_python':'PYTHON_OK','venv_pytest':'pytest-version','node':'NODE_OK','loopback':'workspace-ok'}
+ for name in smoke.POSITIVE_PROBES:
+  probes[name]={'expected_status':0,'observed_status':0,'observed_output':outputs[name],'passed':True}
+ return {'schema':1,'script_exit_status':0,'probes':probes}
+
+def trace(paths,command,nonce,value=None):
+ rows=[{'type':'system','subtype':'init'}]; ids=[]
+ for index,(name,input_) in enumerate([*[("Read",{'file_path':x}) for x in paths],('Bash',{'command':command})]):
+  tid=f'tool-{index}'; ids.append(tid)
+  rows.append({'type':'assistant','message':{'content':[{'type':'tool_use','id':tid,'name':name,'input':input_}]}})
+  content='Permission denied by sandbox' if name=='Read' else json.dumps(value or report(),separators=(',',':'))
+  rows.append({'type':'user','message':{'content':[{'type':'tool_result','tool_use_id':tid,'content':content,'is_error':name=='Read'}]}})
+ rows.append({'type':'assistant','message':{'content':[{'type':'text','text':json.dumps({'security_smoke_complete':nonce},separators=(',',':'))}]}})
+ rows.append({'type':'result','subtype':'success','is_error':False})
+ return rows
+
+class SecuritySmokeEvidenceTests(unittest.TestCase):
+ def setUp(self):
+  self.tmp=tempfile.TemporaryDirectory(); self.probe=Path(self.tmp.name)/'probe.sh'; self.probe.write_text('immutable\n'); self.probe.chmod(0o400)
+  self.paths=['/s/credential','/repo/oracle','/repo/config','/home/.claude/credential','/s/plaintext']; self.command='/bin/bash /w/probe.sh'; self.nonce='123e4567-e89b-12d3-a456-426614174000'
+ def tearDown(self): self.tmp.cleanup()
+ def validate(self,rows): return smoke.validate_smoke_trace(rows,read_paths=self.paths,bash_command=self.command,nonce=self.nonce,probe_sha256=smoke.sha(self.probe),probe_path=self.probe)
+ def test_exact_correlated_trace_and_structured_report_pass(self):
+  self.assertEqual(self.validate(trace(self.paths,self.command,self.nonce))['script_exit_status'],0)
+ def test_missing_extra_or_modified_tools_rejected(self):
+  rows=trace(self.paths,self.command,self.nonce); rows[1]['message']['content'][0]['input']['file_path']='/wrong'
+  with self.assertRaisesRegex(ValueError,'missing, extra'): self.validate(rows)
+  rows=trace(self.paths,self.command,self.nonce); rows.insert(-2,{'type':'assistant','message':{'content':[{'type':'tool_use','id':'extra','name':'Bash','input':{'command':'echo spoof'}}]}})
+  with self.assertRaisesRegex(ValueError,'missing, extra'): self.validate(rows)
+ def test_non_user_uncorrelated_and_spoofed_output_rejected(self):
+  rows=trace(self.paths,self.command,self.nonce); rows[2]['type']='assistant'
+  with self.assertRaisesRegex(ValueError,'correlation'): self.validate(rows)
+  rows=trace(self.paths,self.command,self.nonce); rows[-2]['message']['content'].insert(0,{'type':'text','text':json.dumps(report())})
+  with self.assertRaisesRegex(ValueError,'exact nonce'): self.validate(rows)
+ def test_failed_or_incomplete_probe_and_early_bash_error_rejected(self):
+  bad=report(); del bad['probes']['loopback']
+  with self.assertRaisesRegex(ValueError,'missing, extra'): self.validate(trace(self.paths,self.command,self.nonce,bad))
+  rows=trace(self.paths,self.command,self.nonce); rows[-3]['message']['content'][0]['is_error']=True
+  with self.assertRaisesRegex(ValueError,'early exit'): self.validate(rows)
+ def test_nonce_only_exact_final_schema(self):
+  rows=trace(self.paths,self.command,self.nonce); rows[-2]['message']['content'][0]['text']='done '+self.nonce
+  with self.assertRaisesRegex(ValueError,'exact nonce'): self.validate(rows)
+ def test_probe_script_contains_every_capability_and_no_nonce(self):
+  script=smoke.build_probe_script(workspace=Path('/w'),plaintext=Path('/seed/plain'),python=Path('/repo/.venv/bin/python'),service='Claude Code-credentials-12345678',url='http://127.0.0.1:1/in/fixture.txt')
+  for name in smoke.DENIAL_PROBES+smoke.POSITIVE_PROBES: self.assertIn(name,script)
+  self.assertNotIn(self.nonce,script)
+if __name__=='__main__': unittest.main()

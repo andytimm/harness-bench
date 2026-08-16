@@ -26,6 +26,11 @@ EXPECTED_MODEL = "claude-opus-4-6"
 EXPECTED_EFFORT = "medium"
 _CREDENTIAL = ".credentials.json"
 _SECRET_SUFFIXES = ("_API_KEY", "_ACCESS_TOKEN", "_AUTH_TOKEN", "_PASSWORD", "_SECRET")
+CLAUDE_PLAN_BINDING_KEYS = (
+    "plan_digest", "benchmark_git_sha", "canonical_benchmark_seed",
+    "canonical_config_namespace", "keychain_service", "binary",
+    "binary_version", "binary_sha256", "model", "effort",
+)
 
 
 def _keychain_service(config_dir: Path) -> str:
@@ -456,14 +461,25 @@ class ClaudeCodeAdapter(BaseAdapter):
             seed_dir = _path(str(cfg.get("benchmark_config_seed") or ""))
             seed_credential = _validate_seed(seed_dir)
             config_dir_resolved = Path(unicodedata.normalize("NFC", str(seed_dir.resolve())))
+            canonical_seed = str(config_dir_resolved)
             plan_binding = {
                 "plan_digest": str(cfg.get("evaluation_plan_digest") or ""),
                 "benchmark_git_sha": str(cfg.get("benchmark_git_sha") or ""),
-                "canonical_config_namespace": str(config_dir_resolved),
+                "canonical_benchmark_seed": canonical_seed,
+                "canonical_config_namespace": canonical_seed,
                 "keychain_service": _keychain_service(config_dir_resolved),
-                "binary": str(binary), "binary_sha256": actual_hash,
-                "binary_version": actual_version, "model": model, "effort": effort,
+                "binary": str(binary), "binary_version": actual_version,
+                "binary_sha256": actual_hash, "model": model, "effort": effort,
             }
+            if tuple(plan_binding) != CLAUDE_PLAN_BINDING_KEYS:
+                raise ValueError("internal Claude plan binding schema mismatch")
+            for key in ("canonical_benchmark_seed", "canonical_config_namespace", "keychain_service"):
+                supplied = cfg.get(key)
+                if supplied is not None and str(supplied) != plan_binding[key]:
+                    raise ValueError(f"Claude plan binding {key} mismatch")
+            expected_binding = cfg.get("evaluation_plan_binding")
+            if expected_binding is not None and expected_binding != plan_binding:
+                raise ValueError("Claude evaluation plan binding mismatch")
         except ValueError as exc:
             return AdapterRunResult(ok=False, stderr=str(exc))
 
