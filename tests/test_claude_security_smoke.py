@@ -20,7 +20,7 @@ def report():
 def trace(paths,denied_files,command,nonce,value=None):
  rows=[{'type':'system','subtype':'init'}]; ids=[]; calls=[]
  for path in paths:
-  calls += [('Read',{'file_path':denied_files['read']}),('Edit',{'file_path':denied_files['edit'],'old_string':'HARMLESS-EDIT-SENTINEL','new_string':'HB_DENY_PROBE'}),('Write',{'file_path':denied_files['write'],'content':'HB_DENY_PROBE'}),('Glob',{'path':path,'pattern':'**/*'}),('Grep',{'path':path,'pattern':'HB_DENY_PROBE'})]
+  calls += [('Read',{'file_path':denied_files['read']}),('Edit',{'file_path':denied_files['edit'],'old_string':'HARMLESS-EDIT-SENTINEL','new_string':'HB_DENY_PROBE','replace_all':False}),('Write',{'file_path':denied_files['write'],'content':'HB_DENY_PROBE'}),('Glob',{'path':path,'pattern':'**/*'}),('Grep',{'path':path,'pattern':'HB_DENY_PROBE'})]
  calls.append(('Bash',{'command':command}))
  for index,(name,input_) in enumerate(calls):
   tid=f'tool-{index}'; ids.append(tid)
@@ -48,6 +48,10 @@ class SecuritySmokeEvidenceTests(unittest.TestCase):
   self.assertEqual(self.validate(rows)['script_exit_status'],0)
  def test_missing_extra_or_modified_tools_rejected(self):
   rows=trace(self.paths,self.denied_files,self.command,self.nonce); rows[1]['message']['content'][0]['input']['file_path']='/wrong'
+  with self.assertRaisesRegex(ValueError,'missing, extra'): self.validate(rows)
+  rows=trace(self.paths,self.denied_files,self.command,self.nonce); rows[3]['message']['content'][0]['input']['replace_all']=True
+  with self.assertRaisesRegex(ValueError,'missing, extra'): self.validate(rows)
+  rows=trace(self.paths,self.denied_files,self.command,self.nonce); rows[3]['message']['content'][0]['input']['unexpected']=False
   with self.assertRaisesRegex(ValueError,'missing, extra'): self.validate(rows)
   rows=trace(self.paths,self.denied_files,self.command,self.nonce); rows.insert(-2,{'type':'assistant','message':{'content':[{'type':'tool_use','id':'extra','name':'Bash','input':{'command':'echo spoof'}}]}})
   with self.assertRaisesRegex(ValueError,'missing, extra'): self.validate(rows)
@@ -80,6 +84,10 @@ class SecuritySmokeEvidenceTests(unittest.TestCase):
   path=Path(self.tmp.name)/'failure.json'; self.assertIsNone(smoke.read_probe_failure(path))
   path.write_text(json.dumps({'label':'image_png','status':126,'code':91}))
   self.assertEqual(smoke.read_probe_failure(path),{'label':'image_png','status':126,'code':91})
+  path.write_text(json.dumps({'label':'loopback','status':1,'code':93}))
+  self.assertEqual(smoke.read_probe_failure(path),{'label':'loopback','status':1,'code':93})
+  path.write_text(json.dumps({'label':'loopback','status':1,'code':94}))
+  with self.assertRaisesRegex(ValueError,'schema'): smoke.read_probe_failure(path)
   path.write_text(json.dumps({'label':'image_png','status':126,'code':91,'output':'secret'}))
   with self.assertRaisesRegex(ValueError,'schema'): smoke.read_probe_failure(path)
  def test_probe_script_contains_every_capability_and_no_nonce(self):
@@ -89,6 +97,7 @@ class SecuritySmokeEvidenceTests(unittest.TestCase):
   self.assertIn('[[ -z "${NO_PROXY:-}" && -z "${no_proxy:-}"',script)
   self.assertIn('( -n "${HTTP_PROXY:-}" || -n "${http_proxy:-}" )',script)
   source=(ROOT/'evaluation/run_claude_security_smoke.py').read_text()
+  self.assertIn('new_string=HB_DENY_PROBE, replace_all=false',source)
   self.assertIn("bash_command=f'NO_PROXY= no_proxy= /bin/bash ",source)
  def test_live_probe_uses_visible_venv_interpreter(self):
   visible=smoke.ROOT/'.venv/bin/python'

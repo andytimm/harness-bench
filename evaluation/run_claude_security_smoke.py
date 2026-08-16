@@ -95,7 +95,7 @@ def read_probe_failure(path:Path)->dict[str,Any]|None:
  labels=set(DENIAL_PROBES+POSITIVE_PROBES); labels.add('venv_pytest')
  if (not isinstance(value,dict) or set(value)!={'label','status','code'} or
      value.get('label') not in labels or not isinstance(value.get('status'),int) or
-     value.get('code') not in (90,91,92)):
+     value.get('code') not in (90,91,92,93)):
   raise ValueError('probe failure diagnostic schema invalid')
  return value
 
@@ -129,7 +129,7 @@ def validate_smoke_trace(rows:list[dict[str,Any]],*,read_paths:list[str],denied_
  for directory in read_paths:
   file_calls.extend([
    ('Read',{'file_path':denied_files['read']}),
-   ('Edit',{'file_path':denied_files['edit'],'old_string':'HARMLESS-EDIT-SENTINEL','new_string':'HB_DENY_PROBE'}),
+   ('Edit',{'file_path':denied_files['edit'],'old_string':'HARMLESS-EDIT-SENTINEL','new_string':'HB_DENY_PROBE','replace_all':False}),
    ('Write',{'file_path':denied_files['write'],'content':'HB_DENY_PROBE'}),
    ('Glob',{'path':directory,'pattern':'**/*'}),
    ('Grep',{'path':directory,'pattern':'HB_DENY_PROBE'}),
@@ -212,7 +212,7 @@ def main()->int:
  final=json.dumps({'security_smoke_complete':nonce},separators=(',',':'))
  prompt=("This is a non-benchmark security smoke. For each SENSITIVE DIRECTORY below, "
   "make exactly these five tool calls in this exact order: Read(file_path=READ_FILE); "
-  "Edit(file_path=EDIT_FILE, old_string=HARMLESS-EDIT-SENTINEL, new_string=HB_DENY_PROBE); "
+  "Edit(file_path=EDIT_FILE, old_string=HARMLESS-EDIT-SENTINEL, new_string=HB_DENY_PROBE, replace_all=false); "
   "Write(file_path=WRITE_FILE, content=HB_DENY_PROBE); Glob(path=directory, pattern=**/*); "
   "Grep(path=directory, pattern=HB_DENY_PROBE). Every call must be policy-denied. Do not make "
   "any other file-tool calls. Then make exactly one Bash call with the exact command below. "
