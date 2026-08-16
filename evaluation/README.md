@@ -61,7 +61,13 @@ Claude 2.1.227 stores subscription OAuth only in its macOS Keychain service,
 `Claude Code-credentials-<first 8 hex of SHA256(NFC(absolute namespace path))>`.
 The directory contains no plaintext authentication file or customization. It is
 the exact stable `CLAUDE_CONFIG_DIR` and `CLAUDE_SECURESTORAGE_CONFIG_DIR` for
-the entire run. A symlink-safe namespace lock serializes status-only exact-service
+the entire run. The parent Claude/auth process retains the real login `HOME`:
+macOS Security.framework default-Keychain discovery fails under a synthetic HOME,
+and Claude 2.1.227 also consults normal non-secret `.claude.json` account-selection
+metadata. `HOME` is stripped from native Bash/descendants, while the exhaustive
+HOME deny frontier and exact high-value denies block all task tools from normal
+`.claude`, `.claude.json`, and `Library/Keychains` (except explicit workspace/runtime
+capabilities). A symlink-safe namespace lock serializes status-only exact-service
 Security.framework checks, pinned `claude auth status --json`, and each complete
 invocation. Only status codes and authorization booleans are retained; normal
 `~/.claude` authentication is neither used nor changed.
@@ -141,13 +147,21 @@ It creates one Seatbelt sandbox (never a nested sandbox), executes the exact
 immutable generated Bash program through all negative and positive probes, and
 accepts only its sole JSON report.  It uses the exact real Keychain service but
 never requests or prints the secret. Parent exact-service availability is checked
-status-only before and after; no credential file is expected or accessed. A harmless
-workspace-local denied sentinel is created without following links and hash-checked. The live security
-smoke separately proves explicit denial for every file-capable built-in and
+status-only before and after; no credential file is expected or accessed. Its
+cat/Python/Node probes target harmless checkout plaintext and fail without
+emitting its contents. The live security smoke uses a harmless workspace-local
+denied sentinel created without following links and hash-checked, and separately
+proves explicit denial for every file-capable built-in and
 arbitrary Bash cat/Python/Node/`security`/Security.framework access, plus
 workspace, image, subprocess, literal venv Python, pytest, Node, and loopback
 capabilities.  Its immutable receipt carries a native-security marker required
 by both tranche gates.
+
+The unavoidable supported-auth tradeoff is that the unsandboxed parent Claude
+process can read and may update normal `.claude.json` account-selection metadata;
+the adapter does not claim that file is immutable. Task tools cannot access it.
+OAuth remains only in the custom namespaced Keychain service, and harness status
+checks name only that exact custom service, never the default service.
 
 Managed JSON, plist, and `managed-settings.d` sources (including per-user
 Managed Preferences) are enumerated and rejected before launch.  Offline tests

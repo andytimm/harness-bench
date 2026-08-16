@@ -3,7 +3,7 @@ import json, os, stat, sys, tempfile, textwrap, unittest
 from pathlib import Path
 from unittest import mock
 from harnessbench.adapters.claude_code import (ClaudeCodeAdapter, EXPECTED_SHA256, AUTH_BACKEND,
- KEYCHAIN_STATUS_SEMANTICS, AUTH_STATUS_SEMANTICS, _open_lock as _open_lock_for_test)
+ KEYCHAIN_STATUS_SEMANTICS, AUTH_STATUS_SEMANTICS, _clean_env, _open_lock as _open_lock_for_test)
 from harnessbench.models import AdapterRunContext, TaskSpec
 from harnessbench.runner import _collect_proxy_usage_summary
 
@@ -24,8 +24,8 @@ assert "--bare" not in args and value("--model")=="claude-opus-4-6" and value("-
 assert value("--output-format")=="stream-json" and value("--setting-sources")==""
 assert "--strict-mcp-config" in args and "--disable-slash-commands" in args
 assert "ANTHROPIC_API_KEY" not in os.environ
-config=pathlib.Path(os.environ["CLAUDE_CONFIG_DIR"]); assert os.environ["CLAUDE_SECURESTORAGE_CONFIG_DIR"]==str(config)
-settings=json.loads(pathlib.Path(value("--settings")).read_text()); assert settings["sandbox"]["failIfUnavailable"] is True; assert settings["sandbox"]["credentials"]["files"][0]["mode"]=="deny"
+config=pathlib.Path(os.environ["CLAUDE_CONFIG_DIR"]); assert os.environ["CLAUDE_SECURESTORAGE_CONFIG_DIR"]==str(config); assert os.environ["HOME"]==str(pathlib.Path.home())
+settings=json.loads(pathlib.Path(value("--settings")).read_text()); assert settings["sandbox"]["failIfUnavailable"] is True; assert settings["sandbox"]["credentials"]["files"][0]["mode"]=="deny"; assert {{"name":"HOME","mode":"deny"}} in settings["sandbox"]["credentials"]["envVars"]; assert str(pathlib.Path.home()/".claude.json") in settings["sandbox"]["filesystem"]["denyRead"]; assert str(pathlib.Path.home()/"Library"/"Keychains") in settings["sandbox"]["filesystem"]["denyRead"]
 session=value("--resume") if "--resume" in args else value("--session-id"); prompt=args[-1]
 if prompt=="SLEEP": time.sleep(30)
 print(json.dumps({{"type":"system","subtype":"init","session_id":session,"model":"claude-opus-4-6","claude_code_version":"2.1.227","permissionMode":"dontAsk","mcp_servers":[],"plugins":[],"skills":[],"slash_commands":[],"tools":["Read","Edit","Write","Glob","Grep","Bash"]}}))
@@ -48,6 +48,13 @@ transcript=config/"projects"/"fake"/(session+".jsonl"); transcript.parent.mkdir(
    else: os.environ['ANTHROPIC_API_KEY']=old
   self.assertTrue(first.ok,first.stderr); self.assertTrue(second.ok,second.stderr); self.assertFalse(first.metadata['resumed']); self.assertTrue(second.metadata['resumed']); self.assertEqual(first.metadata['native_session_id'],second.metadata['native_session_id']); self.assertFalse(any(p.is_file() and p.name != '.harnessbench.lock' for p in self.seed.iterdir())); self.assertTrue(first.metadata['auth_status_valid'])
   usage=_collect_proxy_usage_summary(self.sandbox/'usage-proxy'/'requests.jsonl','bench-session'); self.assertEqual(usage['request_count'],4); self.assertEqual(usage['total_tokens'],26); self.assertEqual(usage['models'],['claude-opus-4-6'])
+ def test_clean_env_keeps_login_home_but_isolates_config(self):
+  env=_clean_env({'HOME':'/attacker','ANTHROPIC_API_KEY':'forbidden'},self.seed,self.context())
+  canonical=str(self.seed.resolve()); normal=str(Path.home().resolve())
+  self.assertEqual(env['HOME'],normal); self.assertEqual(env['CLAUDE_CONFIG_DIR'],canonical); self.assertEqual(env['CLAUDE_SECURESTORAGE_CONFIG_DIR'],canonical)
+  self.assertNotEqual(env['HOME'],canonical); self.assertNotIn('ANTHROPIC_API_KEY',env)
+  with self.assertRaisesRegex(ValueError,'isolated canonical'):
+   _clean_env({},Path.home(),self.context())
  @mock.patch('harnessbench.adapters.claude_code._sha256',return_value=EXPECTED_SHA256)
  def test_full_plan_binding_exact_and_mismatch_fails_before_launch(self,_):
   import hashlib, unicodedata
@@ -116,7 +123,7 @@ transcript=config/"projects"/"fake"/(session+".jsonl"); transcript.parent.mkdir(
   try:
    with mock.patch('harnessbench.adapters.claude_code._sha256',return_value=EXPECTED_SHA256), mock.patch('harnessbench.adapters.claude_code._keychain_status',side_effect=status):
     result=ClaudeCodeAdapter().run(self.context())
-   self.assertTrue(result.ok,result.stderr); self.assertEqual(observed,[True,True])
+   self.assertTrue(result.ok,result.stderr); self.assertEqual(observed,[True,True]); self.assertNotEqual(result.metadata['keychain_service'],'Claude Code-credentials')
   finally: self.keychain.start()
  def test_hash_mismatch(self):
   result=ClaudeCodeAdapter().run(self.context()); self.assertFalse(result.ok); self.assertIn('SHA256 mismatch',result.stderr)

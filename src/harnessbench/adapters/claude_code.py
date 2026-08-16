@@ -101,17 +101,20 @@ def _assert_secure_path(path: Path, *, directory: bool) -> None:
 
 
 def _validate_seed(seed: Path) -> Path:
-    """Validate and return the canonical dedicated namespace; never inspect auth files."""
-    normal = (Path.home() / ".claude").resolve()
+    """Validate the dedicated Keychain namespace without reading auth values."""
+    home = Path.home().resolve()
+    normal = (home / ".claude").resolve()
     resolved = Path(unicodedata.normalize("NFC", str(seed.expanduser().resolve())))
+    if resolved == home:
+        raise ValueError("benchmark_config_seed must not use the normal home directory")
     if resolved == normal or normal in resolved.parents:
         raise ValueError("benchmark_config_seed must not use normal ~/.claude authentication")
     _assert_secure_path(seed, directory=True)
     forbidden = [resolved / name for name in ("settings.json", "settings.local.json", "CLAUDE.md",
-                 "commands", "agents", "plugins", "skills", "hooks")]
+                 "commands", "agents", "plugins", "skills", "hooks", ".credentials.json")]
     present = [str(path) for path in forbidden if path.exists() or path.is_symlink()]
     if present:
-        raise ValueError("dedicated Claude namespace contains customization: " + ", ".join(present))
+        raise ValueError("dedicated Claude namespace contains customization or plaintext credentials: " + ", ".join(present))
     return resolved
 
 
@@ -342,6 +345,11 @@ def _unexpected_managed_policy(user: str | None = None) -> list[str]:
 
 
 def _clean_env(overrides: dict[str, str], config_dir: Path, ctx: AdapterRunContext) -> dict[str, str]:
+    canonical_config = Path(unicodedata.normalize("NFC", str(config_dir.resolve())))
+    normal_home = Path.home().resolve()
+    normal_claude = (normal_home / ".claude").resolve()
+    if canonical_config == normal_home or canonical_config == normal_claude or normal_claude in canonical_config.parents:
+        raise ValueError("Claude config must be an isolated canonical namespace")
     keep = {"PATH", "TMPDIR", "TMP", "TEMP", "LANG", "LC_ALL", "LC_CTYPE", "SHELL", "TERM", "USER", "LOGNAME", "SSH_TTY"}
     env = {key: value for key, value in os.environ.items() if key in keep}
     # Hook-provided values are task capabilities, not host credentials.
@@ -351,8 +359,10 @@ def _clean_env(overrides: dict[str, str], config_dir: Path, ctx: AdapterRunConte
         if upper.endswith(_SECRET_SUFFIXES) or upper.startswith(("AWS_SECRET_", "AZURE_CLIENT_SECRET")):
             env.pop(key, None)
     env.update({
-        "HOME": str(ctx.sandbox), "CLAUDE_CONFIG_DIR": str(config_dir),
-        "CLAUDE_SECURESTORAGE_CONFIG_DIR": str(config_dir), "NO_COLOR": "1",
+        # macOS Security.framework default-Keychain discovery requires the real
+        # login HOME. Native credential env filtering removes HOME from Bash.
+        "HOME": str(normal_home), "CLAUDE_CONFIG_DIR": str(canonical_config),
+        "CLAUDE_SECURESTORAGE_CONFIG_DIR": str(canonical_config), "NO_COLOR": "1",
         "DISABLE_TELEMETRY": "1", "DISABLE_ERROR_REPORTING": "1",
         "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1", "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1",
         "CLAUDE_CODE_DISABLE_BACKGROUND_TASKS": "1", "CLAUDE_CODE_ENABLE_SDK_FILE_CHECKPOINTING": "0",
@@ -531,7 +541,8 @@ class ClaudeCodeAdapter(BaseAdapter):
                 "excludedCommands": [], "filesystem": filesystem,
                 "credentials": {
                     "files": [{"path": value, "mode": "deny"} for value in sensitive],
-                    "envVars": [{"name": "CLAUDE_CONFIG_DIR", "mode": "deny"},
+                    "envVars": [{"name": "HOME", "mode": "deny"},
+                                {"name": "CLAUDE_CONFIG_DIR", "mode": "deny"},
                                 {"name": "CLAUDE_SECURESTORAGE_CONFIG_DIR", "mode": "deny"}],
                 },
             },

@@ -24,8 +24,13 @@ class ClaudePlanTests(unittest.TestCase):
    control=Path(tmp)/'run'; prior=control/'results'/'prior.json'; prior.parent.mkdir(parents=True); prior.write_text('{}')
    policy=native_sandbox_policy(ROOT,auth,workspace=workspace,sandbox=workspace,control_paths=[control])
    profile=native_seatbelt_profile(policy)
-   self.assertIn(str(ROOT/'tasks'),profile); self.assertIn(str(auth),profile); self.assertIn(str(control.resolve()),profile)
+   normal_state=Path.home()/'.claude.json'; keychains=Path.home()/'Library'/'Keychains'
+   self.assertIn(str(ROOT/'tasks'),profile); self.assertIn(str(auth),profile); self.assertIn(str(normal_state),profile); self.assertIn(str(keychains),profile); self.assertIn(str(control.resolve()),profile)
+   self.assertIn(str(normal_state),policy['denyRead']); self.assertIn(str(keychains),policy['denyWrite'])
    rules=builtin_permission_denies(policy['denyRead']); self.assertTrue(validate_builtin_permission_denies(policy['denyRead'],rules))
+   for path in (normal_state,keychains):
+    for tool in FILE_TOOLS:
+     self.assertIn(f'{tool}({path})',rules); self.assertIn(f'{tool}({path}/**)',rules)
    expected=[f'{tool}({path}{suffix})' for path in sorted(set(policy['denyRead'])) for tool in FILE_TOOLS for suffix in ('','/**')]
    self.assertEqual(rules,expected)
    self.assertIn(str(ROOT/'.venv'),policy['allowRead'])

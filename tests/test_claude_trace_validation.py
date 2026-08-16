@@ -40,16 +40,19 @@ class TraceValidationTests(unittest.TestCase):
  def test_canonical_keychain_resolution_and_seed_modes(self):
   with tempfile.TemporaryDirectory() as tmp:
    seed=Path(tmp)/"seed"; seed.mkdir(mode=0o700)
-   self.assertEqual(_validate_seed(seed),seed.resolve())
-   self.assertFalse(any(seed.iterdir()))
+   self.assertEqual(_validate_seed(seed),seed.resolve()); self.assertFalse(any(seed.iterdir()))
    self.assertRegex(_keychain_service(seed),r"^Claude Code-credentials-[0-9a-f]{8}$")
-   seed.chmod(0o755)
+   (seed/".credentials.json").write_text('never-read')
+   with self.assertRaisesRegex(ValueError,"plaintext credentials"): _validate_seed(seed)
+   (seed/".credentials.json").unlink(); seed.chmod(0o755)
    with self.assertRaisesRegex(ValueError,"permissions"): _validate_seed(seed)
  def test_auth_status_is_strict_and_discards_identity(self):
   good={'loggedIn':True,'authMethod':'claude.ai','apiProvider':'firstParty','subscriptionType':'max','email':'private@example.test'}
   completed=lambda value,code=0: mock.Mock(returncode=code,stdout=value,stderr='private')
-  with mock.patch('harnessbench.adapters.claude_code.subprocess.run',return_value=completed(json.dumps(good))):
-   self.assertEqual(_validate_auth_status(Path('/pinned/claude'),{'CLAUDE_CONFIG_DIR':'/seed','CLAUDE_SECURESTORAGE_CONFIG_DIR':'/seed'}),0)
+  auth_env={'HOME':str(Path.home()),'CLAUDE_CONFIG_DIR':'/isolated/seed','CLAUDE_SECURESTORAGE_CONFIG_DIR':'/isolated/seed'}
+  with mock.patch('harnessbench.adapters.claude_code.subprocess.run',return_value=completed(json.dumps(good))) as run:
+   self.assertEqual(_validate_auth_status(Path('/pinned/claude'),auth_env),0)
+   self.assertEqual(run.call_args.kwargs['env'],auth_env); self.assertEqual(run.call_args.kwargs['env']['HOME'],str(Path.home()))
   for value in ('not-json',json.dumps({**good,'loggedIn':False}),json.dumps({**good,'apiProvider':'thirdParty'}),json.dumps({**good,'subscriptionType':'free'})):
    with self.subTest(value=value), mock.patch('harnessbench.adapters.claude_code.subprocess.run',return_value=completed(value)):
     with self.assertRaises(ValueError): _validate_auth_status(Path('/pinned/claude'),{})

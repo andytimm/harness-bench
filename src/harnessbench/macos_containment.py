@@ -81,12 +81,22 @@ def native_sandbox_policy(root: Path, auth_path: Path, *, workspace: Path, sandb
         resolved=control.resolve()
         below=[cap for cap in caps if cap==resolved or _within(cap,resolved)]
         control_denies.extend(_frontier(resolved,below) if below and resolved.is_dir() else [resolved])
+    normal_state=Path.home()/".claude.json"
+    normal_claude=Path.home()/".claude"
+    normal_keychains=Path.home()/"Library"/"Keychains"
+    always_deny={auth_path,normal_state.resolve(),normal_claude.resolve(),normal_keychains.resolve()}
     explicit=repository_control_plane_paths(root)+other_worktrees(root)+control_denies+[
-        auth_path, Path.home()/".claude", Path.home()/".ssh", Path.home()/".aws", Path.home()/".config",
-        Path("/usr/bin/security"), Path("/System/Library/Frameworks/Security.framework"),
+        auth_path, normal_state, normal_claude, normal_keychains, Path.home()/".ssh",
+        Path.home()/".aws", Path.home()/".config", Path("/usr/bin/security"),
+        Path("/System/Library/Frameworks/Security.framework"),
     ]
-    deny=sorted({p.resolve() for p in home_denies+explicit if p.exists() or p.is_symlink()},key=str)
-    if auth_path not in deny or not all(p.resolve() in deny for p in repository_control_plane_paths(root)):
+    # The HOME frontier covers every host-home path except explicit task/runtime
+    # capabilities. Retain these exact high-value paths even if absent so both
+    # native Bash and every built-in file tool receive literal denies.
+    deny=sorted({p.resolve() for p in home_denies+explicit
+                 if p.resolve() in always_deny or p.exists() or p.is_symlink()},key=str)
+    if (not always_deny.issubset(set(deny)) or
+            not all(p.resolve() in deny for p in repository_control_plane_paths(root))):
         raise RuntimeError("native sandbox sensitive-path enumeration is incomplete")
     return {"allowRead":[str(visible_venv),str(runtime_root)],
             "allowWrite":[str(workspace)], "denyRead":[str(p) for p in deny],
