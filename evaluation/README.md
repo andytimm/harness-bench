@@ -51,14 +51,24 @@ The comparison uses completion/oracle outcome only. The public baseline records 
 
 ## Claude Code Opus 4.6 staged evaluation
 
-`run_claude_full.py` pins Claude Code `2.1.227 (Claude Code)` and the resolved
-binary SHA256 `7432511ba3be818e01f23f6eef8630d214a8b618451e188c3c7d61a987eef6c7`,
-model `claude-opus-4-6`, and effort `medium`. It never reads `~/.claude`.
-Before evaluation, an operator must independently provision subscription OAuth
-in the dedicated seed directory `~/.harnessbench/claude-code-opus-4.6`; this
-repository does not authenticate or copy normal Claude credentials.
+`run_claude_full.py` pins Claude Code `2.1.227 (Claude Code)`, binary SHA256
+`7432511ba3be818e01f23f6eef8630d214a8b618451e188c3c7d61a987eef6c7`, model
+`claude-opus-4-6`, and effort `medium`. The committed offline tests make no auth
+or model calls.
 
-First inspect the immutable 106-task plan without authentication or model calls:
+Provision a dedicated mode-0700 directory containing a mode-0600
+`.credentials.json` with subscription OAuth. It must not be `~/.claude`, and no
+component copies credentials from the normal profile. This directory is the one
+stable canonical `CLAUDE_CONFIG_DIR` and `CLAUDE_SECURESTORAGE_CONFIG_DIR` for
+the entire run. On macOS 2.1.227 its Keychain service is
+`Claude Code-credentials-<first 8 hex of SHA256(NFC(absolute config path))>`.
+A single process lock covers each invocation and refresh, so the harness does
+**not** create per-task Keychain namespaces. The adapter does not claim that
+removing a file proves Keychain deletion; no ephemeral Keychain item is created
+or cleanup attempted. Refreshed plaintext fallback credentials remain in the
+dedicated namespace.
+
+Inspect the SHA/task/prompt/fixture/oracle-bound immutable plan offline:
 
 ```sh
 .venv/bin/python evaluation/run_claude_full.py \
@@ -66,19 +76,31 @@ First inspect the immutable 106-task plan without authentication or model calls:
   --tranche 1 --dry-plan
 ```
 
-Live execution is deliberately gated by `--live` plus the literal acknowledgement
-printed by `--help`. Run tranche 1 (odd numeric task IDs) and then tranche 2
-(even IDs). Each has 53 tasks from the same immutable plan. Claims are written
-before launch and receipts after strict validation; an interrupted claimed task
-is never retried automatically, and a rejected rate-limit event is recorded as
-`quota_censored` and stops scheduling. Process grading is off and
-`HARNESSBENCH_PUBLIC_URL_TEMPLATE` is exactly `{local_url}`.
+Live execution requires a clean planned Git SHA plus `--live` and the literal
+acknowledgement printed by `--help`. Tranche 1 is the 53 odd task IDs and tranche
+2 the 53 even IDs. Claims precede launch. Claims, results and receipts are
+content-hashed and bound to the plan digest; resume revalidates every artifact.
+A claim without a receipt is never retried automatically, no result is
+overwritten, and a rejected quota event writes a censored receipt and stops.
 
-Containment is two-layered and fail closed: macOS Seatbelt denies the benchmark
-checkout/control plane, auth seed, and oracle data while preserving `.venv`, the
-workspace, shell/subprocess, Node, images, and loopback; Claude's explicit
-`--settings` disables hooks/plugins/MCP/skills/memory/customization and enables
-its native Bash sandbox with credential/read denies (including Keychain CLI).
-The built-in Read tool receives matching deny rules. A live launch still requires
-an operator security smoke proving OAuth succeeds while Read, cat, Python, Node,
-and `/usr/bin/security` cannot recover the staged credential.
+Offline-proven controls include exact arguments (`--safe-mode`, `--no-chrome`,
+empty setting sources, strict empty MCP, disabled slash commands), settings
+schema fixtures, environment scrubbing, path ancestor/mode checks, home/control
+plane Seatbelt profile generation, immutable planning/resume validation, quota
+stop logic, and malformed/out-of-order/duplicate/realistic transcript parsing.
+The lossless normalized trace preserves raw thinking, tool use/results, errors,
+UUIDs, session, round, resume and actual model; the native transcript and both
+hashes are retained.
+
+A launch remains blocked unless the macOS Seatbelt capability smoke passes.
+Before paid evaluation, operator review must additionally perform the required
+**live smoke** with the pinned binary and dedicated account: verify OAuth refresh
+and a harmless model response; inspect the init event for model/version,
+`dontAsk`, empty MCP/plugins/skills/slash commands and no unexpected effective
+hooks/agents/commands; exercise Read, `cat`, Python, Node and direct
+Security.framework/`security` attempts against the canonical plaintext and
+namespaced Keychain credential and confirm every attempt is denied; verify
+workspace input/output, images, subprocesses, `.venv` Python/pytest, Node and
+loopback fixture HTTP still work. Also confirm no managed/policy settings files
+exist (the adapter fails closed if known locations are present). These are live
+requirements, not claims made by the offline suite.

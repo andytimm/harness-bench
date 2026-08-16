@@ -9,7 +9,7 @@ from harnessbench.runner import _collect_proxy_usage_summary
 class ClaudeCodeAdapterTests(unittest.TestCase):
  def setUp(self):
   self.t=tempfile.TemporaryDirectory(); self.root=Path(self.t.name); self.sandbox=self.root/'sandbox'; self.workspace=self.sandbox/'workspace'; self.workspace.mkdir(parents=True); (self.workspace/'in').mkdir(); (self.workspace/'out').mkdir(); self.prompt_file=self.sandbox/'prompt.txt'; self.prompt_file.write_text('prompt')
-  self.seed=self.root/'seed'; self.seed.mkdir(); (self.seed/'.credentials.json').write_text('{"claudeAiOauth":{"accessToken":"seed","refreshToken":"refresh"}}')
+  self.seed=self.root/'seed'; self.seed.mkdir(mode=0o700); (self.seed/'.credentials.json').write_text('{"claudeAiOauth":{"accessToken":"seed","refreshToken":"refresh"}}'); (self.seed/'.credentials.json').chmod(0o600)
   self.command=self.root/'fake-claude'
   script='''#!{python}
 import json,os,pathlib,sys,time

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Prepare and run two immutable, sequential Claude Code full-suite tranches."""
 from __future__ import annotations
-import argparse, hashlib, json, os, subprocess, sys
+import argparse, hashlib, json, os, subprocess, sys, tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -11,10 +11,28 @@ VERSION="2.1.227 (Claude Code)"; SHA256="7432511ba3be818e01f23f6eef8630d214a8b61
 LIVE_ACK="I_ACKNOWLEDGE_CLAUDE_SUBSCRIPTION_LIVE_EVALUATION"
 
 def now(): return datetime.now(timezone.utc).isoformat()
+def canonical(value:Any)->bytes: return (json.dumps(value,sort_keys=True,separators=(',',':'),ensure_ascii=False)+'\n').encode()
+def digest(value:Any)->str: return hashlib.sha256(canonical(value)).hexdigest()
 def immutable_json(path:Path, value:dict[str,Any]):
  path.parent.mkdir(parents=True,exist_ok=True)
- fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o444)
- with os.fdopen(fd,'w') as out: json.dump(value,out,indent=2); out.write('\n'); out.flush(); os.fsync(out.fileno())
+ data=json.dumps(value,indent=2,ensure_ascii=False).encode()+b'\n'
+ fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o400)
+ try:
+  os.fchmod(fd,0o400); os.write(fd,data); os.fsync(fd)
+ finally: os.close(fd)
+ dirfd=os.open(path.parent,os.O_RDONLY)
+ try: os.fsync(dirfd)
+ finally: os.close(dirfd)
+def tree_sha(path:Path)->str:
+ h=hashlib.sha256()
+ for item in sorted((x for x in path.rglob('*') if x.is_file()),key=lambda x:x.relative_to(path).as_posix()):
+  rel=item.relative_to(path).as_posix().encode(); h.update(len(rel).to_bytes(4,'big')); h.update(rel); h.update(bytes.fromhex(sha(item)))
+ return h.hexdigest()
+def git_sha(root:Path)->str:
+ value=subprocess.check_output(['git','-C',str(root),'rev-parse','HEAD'],text=True).strip()
+ if not __import__('re').fullmatch(r'[0-9a-f]{40}',value): raise RuntimeError('invalid benchmark git SHA')
+ return value
+
 def task_number(name:str)->int: return int(name.split('-',1)[0])
 def sha(path:Path)->str:
  h=hashlib.sha256()
@@ -26,8 +44,17 @@ def build_plan(root:Path)->dict[str,Any]:
  if len(tasks)!=106 or sorted(task_number(x) for x in tasks)!=list(range(1,107)): raise RuntimeError('benchmark revision must contain numeric tasks 001..106 exactly')
  odd=[x for x in tasks if task_number(x)%2]; even=[x for x in tasks if not task_number(x)%2]
  if len(odd)!=53 or len(even)!=53: raise RuntimeError('tranches must contain 53 tasks each')
- return {'schema':1,'benchmark_root':str(root.resolve()),'target_count':106,'harness':MODEL_ID,'model':MODEL,'effort':EFFORT,'version':VERSION,'sha256':SHA256,'tranches':{'1':odd,'2':even},'selection':{'1':'odd numeric task IDs','2':'even numeric task IDs'},'attempt_policy':'one initial attempt per task; no score-driven retries'}
-def validate_result(path:Path,task:str)->dict[str,Any]:
+ task_integrity={}
+ for name in tasks:
+  directory=root/'tasks'/name
+  task_integrity[name]={'task_yaml_sha256':sha(directory/'task.yaml'),'tree_sha256':tree_sha(directory)}
+ body={'schema':2,'benchmark_root':str(root.resolve()),'benchmark_git_sha':git_sha(root),'target_count':106,
+       'harness':MODEL_ID,'model':MODEL,'effort':EFFORT,'version':VERSION,'binary_sha256':SHA256,'sha256':SHA256,
+       'tasks':task_integrity,'tranches':{'1':odd,'2':even},
+       'selection':{'1':'odd numeric task IDs','2':'even numeric task IDs'},
+       'attempt_policy':'one initial attempt per task; no score-driven retries'}
+ return {**body,'plan_digest':digest(body)}
+def validate_result(path:Path,task:str,plan_digest:str='')->dict[str,Any]:
  data=json.loads(path.read_text()); errors=[]
  if data.get('task_id')!=task or data.get('model_id')!=MODEL_ID: errors.append('task/model mismatch')
  rounds=data.get('adapter_results') or []
@@ -35,13 +62,18 @@ def validate_result(path:Path,task:str)->dict[str,Any]:
  for r in rounds:
   m=r.get('metadata') or {}
   if (m.get('claude_version'),m.get('binary_sha256'),m.get('model'),m.get('effort'))!=(VERSION,SHA256,MODEL,EFFORT): errors.append('pin validation failed')
-  if not all(m.get(k) for k in ('session_ids_valid','init_valid','terminal_valid','disabled_features_valid','staged_credential_removed','native_session_file')): errors.append('native terminal/session/security validation failed')
+  if not all(m.get(k) for k in ('session_ids_valid','init_valid','terminal_valid','disabled_features_valid',
+                                  'staged_credential_removed','native_session_file','native_transcript_sha256',
+                                  'normalized_trace_sha256','safe_mode','chrome_disabled','canonical_config_namespace')):
+   errors.append('native terminal/session/security validation failed')
+  if m.get('keychain_cleanup_proven') is not False or m.get('stream_parse_error') or m.get('normalization_error'):
+   errors.append('credential/transcript proof invalid')
   if m.get('quota_censored'): errors.append('quota_censored')
  usage=data.get('usage_summary') or {}
  if usage.get('models')!=[MODEL] or usage.get('providers')!=['anthropic-subscription-oauth']: errors.append('usage source/model invalid')
  if (data.get('scoring') or {}).get('rubric',{}).get('skipped') is not True: errors.append('process grading was not off')
  if errors: raise RuntimeError('; '.join(errors))
- return {'task_id':task,'result_file':str(path),'usage':usage,'outcome_score':(data.get('oracle_result') or {}).get('outcome_score')}
+ return {'task_id':task,'result_file':str(path),'result_sha256':sha(path),'plan_digest':plan_digest,'usage':usage,'outcome_score':(data.get('oracle_result') or {}).get('outcome_score')}
 def main()->int:
  ap=argparse.ArgumentParser(); ap.add_argument('--run-root',type=Path,required=True); ap.add_argument('--tranche',choices=['1','2'],required=True); ap.add_argument('--dry-plan',action='store_true'); ap.add_argument('--live',action='store_true'); ap.add_argument('--ack'); ap.add_argument('--benchmark-seed',type=Path,default=Path('~/.harnessbench/claude-code-opus-4.6').expanduser()); a=ap.parse_args()
  root=Path(__file__).resolve().parents[1]; run=a.run_root.expanduser().resolve()
@@ -52,6 +84,10 @@ def main()->int:
  else: immutable_json(plan_path,plan)
  print(json.dumps(plan,indent=2))
  if a.dry_plan: return 0
+ dirty=subprocess.check_output(['git','-C',str(root),'status','--porcelain'],text=True)
+ if dirty: raise SystemExit('live evaluation requires a clean benchmark checkout at the planned git SHA')
+ if git_sha(root)!=plan['benchmark_git_sha']: raise SystemExit('benchmark git SHA changed after planning')
+ if digest({k:v for k,v in plan.items() if k!='plan_digest'})!=plan['plan_digest']: raise SystemExit('plan digest mismatch')
  if not a.live or a.ack!=LIVE_ACK: raise SystemExit(f'live launch requires --live --ack {LIVE_ACK}')
  seed=a.benchmark_seed.expanduser().absolute(); cred=seed/'.credentials.json'
  resolved_seed=seed.resolve()
@@ -65,18 +101,29 @@ def main()->int:
  if ver.returncode or ver.stdout.strip()!=VERSION: raise SystemExit('Claude Code exact version pin failed')
  from harnessbench.macos_containment import verify_repo_containment, verify_task_capabilities
  verify_repo_containment(root); verify_task_capabilities(root,cred)
- cfg={'models':{MODEL_ID:{'adapter':'claude_code','command':str(binary.resolve()),'expected_version':VERSION,'expected_sha256':SHA256,'benchmark_config_seed':str(seed),'model':MODEL,'effort':EFFORT,'billing_mode':'subscription_oauth','timeout_sec':2400,'timeout_grace_sec':5,'sync_refreshed_auth':True,'use_usage_proxy':False,'require_macos_containment':True}}}
+ cfg={'models':{MODEL_ID:{'adapter':'claude_code','command':str(binary.resolve()),'expected_version':VERSION,'expected_sha256':SHA256,'benchmark_config_seed':str(seed),'canonical_config_namespace':str(seed),'model':MODEL,'effort':EFFORT,'billing_mode':'subscription_oauth','timeout_sec':2400,'timeout_grace_sec':5,'sync_refreshed_auth':True,'use_usage_proxy':False,'require_macos_containment':True}}}
  external=run/'control'; external.mkdir(parents=True,exist_ok=True)
  harness_cfg=external/'harness.json'; harness_cfg.write_text(json.dumps(cfg,indent=2)+'\n')
  app_cfg=external/'app.json'; app_cfg.write_text(json.dumps({'tasks_dir':str(root/'tasks'),'data_dir':str(run/'data'),'results_dir':str(run/'results'),'work_root':str(run/'work'),'default_timeout_sec':2400})+'\n')
  env=os.environ.copy(); env.update({'HARNESSBENCH_APP_CONFIG':str(app_cfg),'HARNESSBENCH_HARNESS_CONFIG':str(harness_cfg),'HARNESSBENCH_SKIP_PROCESS_GRADE':'1','HARNESSBENCH_SKIP_ORACLE_QUALITY_LLM':'1','HARNESSBENCH_PUBLIC_URL_TEMPLATE':'{local_url}','PYTHONPATH':str(root/'src')})
  tasks=plan['tranches'][a.tranche]; receipts=run/'receipts'; claims=run/'claims'; results=run/'results'/MODEL_ID
  for index,task in enumerate(tasks,1):
-  receipt=receipts/f'{task}.json'
-  if receipt.exists(): print(f'[{index}/53] {task}: immutable receipt present'); continue
-  claim=claims/f'{task}.json'
+  receipt=receipts/f'{task}.json'; claim=claims/f'{task}.json'
+  matches=list(results.glob(f'*/{task}.json'))
+  if receipt.exists():
+   try: saved=json.loads(receipt.read_text())
+   except (OSError,json.JSONDecodeError) as exc: raise SystemExit(f'{task} receipt malformed: {exc}')
+   if saved.get('task_id')!=task or saved.get('plan_digest')!=plan['plan_digest']: raise SystemExit(f'{task} receipt is not bound to this plan')
+   if len(matches)!=1 or saved.get('result_sha256')!=sha(matches[0]): raise SystemExit(f'{task} retained result hash mismatch')
+   if saved.get('claim_sha256')!=sha(claim): raise SystemExit(f'{task} retained claim hash mismatch')
+   validate_result(matches[0],task,plan['plan_digest'])
+   print(f'[{index}/53] {task}: validated immutable receipt present'); continue
+  if matches: raise SystemExit(f'{task} has a result without a validated receipt; refusing overwrite')
   if claim.exists(): raise SystemExit(f'{task} has an immutable launch claim but no receipt; do not retry automatically (manual adjudication required)')
-  immutable_json(claim,{'task_id':task,'tranche':a.tranche,'attempt':1,'claimed_at':now(),'policy':'initial attempt; never score-driven retry'})
+  immutable_json(claim,{'schema':1,'task_id':task,'tranche':a.tranche,'attempt':1,'claimed_at':now(),
+                        'plan_digest':plan['plan_digest'],'task_integrity':plan['tasks'][task],
+                        'policy':'initial attempt; never score-driven retry'})
+  claim_hash=sha(claim)
   command=[str(root/'.venv/bin/python'),'-m','harnessbench.cli','run-task','--task',task,'--harness',MODEL_ID,'--mode','live']
   completed=subprocess.run(command,env=env,stdin=subprocess.DEVNULL)
   matches=list(results.glob(f'*/{task}.json'))
@@ -84,10 +131,10 @@ def main()->int:
    raw=json.loads(matches[0].read_text())
    quota=any((r.get('metadata') or {}).get('quota_censored') for r in (raw.get('adapter_results') or []))
    if quota:
-    immutable_json(receipt,{'task_id':task,'status':'quota_censored','finished_at':now(),'result_file':str(matches[0])})
+    immutable_json(receipt,{'task_id':task,'status':'quota_censored','finished_at':now(),'result_file':str(matches[0]),'result_sha256':sha(matches[0]),'claim_sha256':claim_hash,'plan_digest':plan['plan_digest']})
     raise SystemExit('quota rejected: receipt marked quota_censored; scheduling stopped')
   if completed.returncode or len(matches)!=1: raise SystemExit(f'{task} launch failed; claim retained and no automatic retry permitted')
-  record=validate_result(matches[0],task)
-  immutable_json(receipt,{**record,'status':'complete','finished_at':now(),'claim_file':str(claim)})
+  record=validate_result(matches[0],task,plan['plan_digest'])
+  immutable_json(receipt,{**record,'status':'complete','finished_at':now(),'claim_file':str(claim),'claim_sha256':claim_hash})
  return 0
 if __name__=='__main__': raise SystemExit(main())
