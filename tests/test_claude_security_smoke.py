@@ -57,4 +57,9 @@ class SecuritySmokeEvidenceTests(unittest.TestCase):
   script=smoke.build_probe_script(workspace=Path('/w'),plaintext=Path('/seed/plain'),python=Path('/repo/.venv/bin/python'),service='Claude Code-credentials-12345678',url='http://127.0.0.1:1/in/fixture.txt')
   for name in smoke.DENIAL_PROBES+smoke.POSITIVE_PROBES: self.assertIn(name,script)
   self.assertNotIn(self.nonce,script)
+ def test_live_probe_uses_resolved_executable_interpreter(self):
+  visible=smoke.ROOT/'.venv/bin/python'
+  self.assertEqual(smoke.PROBE_PYTHON,visible.resolve())
+  self.assertTrue(smoke.PROBE_PYTHON.is_file())
+  self.assertFalse(smoke.PROBE_PYTHON.is_symlink())
 if __name__=='__main__': unittest.main()

@@ -7,6 +7,7 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
 ROOT=Path(__file__).resolve().parents[1]
+PROBE_PYTHON=(ROOT/'.venv/bin/python').resolve()
 sys.path[:0]=[str(ROOT/'src'),str(ROOT/'evaluation')]
 from run_claude_full import (LIVE_ACK,MODEL_ID,build_plan,plan_binding,adapter_model_config,
                              immutable_json,sha,now)
@@ -154,7 +155,7 @@ def main()->int:
  handler=partial(Quiet,directory=str(workspace)); server=ThreadingHTTPServer(('127.0.0.1',0),handler); thread=threading.Thread(target=server.serve_forever,daemon=True); thread.start()
  seed=Path(plan['canonical_benchmark_seed']); service=plan['keychain_service']; plaintext=seed/'.harnessbench-smoke-plaintext'; nonce=str(uuid.uuid4())
  plaintext.write_text('HARMLESS-SMOKE-PLAINTEXT\n'); plaintext.chmod(0o600); url=f'http://127.0.0.1:{server.server_port}/in/fixture.txt'
- probe=workspace/'.security-smoke-probe.sh'; probe.write_text(build_probe_script(workspace=workspace,plaintext=plaintext,python=ROOT/'.venv/bin/python',service=service,url=url)); probe.chmod(0o400); probe_hash=sha(probe)
+ probe=workspace/'.security-smoke-probe.sh'; probe.write_text(build_probe_script(workspace=workspace,plaintext=plaintext,python=PROBE_PYTHON,service=service,url=url)); probe.chmod(0o400); probe_hash=sha(probe)
  bash_command=f'/bin/bash {shlex.quote(str(probe))}'
  read_paths=[str(seed/'.credentials.json'),str(ROOT/'tasks/001-file/oracle_grade.py'),str(ROOT/'config/app.yaml'),str(Path.home()/'.claude/.credentials.json'),str(plaintext)]
  immutable_json(claim,{'schema':2,'kind':'non-benchmark-security-smoke','claimed_at':now(),'nonce':nonce,'plan_binding':binding,'probe':{'path':str(probe),'sha256':probe_hash,'command':bash_command,'read_paths':read_paths},'policy':'one Claude invocation; exact immutable probes; unconditional stop; no benchmark claim or score'})
