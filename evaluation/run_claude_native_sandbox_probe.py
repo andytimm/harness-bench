@@ -62,7 +62,7 @@ def main()->int:
   try:
    url=f'http://127.0.0.1:{server.server_port}/in/fixture.txt'
    probe=workspace/'.native-sandbox-probe.sh'
-   probe.write_text(build_probe_script(workspace=workspace,plaintext=plaintext,python=PROBE_PYTHON,service=service,url=url)); probe.chmod(0o400); probe_hash=sha(probe)
+   probe.write_text(build_probe_script(workspace=workspace,plaintext=plaintext,python=PROBE_PYTHON,service=service,url=url,require_proxy_env=False)); probe.chmod(0o400); probe_hash=sha(probe)
    controls=[private]
    policy=native_sandbox_policy(ROOT,seed,workspace=workspace,sandbox=sandbox,binary=Path('/bin/bash'),control_paths=controls)
    builtins=builtin_sensitive_paths(ROOT,seed,workspace=workspace,control_paths=controls)

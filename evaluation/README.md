@@ -181,6 +181,19 @@ workspace, image, subprocess, literal venv Python, pytest, Node, and loopback
 capabilities.  Its immutable receipt carries a native-security marker required
 by both tranche gates.
 
+Claude Code 2.1.227 has a known loopback routing defect: its injected
+`NO_PROXY` includes `localhost`/`127.0.0.1`, so clients bypass the sandbox proxy
+and native Seatbelt denies the direct connection even when
+`sandbox.network.allowedDomains` permits loopback. See upstream reports
+[anthropics/claude-code#65482](https://github.com/anthropics/claude-code/issues/65482)
+and [#28018](https://github.com/anthropics/claude-code/issues/28018). The smoke
+therefore prefixes its one exact Bash command with `NO_PROXY= no_proxy=`. For
+benchmark tasks, the adapter appends the same narrowly scoped operational
+instruction only when a hook supplies a `MOCK_*` URL whose host is exactly
+`127.0.0.1` or `localhost`; metadata records original/effective prompt hashes
+and the instruction provenance. Parent-owned fixtures do not require
+`network.allowLocalBinding`, which remains disabled.
+
 The unavoidable supported-auth tradeoff is that the unsandboxed parent Claude
 process can read and may update normal `.claude.json` account-selection metadata;
 the adapter does not claim that file is immutable. Task tools cannot access it.

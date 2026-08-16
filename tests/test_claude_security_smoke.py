@@ -34,11 +34,14 @@ def trace(paths,denied_files,command,nonce,value=None):
 class SecuritySmokeEvidenceTests(unittest.TestCase):
  def setUp(self):
   self.tmp=tempfile.TemporaryDirectory(); self.probe=Path(self.tmp.name)/'probe.sh'; self.probe.write_text('immutable\n'); self.probe.chmod(0o400)
-  self.paths=['/s/credential','/repo/oracle','/repo/config','/home/.claude/credential','/s/plaintext','/private/evidence']; self.denied_files={'read':'/private/read','edit':'/private/edit','write':'/private/write'}; self.command='/bin/bash /w/probe.sh'; self.nonce='123e4567-e89b-12d3-a456-426614174000'
+  self.paths=['/s/credential','/repo/oracle','/repo/config','/home/.claude/credential','/s/plaintext','/private/evidence']; self.denied_files={'read':'/private/read','edit':'/private/edit','write':'/private/write'}; self.command='NO_PROXY= no_proxy= /bin/bash /w/probe.sh'; self.nonce='123e4567-e89b-12d3-a456-426614174000'
  def tearDown(self): self.tmp.cleanup()
  def validate(self,rows): return smoke.validate_smoke_trace(rows,read_paths=self.paths,denied_files=self.denied_files,bash_command=self.command,nonce=self.nonce,probe_sha256=smoke.sha(self.probe),probe_path=self.probe)
  def test_exact_correlated_trace_and_structured_report_pass(self):
   self.assertEqual(self.validate(trace(self.paths,self.denied_files,self.command,self.nonce))['script_exit_status'],0)
+ def test_verifier_requires_proxy_override_prefix(self):
+  with self.assertRaisesRegex(ValueError,'missing loopback proxy override'):
+   smoke.validate_smoke_trace(trace(self.paths,self.denied_files,'/bin/bash /w/probe.sh',self.nonce),read_paths=self.paths,denied_files=self.denied_files,bash_command='/bin/bash /w/probe.sh',nonce=self.nonce,probe_sha256=smoke.sha(self.probe),probe_path=self.probe)
  def test_optional_bash_description_is_non_authoritative(self):
   rows=trace(self.paths,self.denied_files,self.command,self.nonce)
   next(block for row in rows for block in row.get('message',{}).get('content',[]) if block.get('type')=='tool_use' and block.get('name')=='Bash')['input']['description']='Run immutable probe'
@@ -83,6 +86,10 @@ class SecuritySmokeEvidenceTests(unittest.TestCase):
   script=smoke.build_probe_script(workspace=Path('/w'),plaintext=Path('/seed/plain'),python=Path('/repo/.venv/bin/python'),service='Claude Code-credentials-12345678',url='http://127.0.0.1:1/in/fixture.txt')
   for name in smoke.DENIAL_PROBES+smoke.POSITIVE_PROBES: self.assertIn(name,script)
   self.assertNotIn(self.nonce,script); self.assertIn('probe_failed label=%s status=%s code=%s',script); self.assertNotIn('output=%s',script)
+  self.assertIn('[[ -z "${NO_PROXY:-}" && -z "${no_proxy:-}"',script)
+  self.assertIn('( -n "${HTTP_PROXY:-}" || -n "${http_proxy:-}" )',script)
+  source=(ROOT/'evaluation/run_claude_security_smoke.py').read_text()
+  self.assertIn("bash_command=f'NO_PROXY= no_proxy= /bin/bash ",source)
  def test_live_probe_uses_visible_venv_interpreter(self):
   visible=smoke.ROOT/'.venv/bin/python'
   self.assertEqual(smoke.PROBE_PYTHON,visible)

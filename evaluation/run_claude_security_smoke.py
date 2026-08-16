@@ -24,7 +24,8 @@ class Quiet(SimpleHTTPRequestHandler):
  def log_message(self,*args): pass
 
 def _q(value:Path|str)->str: return shlex.quote(str(value))
-def build_probe_script(*,workspace:Path,plaintext:Path,python:Path,service:str,url:str)->str:
+def build_probe_script(*,workspace:Path,plaintext:Path,python:Path,service:str,url:str,
+                       require_proxy_env:bool=True)->str:
  """Return the complete immutable, claim-bound program; Claude never composes probes."""
  diagnostic=workspace/'out'/'probe-failure.json'
  framework='/System/Library/Frameworks/Security.framework/Versions/A/Security'
@@ -38,6 +39,9 @@ def build_probe_script(*,workspace:Path,plaintext:Path,python:Path,service:str,u
  # Plaintext probes require an OS denial signature. Keychain probes accept only
  # a nonzero exact-service lookup and never emit captured output, which could
  # contain a credential if containment regressed. A successful lookup fails closed.
+ proxy_env_check = ("[[ -z \"${NO_PROXY:-}\" && -z \"${no_proxy:-}\" && "
+                    "( -n \"${HTTP_PROXY:-}\" || -n \"${http_proxy:-}\" ) ]] || "
+                    "fail_probe loopback 1 93") if require_proxy_env else ":"
  return f"""#!/bin/bash
 set +e
 fail_probe() {{ local label="$1" status="$2" code="$3"; printf '{{"label":"%s","status":%s,"code":%s}}\\n' "$label" "$status" "$code" > {_q(diagnostic)}; printf 'probe_failed label=%s status=%s code=%s\\n' "$label" "$status" "$code" >&2; exit "$code"; }}
@@ -62,6 +66,9 @@ run_ok subprocess_echo SUBPROCESS_OK /bin/echo SUBPROCESS_OK
 run_ok venv_python PYTHON_OK {_q(python)} -c "print('PYTHON_OK')"
 output="$({_q(python)} -m pytest --version 2>&1)"; status_venv_pytest=$?; [[ $status_venv_pytest -eq 0 && "$output" == pytest* ]] || fail_probe venv_pytest "$status_venv_pytest" 92
 run_ok node NODE_OK node -e "console.log('NODE_OK')"
+# Claude Code 2.1.227 injects loopback into NO_PROXY, bypassing its own proxy;
+# check only proxy-variable presence/emptiness and never persist or print values.
+{proxy_env_check}
 run_ok loopback workspace-ok {_q(python)} -c "import urllib.request;print(urllib.request.urlopen({url!r},timeout=5).read().decode().strip())"
 printf '{{"schema":1,"script_exit_status":0,"probes":{{'
 printf '"deny_cat_plaintext":{{"expected_status":"nonzero","observed_status":%d,"observed_output":"os_denial","passed":true}},' "$status_deny_cat_plaintext"
@@ -102,6 +109,8 @@ def _content_text(content:Any)->str:
 def validate_smoke_trace(rows:list[dict[str,Any]],*,read_paths:list[str],denied_files:dict[str,str],
                          bash_command:str,nonce:str,probe_sha256:str,probe_path:Path)->dict[str,Any]:
  """Validate only observed, ID-correlated user results and the immutable report."""
+ if not bash_command.startswith("NO_PROXY= no_proxy= /bin/bash "):
+  raise ValueError("smoke Bash command missing loopback proxy override")
  tools=[]; results={}; assistant_text=[]
  for row in rows:
   message=row.get('message') if isinstance(row.get('message'),dict) else {}
@@ -196,7 +205,7 @@ def main()->int:
   with os.fdopen(fd,'w') as handle: handle.write(content); handle.flush(); os.fsync(handle.fileno())
  sentinel_hashes={str(path):sha(path) for path in (plaintext,edit_sentinel)}; denied_files={'read':str(plaintext),'edit':str(edit_sentinel),'write':str(write_target)}; cfg['containment_control_roots'] += [str(x) for x in (plaintext,edit_sentinel,write_target)]; url=f'http://127.0.0.1:{server.server_port}/in/fixture.txt'
  diagnostic=workspace/'out'/'probe-failure.json'; probe=workspace/'.security-smoke-probe.sh'; probe.write_text(build_probe_script(workspace=workspace,plaintext=plaintext,python=PROBE_PYTHON,service=service,url=url)); probe.chmod(0o400); probe_hash=sha(probe)
- bash_command=f'/bin/bash {shlex.quote(str(probe))}'
+ bash_command=f'NO_PROXY= no_proxy= /bin/bash {shlex.quote(str(probe))}'
  read_paths=[str(seed),str(ROOT/'tasks'),str(ROOT/'config'),str(Path.home()/'.claude'),
              '/System/Library/Frameworks/Security.framework',str(private)]
  immutable_json(claim,{'schema':3,'kind':'non-benchmark-security-smoke','claimed_at':now(),'nonce':nonce,'plan_binding':binding,'probe':{'path':str(probe),'sha256':probe_hash,'command':bash_command,'read_paths':read_paths,'denied_files':denied_files,'denied_sentinel_hashes':sentinel_hashes},'policy':'one Claude invocation; exact immutable probes; unconditional stop; no benchmark claim or score'})

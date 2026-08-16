@@ -15,6 +15,7 @@ import unicodedata
 import getpass
 import ctypes
 from contextlib import contextmanager
+from urllib.parse import urlsplit
 from pathlib import Path
 from typing import Any
 
@@ -32,6 +33,38 @@ CLAUDE_PLAN_BINDING_KEYS = (
     "keychain_status_semantics", "auth_status_semantics", "binary",
     "binary_version", "binary_sha256", "model", "effort",
 )
+_LOOPBACK_PROMPT_SUFFIX = (
+    "\n\n[HarnessBench Claude Code 2.1.227 loopback integration]\n"
+    "When a Bash command connects to the provided local fixture URL, prefix that command "
+    "exactly with `NO_PROXY= no_proxy=` so it uses Claude Code's sandbox proxy. Do not "
+    "start or bind a local server. This is a narrow workaround for the 2.1.227 NO_PROXY "
+    "loopback bypass bug; all non-loopback networking remains unavailable."
+)
+
+
+def _integrate_loopback_prompt(prompt: str, env: dict[str, str]) -> tuple[str, dict[str, Any] | None]:
+    """Append the 2.1.227 proxy workaround only for hook-provided MOCK_* loopback URLs."""
+    names = []
+    for name, value in sorted(env.items()):
+        if not name.startswith("MOCK_") or not isinstance(value, str):
+            continue
+        try:
+            parsed = urlsplit(value)
+        except ValueError:
+            continue
+        if parsed.scheme in {"http", "https"} and parsed.hostname in {"127.0.0.1", "localhost"}:
+            names.append(name)
+    if not names:
+        return prompt, None
+    effective = prompt + _LOOPBACK_PROMPT_SUFFIX
+    return effective, {
+        "kind": "claude-code-2.1.227-loopback-no-proxy-workaround",
+        "source": "hook-provided-loopback-url",
+        "env_names": names,
+        "instruction": _LOOPBACK_PROMPT_SUFFIX.lstrip("\n"),
+        "original_prompt_sha256": hashlib.sha256(prompt.encode()).hexdigest(),
+        "effective_prompt_sha256": hashlib.sha256(effective.encode()).hexdigest(),
+    }
 
 
 def _keychain_service(config_dir: Path) -> str:
@@ -606,6 +639,7 @@ class ClaudeCodeAdapter(BaseAdapter):
         extras = [str(v) for v in cfg.get("extra_args", [])]
         if any(v in reserved or any(v.startswith(x + "=") for x in reserved) for v in extras):
             return AdapterRunResult(ok=False, stderr="reserved Claude Code extra_args are not allowed")
+        effective_prompt, prompt_integration = _integrate_loopback_prompt(ctx.prompt, ctx.env)
         cmd = [str(binary), "-p", "--verbose", "--output-format", "stream-json", "--model", model,
                "--effort", effort, "--permission-mode", "dontAsk", "--safe-mode", "--no-chrome",
                "--disable-slash-commands", "--setting-sources", "", "--settings", str(settings),
@@ -613,7 +647,7 @@ class ClaudeCodeAdapter(BaseAdapter):
                "--tools", ",".join(("Read","Edit","Write","Glob","Grep","Bash"))]
         if prior: cmd += ["--resume", native_session]
         else: cmd += ["--session-id", native_session]
-        cmd += extras + [ctx.prompt]
+        cmd += extras + [effective_prompt]
         env = _clean_env(ctx.env, config_dir, ctx)
         # Never wrap Claude in sandbox-exec: 2.1.227 must create its one native
         # sandbox itself, and Seatbelt cannot be safely nested.
@@ -755,4 +789,7 @@ class ClaudeCodeAdapter(BaseAdapter):
             "builtin_file_tool_denies_valid": validate_builtin_permission_denies(sensitive, permission_denies),
             "exposed_tools": expected_tools, "init_tools": init_tools, "tool_list_valid": tool_list_ok,
             "containment_contract": containment_contract, "execution_command": execution_cmd,
+            "prompt_integration": prompt_integration,
+            "original_prompt_sha256": hashlib.sha256(ctx.prompt.encode()).hexdigest(),
+            "effective_prompt_sha256": hashlib.sha256(effective_prompt.encode()).hexdigest(),
         })
