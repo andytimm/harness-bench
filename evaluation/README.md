@@ -134,7 +134,7 @@ fails closed.
 Sensitive paths are enumerated at launch. The production native policy uses a
 compact explicit high-value frontier: the current checkout's `.git`, `tasks`,
 `grading`, `evaluation`, `src`, and `config` integrity roots, other worktrees, dedicated `.harnessbench`, normal `.claude` and
-`.claude.json`, `Library/Keychains`, `.ssh`, `.aws`, `.config`, Security.framework,
+`.claude.json`, `Library/Keychains`, `.ssh`, `.aws`, `.config`, `.codex`, exact Hermes auth/config/`.env`, `.prime`, Security.framework,
 `/usr/bin/security`, and private smoke evidence. No native deny overlaps any
 workspace/runtime allow, preventing Claude from expanding a broad HOME parent
 into a profile above macOS `ARG_MAX`. This is a calibrated trust boundary for
@@ -146,7 +146,7 @@ They do not enumerate HOME or benign checkout files/docs/tests. Native credentia
 never deny a workspace ancestor. Because Claude merges permission paths into its
 Bash profile, the fail-closed shape check prefix-minimizes the union of filesystem,
 credential, and built-in paths, prohibits a broad HOME prefix or any merged allow/deny ancestry, caps the union at
-25, and budgets 32 KB per prefix / 800 KB total from the observed 92-prefix to
+30, and budgets 32 KB per prefix / 960 KB total from the observed 92-prefix to
 325-generated-path, 1.9-MB smoke. A production-shaped test covers the combined
 union and native deny/allow ancestry. The offline Seatbelt probe preserves the
 same effective frontier.

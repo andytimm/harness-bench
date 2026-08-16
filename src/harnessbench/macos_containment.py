@@ -99,6 +99,7 @@ def builtin_sensitive_paths(root: Path, auth_path: Path, *, workspace: Path,
               auth_path,home/".harnessbench",
               home/".claude",home/".claude.json",home/"Library"/"Keychains",
               home/".ssh",home/".aws",home/".config",home/".codex",home/".hermes"/"auth.json",
+              home/".hermes"/".env",home/".hermes"/"config.yaml",home/".prime",
               Path("/usr/bin/security"),
               Path("/System/Library/Frameworks/Security.framework")]
     return [str(p) for p in _prefix_minimize(explicit)]
@@ -135,7 +136,8 @@ def native_sandbox_policy(root: Path, auth_path: Path, *, workspace: Path, sandb
     home=Path.home()
     high_value=[auth_path,home/".harnessbench",home/".claude",home/".claude.json",
                 home/"Library"/"Keychains",home/".ssh",home/".aws",home/".config",
-                home/".codex",home/".hermes"/"auth.json",Path("/usr/bin/security"),
+                home/".codex",home/".hermes"/"auth.json",home/".hermes"/".env",
+                home/".hermes"/"config.yaml",home/".prime",Path("/usr/bin/security"),
                 Path("/System/Library/Frameworks/Security.framework")]
     denies=[*benchmark_integrity_paths(root),*other_worktrees(root),*controls,*high_value]
     deny=_prefix_minimize(denies)
@@ -150,9 +152,9 @@ def native_sandbox_policy(root: Path, auth_path: Path, *, workspace: Path, sandb
             "denyRead":[str(p) for p in deny],"denyWrite":[str(p) for p in deny]}
 
 
-NATIVE_COMBINED_PREFIX_LIMIT = 25
+NATIVE_COMBINED_PREFIX_LIMIT = 30
 CLAUDE_OBSERVED_BYTES_PER_UNIQUE_PREFIX = 32000
-NATIVE_ESTIMATED_PROFILE_LIMIT = 800000
+NATIVE_ESTIMATED_PROFILE_LIMIT = 960000
 
 
 def validate_native_policy_shape(policy: dict, credential_paths: Iterable[str | Path],
