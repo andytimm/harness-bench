@@ -12,6 +12,7 @@ import tempfile
 import uuid
 import stat
 import unicodedata
+import getpass
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
@@ -129,6 +130,28 @@ def _atomic_copy(source: Path, target: Path) -> None:
         if os.path.exists(temporary): os.unlink(temporary)
 
 
+def _open_lock(path: Path) -> int:
+    """Open a private, non-symlink, single-link regular lock file."""
+    try:
+        if stat.S_ISLNK(path.lstat().st_mode):
+            raise ValueError(f"unsafe Claude namespace lock symlink: {path}")
+    except FileNotFoundError:
+        pass
+    flags = os.O_RDWR | os.O_CREAT
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    fd = os.open(path, flags, 0o600)
+    try:
+        info = os.fstat(fd)
+        if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1:
+            raise ValueError(f"unsafe Claude namespace lock: {path}")
+        os.fchmod(fd, 0o600)
+        return fd
+    except BaseException:
+        os.close(fd)
+        raise
+
+
 def _sync_refresh(staged: Path, seed: Path) -> bool:
     if staged.is_symlink() or not staged.is_file():
         return False
@@ -138,11 +161,14 @@ def _sync_refresh(staged: Path, seed: Path) -> bool:
         if not isinstance(oauth, dict) or not oauth.get("accessToken") or not oauth.get("refreshToken"):
             return False
         lock = seed.with_suffix(seed.suffix + ".lock")
-        with lock.open("a+") as handle:
+        fd = _open_lock(lock)
+        try:
             if os.name == "posix":
                 import fcntl
-                fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+                fcntl.flock(fd, fcntl.LOCK_EX)
             _atomic_copy(staged, seed)
+        finally:
+            os.close(fd)
         return True
     except (OSError, ValueError, json.JSONDecodeError):
         return False
@@ -159,9 +185,8 @@ def _unlink(path: Path) -> None:
 def _namespace_lock(config_dir: Path):
     """Serialize use of the one canonical OAuth namespace (including refresh)."""
     lock = config_dir / ".harnessbench.lock"
-    fd = os.open(lock, os.O_RDWR | os.O_CREAT, 0o600)
+    fd = _open_lock(lock)
     try:
-        os.fchmod(fd, 0o600)
         if os.name == "posix":
             import fcntl
             fcntl.flock(fd, fcntl.LOCK_EX)
@@ -268,15 +293,35 @@ def _normalize_trace(rows: list[dict[str, Any]], path: Path, *, native_session: 
     return _sha256(path)
 
 
-def _unexpected_managed_policy() -> list[str]:
-    candidates = [
-        Path("/Library/Application Support/ClaudeCode/managed-settings.json"),
-        Path("/Library/Application Support/ClaudeCode/managed-mcp.json"),
-        Path("/Library/Managed Preferences/com.anthropic.claudecode.plist"),
+def _managed_policy_candidates(user: str | None = None) -> list[Path]:
+    """Every enterprise/policy source consulted by pinned Claude Code 2.1.227."""
+    user = user or getpass.getuser()
+    library = Path("/Library")
+    bases = [
+        library / "Application Support" / "ClaudeCode" / "managed-settings.json",
+        library / "Application Support" / "ClaudeCode" / "managed-mcp.json",
+        library / "Application Support" / "ClaudeCode" / "managed-settings.d",
+        library / "Managed Preferences" / "com.anthropic.claudecode.plist",
+        library / "Managed Preferences" / user / "com.anthropic.claudecode.plist",
+        library / "Preferences" / "com.anthropic.claudecode.plist",
         Path("/etc/claude-code/managed-settings.json"),
         Path("/etc/claude-code/managed-mcp.json"),
+        Path("/etc/claude-code/managed-settings.d"),
     ]
-    return [str(path) for path in candidates if path.exists() or path.is_symlink()]
+    # Reject both a policy directory itself and any entry, including dangling
+    # symlinks.  The directory check makes this fail closed for new drop-ins.
+    return bases
+
+
+def _unexpected_managed_policy(user: str | None = None) -> list[str]:
+    candidates = _managed_policy_candidates(user)
+    found: list[str] = []
+    for path in candidates:
+        if path.exists() or path.is_symlink():
+            found.append(str(path))
+        if path.name == "managed-settings.d" and path.is_dir():
+            found.extend(str(item) for item in sorted(path.iterdir(), key=lambda p: p.name))
+    return sorted(set(found))
 
 
 def _clean_env(overrides: dict[str, str], config_dir: Path, ctx: AdapterRunContext) -> dict[str, str]:
@@ -336,6 +381,7 @@ def _write_trace(rows: list[dict[str, Any]], proxy_dir: Path, ctx: AdapterRunCon
     assistants = [row for row in rows if row.get("type") == "assistant" and isinstance(row.get("message"), dict)]
     result_rows = [row for row in rows if row.get("type") == "result"]
     terminal = result_rows[-1] if result_rows else {}
+    raw_artifacts: list[dict[str, str]] = []
     for index, row in enumerate(assistants, 1):
         message = row["message"]
         path = responses / f"claude-round{round_number:02d}-{index:04d}.json"
@@ -347,6 +393,7 @@ def _write_trace(rows: list[dict[str, Any]], proxy_dir: Path, ctx: AdapterRunCon
             "response_json": {"model": EXPECTED_MODEL, "choices": [{"message": {"role": "assistant", "content": _text(message.get("content"))}}]},
             "source_stdout_log_file": str(stdout_log), "source_event_index": index,
         }, indent=2), encoding="utf-8")
+        raw_artifacts.append({"path": str(path), "sha256": _sha256(path)})
     # Claude's final result.modelUsage is the sole authoritative, cumulative
     # source. Never sum assistant-message usage or prior resumed result rows.
     model_usage = terminal.get("modelUsage") if isinstance(terminal.get("modelUsage"), dict) else {}
@@ -371,7 +418,8 @@ def _write_trace(rows: list[dict[str, Any]], proxy_dir: Path, ctx: AdapterRunCon
             "usage_source": "claude_result_modelUsage", "native_session_id": native_session,
         }))
         log.write_text("\n".join(retained) + "\n", encoding="utf-8")
-    return {"response_count": len(assistants), "result_count": len(result_rows), "usage_source": "claude_result_modelUsage"}
+    return {"response_count": len(assistants), "result_count": len(result_rows),
+            "usage_source": "claude_result_modelUsage", "raw_response_artifacts": raw_artifacts}
 
 
 def _terminate(proc: subprocess.Popen[str], grace: float) -> int:
@@ -407,6 +455,15 @@ class ClaudeCodeAdapter(BaseAdapter):
             if actual_version != EXPECTED_VERSION: raise ValueError(f"Claude Code version mismatch: {actual_version!r}")
             seed_dir = _path(str(cfg.get("benchmark_config_seed") or ""))
             seed_credential = _validate_seed(seed_dir)
+            config_dir_resolved = Path(unicodedata.normalize("NFC", str(seed_dir.resolve())))
+            plan_binding = {
+                "plan_digest": str(cfg.get("evaluation_plan_digest") or ""),
+                "benchmark_git_sha": str(cfg.get("benchmark_git_sha") or ""),
+                "canonical_config_namespace": str(config_dir_resolved),
+                "keychain_service": _keychain_service(config_dir_resolved),
+                "binary": str(binary), "binary_sha256": actual_hash,
+                "binary_version": actual_version, "model": model, "effort": effort,
+            }
         except ValueError as exc:
             return AdapterRunResult(ok=False, stderr=str(exc))
 
@@ -414,7 +471,7 @@ class ClaudeCodeAdapter(BaseAdapter):
         # stable, dedicated seed as the canonical namespace avoids creating a
         # Keychain service/account per task.  The outer sandbox denies tools
         # this directory while the parent Claude process can refresh OAuth.
-        config_dir = seed_dir.resolve()
+        config_dir = config_dir_resolved
         staged = ctx.sandbox / ".claude-benchmark" / _CREDENTIAL  # legacy cleanup probe; never created
         settings_dir = ctx.sandbox / ".claude-benchmark"
         settings_dir.mkdir(parents=True, exist_ok=True)
@@ -461,6 +518,21 @@ class ClaudeCodeAdapter(BaseAdapter):
         state_file = settings_dir / "adapter-state.json"
         try: state = json.loads(state_file.read_text()) if state_file.is_file() else {}
         except (OSError, json.JSONDecodeError): state = {}
+        if state and state.get("plan_binding") != plan_binding:
+            _unlink(staged)
+            return AdapterRunResult(ok=False, stderr="persisted Claude resume plan binding mismatch")
+        if int(state.get("rounds", 0) or 0):
+            artifacts = state.get("last_artifacts")
+            if not isinstance(artifacts, list) or not artifacts:
+                return AdapterRunResult(ok=False, stderr="persisted Claude resume artifact manifest missing")
+            try:
+                for item in artifacts:
+                    artifact = Path(str(item["path"]))
+                    if artifact.is_symlink() or not artifact.is_file(): raise ValueError("missing/non-regular artifact")
+                    artifact.resolve().relative_to(ctx.sandbox.resolve())
+                    if _sha256(artifact) != item["sha256"]: raise ValueError("artifact hash mismatch")
+            except (KeyError, TypeError, ValueError, OSError):
+                return AdapterRunResult(ok=False, stderr="persisted Claude resume artifact validation failed")
         round_number = int(state.get("rounds", 0) or 0) + 1
         prior = str(state.get("session_id") or "")
         native_session = prior or str(uuid.uuid4())
@@ -574,7 +646,15 @@ class ClaudeCodeAdapter(BaseAdapter):
         ok = (returncode == 0 and not timed_out and not quota_censored and not parse_error and
               not normalization_error and session_ok and init_ok and terminal_ok and native_trace_ok and
               trace["response_count"] > 0 and trace["result_count"] == 1)
+        normalized_path = ctx.sandbox / f"claude-round{round_number}.normalized.json"
+        state_artifacts = [
+            {"path": str(path), "sha256": digest}
+            for path, digest in ((stdout_log, _sha256(stdout_log)), (stderr_log, _sha256(stderr_log)),
+                                 (retained_native, native_hash), (normalized_path, normalized_hash))
+            if path.is_file() and digest
+        ] + trace["raw_response_artifacts"]
         _atomic_json(state_file, {"rounds": round_number, "session_id": native_session,
+                                  "plan_binding": plan_binding, "last_artifacts": state_artifacts,
                                   "last_native_sha256": native_hash,
                                   "last_normalized_sha256": normalized_hash})
         return AdapterRunResult(ok=ok, command=cmd, stdout=stdout, stderr=stderr, metadata={
@@ -588,7 +668,10 @@ class ClaudeCodeAdapter(BaseAdapter):
             "normalization_error": normalization_error,
             "native_session_file": str(retained_native) if native_trace_ok else "",
             "native_transcript_sha256": native_hash, "normalized_trace_sha256": normalized_hash,
-            "stdout_log_file": str(stdout_log), "stderr_log_file": str(stderr_log),
+            "stdout_log_file": str(stdout_log), "stdout_sha256": _sha256(stdout_log),
+            "stderr_log_file": str(stderr_log), "stderr_sha256": _sha256(stderr_log),
+            "raw_response_artifacts": trace["raw_response_artifacts"],
+            "plan_binding": plan_binding, "evaluation_plan_digest": plan_binding["plan_digest"],
             "native_trace_dir": str(ctx.sandbox / "native-transcripts"), "synthetic_trace": trace,
             "staged_credential_removed": not staged.exists(),
             "credential_cleanup_proof": "no ephemeral namespace or per-task Keychain item created",

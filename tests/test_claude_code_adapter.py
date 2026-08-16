@@ -46,6 +46,10 @@ transcript=config/"projects"/"fake"/(session+".jsonl"); transcript.parent.mkdir(
   self.assertTrue(first.ok,first.stderr); self.assertTrue(second.ok,second.stderr); self.assertFalse(first.metadata['resumed']); self.assertTrue(second.metadata['resumed']); self.assertEqual(first.metadata['native_session_id'],second.metadata['native_session_id']); self.assertFalse((self.sandbox/'.claude-benchmark'/'.credentials.json').exists()); self.assertEqual(json.loads((self.seed/'.credentials.json').read_text())['claudeAiOauth']['accessToken'],'refreshed')
   usage=_collect_proxy_usage_summary(self.sandbox/'usage-proxy'/'requests.jsonl','bench-session'); self.assertEqual(usage['request_count'],4); self.assertEqual(usage['total_tokens'],26); self.assertEqual(usage['models'],['claude-opus-4-6'])
  @mock.patch('harnessbench.adapters.claude_code._sha256',return_value=EXPECTED_SHA256)
+ def test_resume_rejects_plan_binding_change(self,_):
+  first=ClaudeCodeAdapter().run(self.context('first',evaluation_plan_digest='plan-a',benchmark_git_sha='a'*40)); self.assertTrue(first.ok,first.stderr)
+  second=ClaudeCodeAdapter().run(self.context('second',evaluation_plan_digest='plan-b',benchmark_git_sha='a'*40)); self.assertFalse(second.ok); self.assertIn('plan binding mismatch',second.stderr)
+ @mock.patch('harnessbench.adapters.claude_code._sha256',return_value=EXPECTED_SHA256)
  def test_terminal_and_reserved_failures(self,_):
   self.assertFalse(ClaudeCodeAdapter().run(self.context('BAD')).ok); self.assertFalse(ClaudeCodeAdapter().run(self.context(extra_args=['--bare'])).ok)
  def test_hash_mismatch(self):

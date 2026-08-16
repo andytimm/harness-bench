@@ -1,8 +1,9 @@
 from __future__ import annotations
 import json, tempfile, unittest
+from unittest import mock
 from pathlib import Path
 from harnessbench.adapters.claude_code import (_parse_stream, _parse_native_transcript, _normalize_trace,
-    _quota_rejected, _keychain_service, _validate_seed)
+    _quota_rejected, _keychain_service, _validate_seed, _managed_policy_candidates, _unexpected_managed_policy, _open_lock)
 
 SESSION="123e4567-e89b-12d3-a456-426614174000"
 MODEL="claude-opus-4-6"
@@ -44,6 +45,18 @@ class TraceValidationTests(unittest.TestCase):
    self.assertRegex(_keychain_service(seed),r"^Claude Code-credentials-[0-9a-f]{8}$")
    credential.chmod(0o644)
    with self.assertRaisesRegex(ValueError,"permissions"): _validate_seed(seed)
+ def test_every_pinned_managed_policy_source_and_safe_lock(self):
+  candidates={str(x) for x in _managed_policy_candidates('alice')}
+  self.assertIn('/Library/Application Support/ClaudeCode/managed-settings.d',candidates)
+  self.assertIn('/Library/Managed Preferences/alice/com.anthropic.claudecode.plist',candidates)
+  self.assertIn('/Library/Managed Preferences/com.anthropic.claudecode.plist',candidates)
+  self.assertIn('/etc/claude-code/managed-settings.d',candidates)
+  with tempfile.TemporaryDirectory() as tmp:
+   target=Path(tmp)/'target'; target.write_text('x'); lock=Path(tmp)/'lock'; lock.symlink_to(target)
+   with self.assertRaises((OSError,ValueError)): _open_lock(lock)
+   policy=Path(tmp)/'managed-settings.d'; policy.mkdir(); (policy/'10-policy.json').write_text('{}')
+   with mock.patch('harnessbench.adapters.claude_code._managed_policy_candidates',return_value=[policy]):
+    found=_unexpected_managed_policy(); self.assertIn(str(policy),found); self.assertIn(str(policy/'10-policy.json'),found)
  def test_realistic_quota_events(self):
   self.assertFalse(_quota_rejected([{"type":"rate_limit_event","rate_limit_info":{"status":"allowed","resetsAt":1770000000}}]))
   self.assertTrue(_quota_rejected([{"type":"rate_limit_event","subtype":"rejected","rate_limit_info":{"status":"rejected","utilization":1.0}}]))

@@ -76,10 +76,33 @@ Inspect the SHA/task/prompt/fixture/oracle-bound immutable plan offline:
   --tranche 1 --dry-plan
 ```
 
-Live execution requires a clean planned Git SHA plus `--live` and the literal
-acknowledgement printed by `--help`. Tranche 1 is the 53 odd task IDs and tranche
-2 the 53 even IDs. Claims precede launch. Claims, results and receipts are
-content-hashed and bound to the plan digest; resume revalidates every artifact.
+The plan binds the NFC/resolved seed and config namespace, derived Keychain
+service, resolved binary path/version/hash, model/effort, benchmark revision and
+every task tree. Changing any value requires a new run root.
+
+Before any tranche, run the dedicated one-shot, non-benchmark live smoke (it
+makes no score or benchmark claim and never retries):
+
+```sh
+.venv/bin/python evaluation/run_claude_security_smoke.py \
+  --run-root /absolute/external/harnessbench-claude-opus46 \
+  --benchmark-seed /absolute/dedicated/seed --live \
+  --ack I_ACKNOWLEDGE_CLAUDE_SUBSCRIPTION_LIVE_EVALUATION
+```
+
+An independent reviewer must inspect its immutable claim, receipt, native/raw/
+normalized/stdout/stderr artifacts and hashes. The smoke command deliberately
+does **not** approve itself. The reviewer creates a read-only JSON approval with
+`schema: 1`, `approved: true`, the exact `plan_binding`, absolute
+`smoke_claim_file`/`smoke_receipt_file`, and their SHA256 values. Main tranche
+`--live` fails closed without `--smoke-approval /path/to/reviewer-marker.json`.
+
+Live execution also requires a clean planned Git SHA plus `--live` and the
+literal acknowledgement. Tranche 1 is the 53 odd task IDs and tranche 2 the 53
+even IDs. Claims precede launch. Claims, results and receipts are content-hashed
+and bound to the complete plan binding; resume rehashes stdout, stderr, native,
+normalized and raw-response artifacts under the expected sandbox and validates
+round/session/resume/native-stream correlation.
 A claim without a receipt is never retried automatically, no result is
 overwritten, and a rejected quota event writes a censored receipt and stops.
 
@@ -93,14 +116,11 @@ UUIDs, session, round, resume and actual model; the native transcript and both
 hashes are retained.
 
 A launch remains blocked unless the macOS Seatbelt capability smoke passes.
-Before paid evaluation, operator review must additionally perform the required
-**live smoke** with the pinned binary and dedicated account: verify OAuth refresh
-and a harmless model response; inspect the init event for model/version,
-`dontAsk`, empty MCP/plugins/skills/slash commands and no unexpected effective
-hooks/agents/commands; exercise Read, `cat`, Python, Node and direct
-Security.framework/`security` attempts against the canonical plaintext and
-namespaced Keychain credential and confirm every attempt is denied; verify
-workspace input/output, images, subprocesses, `.venv` Python/pytest, Node and
-loopback fixture HTTP still work. Also confirm no managed/policy settings files
-exist (the adapter fails closed if known locations are present). These are live
-requirements, not claims made by the offline suite.
+The smoke protocol verifies OAuth/init/policy state, adversarial built-in Read
+and Bash `cat`/Python/Node/direct Security.framework/`security` attempts against
+plaintext authentication and the exact namespaced Keychain service, and positive
+workspace/image/subprocess/resolved `.venv` Python/Node/loopback capabilities.
+It stops unconditionally after one Claude invocation. Managed JSON, plist and
+`managed-settings.d` sources (including the per-user Managed Preferences plist)
+are enumerated and rejected before launch. Offline tests do not make these live
+claims and never access authentication.

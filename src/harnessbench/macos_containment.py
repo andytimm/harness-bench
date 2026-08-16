@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import shutil
 import sys
 import tempfile
 import threading
@@ -59,8 +60,13 @@ def seatbelt_profile(read_write_denies: list[Path], write_denies: list[Path]) ->
     allowed = [p.resolve() for p in getattr(read_write_denies, "allow_read", [])]
     home = Path.home().resolve()
     if allowed:
-        exceptions = " ".join(f"(require-not (subpath {json.dumps(str(p))}))" for p in allowed)
-        clauses.append(f"(deny file-read* (subpath {json.dumps(str(home))}) {exceptions})")
+        # Seatbelt accepts one filter expression; explicitly conjoin HOME with
+        # every capability exception rather than passing adjacent filters.
+        filters = " ".join(
+            [f"(subpath {json.dumps(str(home))})"]
+            + [f"(require-not (subpath {json.dumps(str(p))}))" for p in allowed]
+        )
+        clauses.append(f"(deny file-read* (require-all {filters}))")
     for path in read_write_denies:
         path = path.resolve()
         clauses.append(f"(deny file-read* file-write* ({_selector(path)} {json.dumps(str(path))}))")
@@ -75,7 +81,11 @@ def containment_paths(root: Path, auth_path: Path | None = None, *, workspace: P
                       capability_paths: list[Path] | None = None) -> tuple[list[Path], list[Path]]:
     root = root.resolve()
     denied = repository_control_plane_paths(root)
-    allowed = [root / ".venv"]
+    venv_python = (root / ".venv" / "bin" / "python").resolve()
+    # uv/venv Python is commonly a symlink into a HOME-managed runtime.  Bind
+    # the resolved interpreter installation as a read capability as well as
+    # the visible .venv tree.
+    allowed = [root / ".venv", venv_python, venv_python.parents[1]]
     for value in (workspace, sandbox, binary):
         if value is not None: allowed.append(value.resolve())
     allowed.extend(p.resolve() for p in (capability_paths or []))
@@ -118,14 +128,21 @@ def verify_repo_containment(root: Path) -> None:
         raise RuntimeError("repo containment descendant unexpectedly read benchmark oracle data")
 
 
-def verify_task_capabilities(root: Path, auth_path: Path) -> None:
+def verify_task_capabilities(root: Path, auth_path: Path, *, binary: Path | None = None) -> None:
     # Realistic offline smoke: task tools/resources work while control plane stays denied.
     root = root.resolve()
     auth_path = auth_path.resolve()
-    read_write, write_only = containment_paths(root, auth_path)
-    profile = seatbelt_profile(read_write, write_only)
+    binary = (binary or Path("/bin/sh")).resolve()
+    node = Path(shutil.which("node") or "").resolve()
+    if not binary.is_file() or not node.is_file():
+        raise RuntimeError("Claude binary/runtime or Node capability is unavailable")
     with tempfile.TemporaryDirectory(prefix="harnessbench-contained-smoke-") as temporary:
-        workspace = Path(temporary)
+        workspace = Path(temporary).resolve()
+        read_write, write_only = containment_paths(
+            root, auth_path, workspace=workspace, sandbox=workspace, binary=binary,
+            capability_paths=[node, node.parent, binary.parent],
+        )
+        profile = seatbelt_profile(read_write, write_only)
         (workspace / "in").mkdir()
         (workspace / "out").mkdir()
         (workspace / "in" / "input.txt").write_text("fixture-data\n", encoding="utf-8")
@@ -149,23 +166,30 @@ def verify_task_capabilities(root: Path, auth_path: Path) -> None:
 printf 'workspace-write
 ' > out/result.txt
 "$5" -c 'from pathlib import Path; import subprocess; assert Path("in/image.png").read_bytes().startswith(b"\x89PNG"); assert subprocess.run(["/bin/echo", "child"], capture_output=True, text=True, check=True).stdout.strip() == "child"'
-"$6" -q test_smoke.py
-node --version >/dev/null
+"$7" --version >/dev/null
+"$8" --version >/dev/null
 "$5" -c 'import sys, urllib.request; assert urllib.request.urlopen(sys.argv[1], timeout=5).read() == b"fixture-data\n"' "$1"
 if /bin/cat "$2" >/dev/null 2>&1; then exit 91; fi
 if /usr/bin/touch "$4" >/dev/null 2>&1; then exit 93; fi
+if /bin/cat "$9" >/dev/null 2>&1; then exit 94; fi
 '''
             env = os.environ.copy()
             env.pop("VIRTUAL_ENV", None)
             env.pop("PYTHONPATH", None)
-            completed = subprocess.run(
-                [str(_sandbox_exec()), "-p", profile, "/bin/sh", "-c", script,
-                 "capability-smoke", url,
-                 str(root / "tasks" / "079-smallfile-batch-reject-ledger" / "oracle_grade.py"),
-                 str(auth_path), str(root / ".containment-write-probe"),
-                 str(root / ".venv" / "bin" / "python"), str(root / ".venv" / "bin" / "pytest")],
-                cwd=workspace, env=env, text=True, capture_output=True, timeout=30, check=False,
-            )
+            home_probe = Path.home() / ".harnessbench-containment-home-probe"
+            home_probe.write_text("deny-me\n", encoding="utf-8")
+            try:
+                completed = subprocess.run(
+                    [str(_sandbox_exec()), "-p", profile, "/bin/sh", "-c", script,
+                     "capability-smoke", url,
+                     str(root / "tasks" / "079-smallfile-batch-reject-ledger" / "oracle_grade.py"),
+                     str(auth_path), str(root / ".containment-write-probe"),
+                     str((root / ".venv" / "bin" / "python").resolve()), str(root / ".venv" / "bin" / "pytest"),
+                     str(node), str(binary), str(home_probe)],
+                    cwd=workspace, env=env, text=True, capture_output=True, timeout=30, check=False,
+                )
+            finally:
+                home_probe.unlink(missing_ok=True)
         finally:
             server.shutdown()
             server.server_close()
@@ -177,3 +201,14 @@ if /usr/bin/touch "$4" >/dev/null 2>&1; then exit 93; fi
             )
         if (root / ".containment-write-probe").exists():
             raise RuntimeError("containment smoke unexpectedly wrote into benchmark checkout")
+        # The production outer profile must exempt the parent OAuth namespace;
+        # Claude's native descendant sandbox denies it.  Independently prove
+        # Seatbelt can enforce the exact auth-file denial used by that layer.
+        auth_denies, auth_writes = containment_paths(root)
+        auth_denies.append(auth_path)
+        auth_probe = subprocess.run(
+            [str(_sandbox_exec()), "-p", seatbelt_profile(auth_denies, auth_writes),
+             "/bin/cat", str(auth_path)], capture_output=True, timeout=10, check=False,
+        )
+        if auth_probe.returncode == 0:
+            raise RuntimeError("auth containment probe unexpectedly read credential")
