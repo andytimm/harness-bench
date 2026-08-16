@@ -94,10 +94,16 @@ def native_sandbox_policy(root: Path, auth_path: Path, *, workspace: Path, sandb
 
 
 def builtin_permission_denies(paths: Iterable[str | Path]) -> list[str]:
+    """Exact ordered Cartesian deny set: every tool × literal/subtree path."""
     rules=[]
     for path in sorted({str(Path(p).resolve()) for p in paths}):
-        for tool in FILE_TOOLS: rules.extend([f"{tool}({path})",f"{tool}({path}/**)"])
+        for tool in FILE_TOOLS:
+            rules.extend([f"{tool}({path})", f"{tool}({path}/**)"])
     return rules
+
+
+def validate_builtin_permission_denies(paths: Iterable[str | Path], rules: object) -> bool:
+    return isinstance(rules, list) and rules == builtin_permission_denies(paths)
 
 
 def _q(path: Path) -> str: return json.dumps(str(path.resolve()))
@@ -126,12 +132,12 @@ def verify_repo_containment(root: Path) -> None:
     repository_control_plane_paths(root); other_worktrees(root)
 
 
-def verify_task_capabilities(root: Path, auth_path: Path, *, binary: Path | None = None) -> None:
+def verify_task_capabilities(root: Path, seed_namespace: Path, *, binary: Path | None = None) -> None:
     # Compatibility preflight used by tranche runner; proves policy construction
     # and venv/runtime visibility without nesting a sandbox around Claude.
     import tempfile
     with tempfile.TemporaryDirectory(prefix="harnessbench-native-preflight-") as td:
-        workspace=Path(td); policy=native_sandbox_policy(root,auth_path,workspace=workspace,
+        workspace=Path(td); policy=native_sandbox_policy(root,seed_namespace,workspace=workspace,
             sandbox=workspace,binary=binary)
         visible=root/".venv/bin/python"
         completed=subprocess.run([str(visible),"-m","pytest","--version"],text=True,

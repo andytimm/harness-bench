@@ -13,6 +13,7 @@ import uuid
 import stat
 import unicodedata
 import getpass
+import ctypes
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
@@ -24,11 +25,11 @@ EXPECTED_VERSION = "2.1.227 (Claude Code)"
 EXPECTED_SHA256 = "7432511ba3be818e01f23f6eef8630d214a8b618451e188c3c7d61a987eef6c7"
 EXPECTED_MODEL = "claude-opus-4-6"
 EXPECTED_EFFORT = "medium"
-_CREDENTIAL = ".credentials.json"
 _SECRET_SUFFIXES = ("_API_KEY", "_ACCESS_TOKEN", "_AUTH_TOKEN", "_PASSWORD", "_SECRET")
 CLAUDE_PLAN_BINDING_KEYS = (
     "plan_digest", "benchmark_git_sha", "canonical_benchmark_seed",
-    "canonical_config_namespace", "keychain_service", "binary",
+    "canonical_config_namespace", "auth_backend", "keychain_service",
+    "keychain_status_semantics", "auth_status_semantics", "binary",
     "binary_version", "binary_sha256", "model", "effort",
 )
 
@@ -100,26 +101,66 @@ def _assert_secure_path(path: Path, *, directory: bool) -> None:
 
 
 def _validate_seed(seed: Path) -> Path:
+    """Validate and return the canonical dedicated namespace; never inspect auth files."""
     normal = (Path.home() / ".claude").resolve()
-    resolved_seed = seed.resolve()
-    if resolved_seed == normal or normal in resolved_seed.parents:
+    resolved = Path(unicodedata.normalize("NFC", str(seed.expanduser().resolve())))
+    if resolved == normal or normal in resolved.parents:
         raise ValueError("benchmark_config_seed must not use normal ~/.claude authentication")
     _assert_secure_path(seed, directory=True)
-    forbidden = [seed / name for name in ("settings.json", "settings.local.json", "CLAUDE.md",
+    forbidden = [resolved / name for name in ("settings.json", "settings.local.json", "CLAUDE.md",
                  "commands", "agents", "plugins", "skills", "hooks")]
     present = [str(path) for path in forbidden if path.exists() or path.is_symlink()]
     if present:
         raise ValueError("dedicated Claude namespace contains customization: " + ", ".join(present))
-    credential = seed / _CREDENTIAL
-    _assert_secure_path(credential, directory=False)
+    return resolved
+
+
+def _keychain_status(service: str) -> int:
+    """Return only exact-service lookup status; password outputs are always NULL."""
+    if sys.platform != "darwin":
+        raise ValueError("macOS Security.framework Keychain authentication is required")
     try:
-        value = json.loads(credential.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
-        raise ValueError(f"invalid benchmark OAuth credential: {exc}") from exc
-    oauth = value.get("claudeAiOauth") if isinstance(value, dict) else None
-    if not isinstance(oauth, dict) or not oauth.get("accessToken") or not oauth.get("refreshToken"):
-        raise ValueError("benchmark subscription OAuth credential is incomplete")
-    return credential
+        fn = ctypes.CDLL(
+            "/System/Library/Frameworks/Security.framework/Versions/A/Security"
+        ).SecKeychainFindGenericPassword
+        fn.argtypes = [ctypes.c_void_p, ctypes.c_uint32, ctypes.c_char_p,
+                       ctypes.c_uint32, ctypes.c_char_p, ctypes.c_void_p,
+                       ctypes.c_void_p, ctypes.c_void_p]
+        fn.restype = ctypes.c_int32
+        encoded = service.encode("utf-8")
+        return int(fn(None, len(encoded), encoded, 0, None, None, None, None))
+    except (OSError, AttributeError) as exc:
+        raise ValueError("Security.framework exact-service status lookup unavailable") from exc
+
+
+_PAID_SUBSCRIPTIONS = frozenset({"pro", "max", "team", "enterprise"})
+AUTH_BACKEND = "macos-security-framework-generic-password"
+KEYCHAIN_STATUS_SEMANTICS = "SecKeychainFindGenericPassword-exact-service-NULL-password-outputs"
+AUTH_STATUS_SEMANTICS = "claude-auth-status-json:loggedIn+claude.ai+firstParty+paid"
+
+
+def _validate_auth_status(binary: Path, env: dict[str, str]) -> int:
+    """Validate pinned Claude status while discarding all output and identity fields."""
+    try:
+        completed = subprocess.run([str(binary), "auth", "status", "--json"], env=env,
+            text=True, capture_output=True, stdin=subprocess.DEVNULL, timeout=20, check=False)
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise ValueError("Claude authentication status validation failed") from exc
+    code = int(completed.returncode)
+    try:
+        value = json.loads(completed.stdout)
+    except (TypeError, json.JSONDecodeError):
+        raise ValueError("Claude authentication status is malformed") from None
+    # Deliberately extract only authorization properties. Other fields may identify
+    # the subscriber and are captured by subprocess only long enough to discard.
+    valid = (code == 0 and isinstance(value, dict)
+             and value.get("loggedIn") is True
+             and value.get("authMethod") == "claude.ai"
+             and value.get("apiProvider") == "firstParty"
+             and value.get("subscriptionType") in _PAID_SUBSCRIPTIONS)
+    if not valid:
+        raise ValueError("Claude authentication status does not match paid first-party claude.ai")
+    return code
 
 
 def _atomic_copy(source: Path, target: Path) -> None:
@@ -155,35 +196,6 @@ def _open_lock(path: Path) -> int:
     except BaseException:
         os.close(fd)
         raise
-
-
-def _sync_refresh(staged: Path, seed: Path) -> bool:
-    if staged.is_symlink() or not staged.is_file():
-        return False
-    try:
-        refreshed = json.loads(staged.read_text(encoding="utf-8"))
-        oauth = refreshed.get("claudeAiOauth") if isinstance(refreshed, dict) else None
-        if not isinstance(oauth, dict) or not oauth.get("accessToken") or not oauth.get("refreshToken"):
-            return False
-        lock = seed.with_suffix(seed.suffix + ".lock")
-        fd = _open_lock(lock)
-        try:
-            if os.name == "posix":
-                import fcntl
-                fcntl.flock(fd, fcntl.LOCK_EX)
-            _atomic_copy(staged, seed)
-        finally:
-            os.close(fd)
-        return True
-    except (OSError, ValueError, json.JSONDecodeError):
-        return False
-
-
-def _unlink(path: Path) -> None:
-    try:
-        if path.exists() or path.is_symlink(): path.unlink()
-    except OSError:
-        pass
 
 
 @contextmanager
@@ -459,21 +471,23 @@ class ClaudeCodeAdapter(BaseAdapter):
             if actual_hash != EXPECTED_SHA256: raise ValueError(f"Claude Code binary SHA256 mismatch: {actual_hash}")
             if actual_version != EXPECTED_VERSION: raise ValueError(f"Claude Code version mismatch: {actual_version!r}")
             seed_dir = _path(str(cfg.get("benchmark_config_seed") or ""))
-            seed_credential = _validate_seed(seed_dir)
-            config_dir_resolved = Path(unicodedata.normalize("NFC", str(seed_dir.resolve())))
+            config_dir_resolved = _validate_seed(seed_dir)
             canonical_seed = str(config_dir_resolved)
             plan_binding = {
                 "plan_digest": str(cfg.get("evaluation_plan_digest") or ""),
                 "benchmark_git_sha": str(cfg.get("benchmark_git_sha") or ""),
                 "canonical_benchmark_seed": canonical_seed,
                 "canonical_config_namespace": canonical_seed,
+                "auth_backend": AUTH_BACKEND,
                 "keychain_service": _keychain_service(config_dir_resolved),
+                "keychain_status_semantics": KEYCHAIN_STATUS_SEMANTICS,
+                "auth_status_semantics": AUTH_STATUS_SEMANTICS,
                 "binary": str(binary), "binary_version": actual_version,
                 "binary_sha256": actual_hash, "model": model, "effort": effort,
             }
             if tuple(plan_binding) != CLAUDE_PLAN_BINDING_KEYS:
                 raise ValueError("internal Claude plan binding schema mismatch")
-            for key in ("canonical_benchmark_seed", "canonical_config_namespace", "keychain_service"):
+            for key in ("canonical_benchmark_seed", "canonical_config_namespace", "auth_backend", "keychain_service", "keychain_status_semantics", "auth_status_semantics"):
                 supplied = cfg.get(key)
                 if supplied is not None and str(supplied) != plan_binding[key]:
                     raise ValueError(f"Claude plan binding {key} mismatch")
@@ -488,11 +502,11 @@ class ClaudeCodeAdapter(BaseAdapter):
         # OS boundary for Bash and descendants; in-process file tools are
         # separately constrained by explicit permission rules.
         config_dir = config_dir_resolved
-        staged = ctx.sandbox / ".claude-benchmark" / _CREDENTIAL  # legacy cleanup probe; never created
         settings_dir = ctx.sandbox / ".claude-benchmark"
         settings_dir.mkdir(parents=True, exist_ok=True)
         settings = settings_dir / "benchmark-settings.json"
-        from harnessbench.macos_containment import builtin_permission_denies, native_sandbox_policy
+        from harnessbench.macos_containment import (builtin_permission_denies,
+            validate_builtin_permission_denies, native_sandbox_policy)
         try:
             filesystem = native_sandbox_policy(_project_root(), seed_dir, workspace=ctx.workspace,
                 sandbox=ctx.sandbox, binary=binary,
@@ -527,8 +541,7 @@ class ClaudeCodeAdapter(BaseAdapter):
         if (settings_payload["sandbox"].get("enabled") is not True or
             settings_payload["sandbox"].get("failIfUnavailable") is not True or
             settings_payload["sandbox"].get("allowUnsandboxedCommands") is not False or
-            any(not any(rule.startswith(tool+"(") for rule in permission_denies)
-                for tool in ("Read","Edit","Write","Glob","Grep"))):
+            not validate_builtin_permission_denies(sensitive, permission_denies)):
             return AdapterRunResult(ok=False, stderr="native sandbox settings invariant failed")
         _atomic_json(settings, settings_payload)
         mcp = settings_dir / "empty-mcp.json"; mcp.write_text('{"mcpServers": {}}\n', encoding="utf-8")
@@ -536,7 +549,6 @@ class ClaudeCodeAdapter(BaseAdapter):
         try: state = json.loads(state_file.read_text()) if state_file.is_file() else {}
         except (OSError, json.JSONDecodeError): state = {}
         if state and state.get("plan_binding") != plan_binding:
-            _unlink(staged)
             return AdapterRunResult(ok=False, stderr="persisted Claude resume plan binding mismatch")
         if int(state.get("rounds", 0) or 0):
             artifacts = state.get("last_artifacts")
@@ -555,7 +567,7 @@ class ClaudeCodeAdapter(BaseAdapter):
         native_session = prior or str(uuid.uuid4())
         try: uuid.UUID(native_session)
         except ValueError:
-            _unlink(staged); return AdapterRunResult(ok=False, stderr="invalid persisted Claude native session UUID")
+            return AdapterRunResult(ok=False, stderr="invalid persisted Claude native session UUID")
 
         reserved = {"--model", "--effort", "--resume", "--session-id", "--output-format", "--input-format",
                     "--settings", "--setting-sources", "--mcp-config", "--strict-mcp-config", "--bare",
@@ -564,7 +576,7 @@ class ClaudeCodeAdapter(BaseAdapter):
                     "--safe-mode", "--no-chrome", "--chrome", "--disable-slash-commands"}
         extras = [str(v) for v in cfg.get("extra_args", [])]
         if any(v in reserved or any(v.startswith(x + "=") for x in reserved) for v in extras):
-            _unlink(staged); return AdapterRunResult(ok=False, stderr="reserved Claude Code extra_args are not allowed")
+            return AdapterRunResult(ok=False, stderr="reserved Claude Code extra_args are not allowed")
         cmd = [str(binary), "-p", "--verbose", "--output-format", "stream-json", "--model", model,
                "--effort", effort, "--permission-mode", "dontAsk", "--safe-mode", "--no-chrome",
                "--disable-slash-commands", "--setting-sources", "", "--settings", str(settings),
@@ -579,28 +591,37 @@ class ClaudeCodeAdapter(BaseAdapter):
         execution_cmd = cmd
         containment_contract = "claude-native-macos-bash-sandbox-plus-builtin-permission-denies"
         if bool(cfg.get("require_macos_containment", False)) and sys.platform != "darwin":
-            _unlink(staged)
             return AdapterRunResult(ok=False, command=cmd, stderr="Claude native macOS sandbox is required")
         stdout_log = ctx.sandbox / f"claude-round{round_number}.stdout.jsonl"
         stderr_log = ctx.sandbox / f"claude-round{round_number}.stderr.log"
-        credential_hash_before = _sha256(seed_credential)
         timed_out = False
         try:
+            # One symlink-safe namespace lock covers the status-only preflight,
+            # Claude invocation, and unchanged exact-service postcondition.
             with _namespace_lock(config_dir):
-                proc = subprocess.Popen(execution_cmd, cwd=ctx.workspace, env=env, text=True,
-                                        stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
-                                        stderr=subprocess.PIPE, start_new_session=(os.name == "posix"))
+                _validate_seed(config_dir)
+                keychain_status_before = _keychain_status(plan_binding["keychain_service"])
+                keychain_exists_before = keychain_status_before == 0
+                if not keychain_exists_before:
+                    raise ValueError("dedicated Claude Keychain service is unavailable")
+                auth_status_code = _validate_auth_status(binary, env)
                 try:
-                    stdout, stderr = proc.communicate(timeout=ctx.timeout_sec)
-                    returncode = int(proc.returncode or 0)
-                except subprocess.TimeoutExpired:
-                    timed_out = True
-                    returncode = _terminate(proc, float(cfg.get("timeout_grace_sec", 5) or 5))
-                    stdout, stderr = proc.communicate()
-                # Refresh happens in-place in the single canonical namespace and
-                # is covered by the same lock as the whole Claude invocation.
-                seed_credential = _validate_seed(config_dir)
-                credential_hash_after = _sha256(seed_credential)
+                    proc = subprocess.Popen(execution_cmd, cwd=ctx.workspace, env=env, text=True,
+                                            stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+                                            stderr=subprocess.PIPE, start_new_session=(os.name == "posix"))
+                    try:
+                        stdout, stderr = proc.communicate(timeout=ctx.timeout_sec)
+                        returncode = int(proc.returncode or 0)
+                    except subprocess.TimeoutExpired:
+                        timed_out = True
+                        returncode = _terminate(proc, float(cfg.get("timeout_grace_sec", 5) or 5))
+                        stdout, stderr = proc.communicate()
+                finally:
+                    keychain_status_after = _keychain_status(plan_binding["keychain_service"])
+                    keychain_exists_after = keychain_status_after == 0
+                    if ((keychain_status_after, keychain_exists_after) !=
+                        (keychain_status_before, keychain_exists_before)):
+                        raise ValueError("dedicated Claude Keychain exact-service status changed")
         except (OSError, ValueError) as exc:
             return AdapterRunResult(ok=False, command=cmd, stderr=str(exc))
         except BaseException:
@@ -623,8 +644,7 @@ class ClaudeCodeAdapter(BaseAdapter):
         disabled_fields_ok = all(init.get(key) == [] for key in ("mcp_servers", "plugins", "skills", "slash_commands"))
         expected_tools = ["Read", "Edit", "Write", "Glob", "Grep", "Bash"]
         init_tools = init.get("tools")
-        tool_list_ok = (isinstance(init_tools, list) and len(init_tools) == len(expected_tools)
-                        and set(init_tools) == set(expected_tools))
+        tool_list_ok = init_tools == expected_tools
         # Fields which would prove customization escaped safe mode are rejected;
         # absent fields are accepted because 2.1.227 does not emit all of them.
         unexpected_effective = {key: init.get(key) for key in ("hooks", "agents", "commands")
@@ -685,16 +705,19 @@ class ClaudeCodeAdapter(BaseAdapter):
             "raw_response_artifacts": trace["raw_response_artifacts"],
             "plan_binding": plan_binding, "evaluation_plan_digest": plan_binding["plan_digest"],
             "native_trace_dir": str(ctx.sandbox / "native-transcripts"), "synthetic_trace": trace,
-            "staged_credential_removed": not staged.exists(),
-            "credential_cleanup_proof": "no ephemeral namespace or per-task Keychain item created",
-            "keychain_cleanup_proven": False, "canonical_config_namespace": str(config_dir),
-            "expected_keychain_service": _keychain_service(config_dir),
-            "refreshed_auth_synced": True, "credential_hash_before": credential_hash_before,
-            "credential_hash_after": credential_hash_after, "benchmark_config_seed": str(seed_dir),
+            "auth_backend": AUTH_BACKEND, "canonical_config_namespace": str(config_dir),
+            "keychain_service": plan_binding["keychain_service"],
+            "keychain_status_semantics": KEYCHAIN_STATUS_SEMANTICS,
+            "auth_status_semantics": AUTH_STATUS_SEMANTICS,
+            "keychain_status_before": keychain_status_before,
+            "keychain_status_after": keychain_status_after,
+            "keychain_exists_before": keychain_exists_before,
+            "keychain_exists_after": keychain_exists_after,
+            "keychain_status_unchanged": True, "auth_status_code": auth_status_code,
+            "auth_status_valid": True, "benchmark_config_seed": str(seed_dir),
             "settings_sources": [], "safe_mode": True, "chrome_disabled": True, "mcp_disabled": True,
-            "native_sandbox_settings_valid": True, "native_sandbox_runtime_evidence": init_ok,
-            "builtin_file_tool_denies_valid": all(any(rule.startswith(tool+"(") for rule in permission_denies)
-                                                   for tool in ("Read","Edit","Write","Glob","Grep")),
+            "native_sandbox_settings_valid": True, "native_sandbox_runtime_evidence": False,
+            "builtin_file_tool_denies_valid": validate_builtin_permission_denies(sensitive, permission_denies),
             "exposed_tools": expected_tools, "init_tools": init_tools, "tool_list_valid": tool_list_ok,
             "containment_contract": containment_contract, "execution_command": execution_cmd,
         })

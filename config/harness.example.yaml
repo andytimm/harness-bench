@@ -14,7 +14,6 @@
       "billing_mode": "subscription_oauth",
       "timeout_sec": 2400,
       "timeout_grace_sec": 5,
-      "sync_refreshed_auth": true,
       "stream_to_console": false,
       "use_usage_proxy": false,
       "require_macos_containment": true

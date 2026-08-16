@@ -4,7 +4,7 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('run_claude_full',ROOT/'evaluation/run_claude_full.py'); module=importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
-from harnessbench.macos_containment import native_sandbox_policy, native_seatbelt_profile, verify_repo_containment, verify_task_capabilities, FILE_TOOLS
+from harnessbench.macos_containment import native_sandbox_policy, native_seatbelt_profile, verify_repo_containment, verify_task_capabilities, FILE_TOOLS, builtin_permission_denies, validate_builtin_permission_denies
 from harnessbench.adapters.claude_code import EXPECTED_SHA256
 
 class ClaudePlanTests(unittest.TestCase):
@@ -20,11 +20,14 @@ class ClaudePlanTests(unittest.TestCase):
   self.assertIn('"mode": "deny"',source); self.assertIn('"allowUnsandboxedCommands": False',source)
   self.assertNotIn('[str(sandbox_exec), "-p", profile, *cmd]',source)
   with tempfile.TemporaryDirectory() as tmp:
-   workspace=Path(tmp)/'workspace'; workspace.mkdir(); auth=Path(tmp)/'auth'; auth.write_text('{}')
+   workspace=Path(tmp)/'workspace'; workspace.mkdir(); auth=Path(tmp)/'seed'; auth.mkdir(mode=0o700)
    control=Path(tmp)/'run'; prior=control/'results'/'prior.json'; prior.parent.mkdir(parents=True); prior.write_text('{}')
    policy=native_sandbox_policy(ROOT,auth,workspace=workspace,sandbox=workspace,control_paths=[control])
    profile=native_seatbelt_profile(policy)
    self.assertIn(str(ROOT/'tasks'),profile); self.assertIn(str(auth),profile); self.assertIn(str(control.resolve()),profile)
+   rules=builtin_permission_denies(policy['denyRead']); self.assertTrue(validate_builtin_permission_denies(policy['denyRead'],rules))
+   expected=[f'{tool}({path}{suffix})' for path in sorted(set(policy['denyRead'])) for tool in FILE_TOOLS for suffix in ('','/**')]
+   self.assertEqual(rules,expected)
    self.assertIn(str(ROOT/'.venv'),policy['allowRead'])
    self.assertIn(str((ROOT/'.venv/bin/python').resolve().parents[1]),policy['allowRead'])
   self.assertEqual(FILE_TOOLS,("Read","Edit","Write","Glob","Grep"))
@@ -44,5 +47,5 @@ class ClaudePlanTests(unittest.TestCase):
  @unittest.skipUnless(sys.platform=='darwin' and Path('/usr/bin/sandbox-exec').is_file() and shutil.which('claude'),'real macOS containment')
  def test_real_offline_containment_verifiers(self):
   with tempfile.TemporaryDirectory() as tmp:
-   auth=Path(tmp)/'credential'; auth.write_text('not-a-secret'); verify_repo_containment(ROOT); verify_task_capabilities(ROOT,auth,binary=Path(shutil.which('claude')).resolve())
+   seed=Path(tmp)/'seed'; seed.mkdir(mode=0o700); verify_repo_containment(ROOT); verify_task_capabilities(ROOT,seed,binary=Path(shutil.which('claude')).resolve())
 if __name__=='__main__': unittest.main()

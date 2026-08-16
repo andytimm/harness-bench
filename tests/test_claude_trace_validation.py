@@ -3,7 +3,7 @@ import json, tempfile, unittest
 from unittest import mock
 from pathlib import Path
 from harnessbench.adapters.claude_code import (_parse_stream, _parse_native_transcript, _normalize_trace,
-    _quota_rejected, _keychain_service, _validate_seed, _managed_policy_candidates, _unexpected_managed_policy, _open_lock)
+    _quota_rejected, _keychain_service, _validate_seed, _validate_auth_status, _managed_policy_candidates, _unexpected_managed_policy, _open_lock)
 
 SESSION="123e4567-e89b-12d3-a456-426614174000"
 MODEL="claude-opus-4-6"
@@ -40,11 +40,19 @@ class TraceValidationTests(unittest.TestCase):
  def test_canonical_keychain_resolution_and_seed_modes(self):
   with tempfile.TemporaryDirectory() as tmp:
    seed=Path(tmp)/"seed"; seed.mkdir(mode=0o700)
-   credential=seed/".credentials.json"; credential.write_text('{"claudeAiOauth":{"accessToken":"a","refreshToken":"r"}}'); credential.chmod(0o600)
-   self.assertEqual(_validate_seed(seed),credential)
+   self.assertEqual(_validate_seed(seed),seed.resolve())
+   self.assertFalse(any(seed.iterdir()))
    self.assertRegex(_keychain_service(seed),r"^Claude Code-credentials-[0-9a-f]{8}$")
-   credential.chmod(0o644)
+   seed.chmod(0o755)
    with self.assertRaisesRegex(ValueError,"permissions"): _validate_seed(seed)
+ def test_auth_status_is_strict_and_discards_identity(self):
+  good={'loggedIn':True,'authMethod':'claude.ai','apiProvider':'firstParty','subscriptionType':'max','email':'private@example.test'}
+  completed=lambda value,code=0: mock.Mock(returncode=code,stdout=value,stderr='private')
+  with mock.patch('harnessbench.adapters.claude_code.subprocess.run',return_value=completed(json.dumps(good))):
+   self.assertEqual(_validate_auth_status(Path('/pinned/claude'),{'CLAUDE_CONFIG_DIR':'/seed','CLAUDE_SECURESTORAGE_CONFIG_DIR':'/seed'}),0)
+  for value in ('not-json',json.dumps({**good,'loggedIn':False}),json.dumps({**good,'apiProvider':'thirdParty'}),json.dumps({**good,'subscriptionType':'free'})):
+   with self.subTest(value=value), mock.patch('harnessbench.adapters.claude_code.subprocess.run',return_value=completed(value)):
+    with self.assertRaises(ValueError): _validate_auth_status(Path('/pinned/claude'),{})
  def test_every_pinned_managed_policy_source_and_safe_lock(self):
   candidates={str(x) for x in _managed_policy_candidates('alice')}
   self.assertIn('/Library/Application Support/ClaudeCode/managed-settings.d',candidates)

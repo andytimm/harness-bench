@@ -8,7 +8,9 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
-from harnessbench.adapters.claude_code import CLAUDE_PLAN_BINDING_KEYS
+from harnessbench.adapters.claude_code import (CLAUDE_PLAN_BINDING_KEYS, AUTH_BACKEND,
+    KEYCHAIN_STATUS_SEMANTICS, AUTH_STATUS_SEMANTICS, _validate_seed, _namespace_lock,
+    _keychain_status, _validate_auth_status)
 
 MODEL_ID="claude-code-opus-4.6-medium"; MODEL="claude-opus-4-6"; EFFORT="medium"
 VERSION="2.1.227 (Claude Code)"; SHA256="7432511ba3be818e01f23f6eef8630d214a8b618451e188c3c7d61a987eef6c7"
@@ -53,8 +55,10 @@ def runtime_identity(seed:Path, binary:Path|None=None)->dict[str,str]:
  if binary_hash!=SHA256 or actual_version!=VERSION: raise RuntimeError("resolved Claude binary version/hash pin failed")
  service="Claude Code-credentials-"+hashlib.sha256(str(seed).encode()).hexdigest()[:8]
  return {"canonical_benchmark_seed":str(seed),"canonical_config_namespace":str(seed),
-         "keychain_service":service,"binary":str(binary),"binary_version":actual_version,
-         "binary_sha256":binary_hash}
+         "auth_backend":AUTH_BACKEND,"keychain_service":service,
+         "keychain_status_semantics":KEYCHAIN_STATUS_SEMANTICS,
+         "auth_status_semantics":AUTH_STATUS_SEMANTICS,"binary":str(binary),
+         "binary_version":actual_version,"binary_sha256":binary_hash}
 
 def build_plan(root:Path,seed:Path|None=None,binary:Path|None=None)->dict[str,Any]:
  identity=runtime_identity(seed or Path("~/.harnessbench/claude-code-opus-4.6"),binary)
@@ -66,7 +70,7 @@ def build_plan(root:Path,seed:Path|None=None,binary:Path|None=None)->dict[str,An
  for name in tasks:
   directory=root/'tasks'/name
   task_integrity[name]={'task_yaml_sha256':sha(directory/'task.yaml'),'tree_sha256':tree_sha(directory)}
- body={'schema':3,'benchmark_root':str(root.resolve()),'benchmark_git_sha':git_sha(root),'target_count':106,
+ body={'schema':4,'benchmark_root':str(root.resolve()),'benchmark_git_sha':git_sha(root),'target_count':106,
        'harness':MODEL_ID,'model':MODEL,'effort':EFFORT,'version':VERSION,
        **identity,'sha256':identity['binary_sha256'],'tasks':task_integrity,'tranches':{'1':odd,'2':even},
        'selection':{'1':'odd numeric task IDs','2':'even numeric task IDs'},
@@ -83,9 +87,11 @@ def adapter_model_config(plan:dict[str,Any])->dict[str,Any]:
       'expected_sha256':SHA256,'benchmark_config_seed':binding['canonical_benchmark_seed'],
       'canonical_benchmark_seed':binding['canonical_benchmark_seed'],
       'canonical_config_namespace':binding['canonical_config_namespace'],
-      'keychain_service':binding['keychain_service'],'model':MODEL,'effort':EFFORT,
+      'auth_backend':binding['auth_backend'],'keychain_service':binding['keychain_service'],
+      'keychain_status_semantics':binding['keychain_status_semantics'],
+      'auth_status_semantics':binding['auth_status_semantics'],'model':MODEL,'effort':EFFORT,
       'billing_mode':'subscription_oauth','timeout_sec':2400,'timeout_grace_sec':5,
-      'sync_refreshed_auth':True,'use_usage_proxy':False,'require_macos_containment':True,
+      'use_usage_proxy':False,'require_macos_containment':True,
       'evaluation_plan_digest':binding['plan_digest'],'benchmark_git_sha':binding['benchmark_git_sha'],
       'evaluation_plan_binding':binding}
  # This check occurs before any launch claim is written.
@@ -94,8 +100,9 @@ def adapter_model_config(plan:dict[str,Any])->dict[str,Any]:
   'plan_digest':str(cfg['evaluation_plan_digest']),
   'benchmark_git_sha':str(cfg['benchmark_git_sha']),
   'canonical_benchmark_seed':canonical_seed,
-  'canonical_config_namespace':canonical_seed,
+  'canonical_config_namespace':canonical_seed,'auth_backend':AUTH_BACKEND,
   'keychain_service':'Claude Code-credentials-'+hashlib.sha256(canonical_seed.encode()).hexdigest()[:8],
+  'keychain_status_semantics':KEYCHAIN_STATUS_SEMANTICS,'auth_status_semantics':AUTH_STATUS_SEMANTICS,
   'binary':str(Path(cfg['command']).resolve()),'binary_version':VERSION,
   'binary_sha256':SHA256,'model':MODEL,'effort':EFFORT}
  if projected!=binding or cfg['evaluation_plan_binding']!=binding:
@@ -131,11 +138,14 @@ def validate_result(path:Path,task:str,plan_digest:str='',expected_binding:dict[
   if native_session and current!=native_session: errors.append('native resume session changed')
   native_session=current or native_session
   if not all(m.get(k) for k in ('session_ids_valid','init_valid','terminal_valid','disabled_features_valid',
-                                  'staged_credential_removed','native_session_file','native_transcript_sha256',
-                                  'normalized_trace_sha256','stdout_sha256','stderr_sha256','safe_mode','chrome_disabled','canonical_config_namespace','native_sandbox_settings_valid','native_sandbox_runtime_evidence','builtin_file_tool_denies_valid','tool_list_valid')):
+                                  'auth_status_valid','keychain_status_unchanged','keychain_exists_before','keychain_exists_after','native_session_file','native_transcript_sha256',
+                                  'normalized_trace_sha256','stdout_sha256','stderr_sha256','safe_mode','chrome_disabled','canonical_config_namespace','native_sandbox_settings_valid','builtin_file_tool_denies_valid','tool_list_valid')):
    errors.append('native terminal/session/security validation failed')
-  if m.get('keychain_cleanup_proven') is not False or m.get('stream_parse_error') or m.get('normalization_error'):
-   errors.append('credential/transcript proof invalid')
+  if (m.get('auth_backend')!=AUTH_BACKEND or m.get('keychain_service')!=(expected_binding or {}).get('keychain_service')
+      or m.get('keychain_status_before')!=m.get('keychain_status_after') or m.get('keychain_status_before')!=0
+      or m.get('auth_status_code')!=0 or m.get('native_sandbox_runtime_evidence') is not False
+      or m.get('stream_parse_error') or m.get('normalization_error')):
+   errors.append('Keychain/auth/transcript proof invalid')
   if m.get('quota_censored'): errors.append('quota_censored')
   try:
    stdout=_contained_artifact(m['stdout_log_file'],sandbox,sandbox/f'claude-round{number}.stdout.jsonl')
@@ -204,18 +214,25 @@ def main()->int:
      or smoke_data.get('claim_sha256')!=sha(smoke_claim) or smoke_data.get('benchmark_claim') is not False
      or smoke_data.get('score') is not None
      or smoke_data.get('security_smoke_marker')!={'native_sandbox_runtime_evidence':True,'all_builtin_file_tools_denied':True,'tool_list_valid':True}): raise SystemExit('audited smoke evidence hash/binding/native-security-marker failed')
- seed=Path(plan['canonical_benchmark_seed']); cred=seed/'.credentials.json'
- resolved_seed=seed.resolve()
- if resolved_seed==(Path.home()/'.claude').resolve() or (Path.home()/'.claude').resolve() in resolved_seed.parents or seed.is_symlink() or cred.is_symlink() or not cred.is_file(): raise SystemExit('dedicated non-symlink benchmark OAuth seed is required; normal ~/.claude is forbidden')
- try: oauth=json.loads(cred.read_text()).get('claudeAiOauth',{})
- except (OSError,json.JSONDecodeError): oauth={}
- if not oauth.get('accessToken') or not oauth.get('refreshToken'): raise SystemExit('dedicated subscription OAuth access/refresh tokens are incomplete')
+ seed=Path(plan['canonical_benchmark_seed'])
+ try: seed=_validate_seed(seed)
+ except ValueError as exc: raise SystemExit(str(exc))
  binary=Path(plan['binary'])
  if not binary.is_file() or binary.resolve()!=binary or sha(binary)!=plan['binary_sha256']: raise SystemExit('Claude Code resolved binary hash pin failed')
  ver=subprocess.run([str(binary.resolve()),'--version'],text=True,capture_output=True,timeout=10,check=False)
  if ver.returncode or ver.stdout.strip()!=VERSION: raise SystemExit('Claude Code exact version pin failed')
  from harnessbench.macos_containment import verify_repo_containment, verify_task_capabilities
- verify_repo_containment(root); verify_task_capabilities(root,cred,binary=binary)
+ class _Preflight: pass
+ pre=_Preflight(); pre.sandbox=run; pre.workspace=run; pre.task=type("T",(),{"task_id":"preflight"})(); pre.session_id="preflight"; pre.model_id=MODEL_ID
+ from harnessbench.adapters.claude_code import _clean_env
+ auth_env=_clean_env({},seed,pre)
+ with _namespace_lock(seed):
+  before=_keychain_status(binding['keychain_service'])
+  if before!=0: raise SystemExit('dedicated Claude Keychain service is unavailable')
+  _validate_auth_status(binary,auth_env)
+  after=_keychain_status(binding['keychain_service'])
+  if after!=before: raise SystemExit('dedicated Claude Keychain exact-service status changed')
+ verify_repo_containment(root); verify_task_capabilities(root,seed,binary=binary)
  paid_cfg=adapter_model_config(plan); paid_cfg['containment_control_roots']=[str(run)]
  cfg={'models':{MODEL_ID:paid_cfg}}
  external=run/'control'; external.mkdir(parents=True,exist_ok=True)

@@ -51,9 +51,9 @@ def validate_report(stdout:str)->dict:
 def main()->int:
  ap=argparse.ArgumentParser(); ap.add_argument('--benchmark-seed',type=Path,default=Path('~/.harnessbench/claude-code-opus-4.6')); a=ap.parse_args()
  if sys.platform!='darwin': raise SystemExit('native probe requires macOS')
- seed=a.benchmark_seed.expanduser().resolve(); credential=seed/'.credentials.json'
- credential_exists_before=credential.is_file(); credential_hash_before=sha(credential) if credential_exists_before else None
+ seed=a.benchmark_seed.expanduser().resolve()
  service=_keychain_service(seed); status_before=keychain_status(service)
+ if status_before!=0: raise SystemExit('dedicated exact Keychain service is unavailable')
  with tempfile.TemporaryDirectory(prefix='harnessbench-real-native-probe-') as td:
   sandbox=Path(td).resolve(); workspace=sandbox/'workspace'; (workspace/'in').mkdir(parents=True); (workspace/'out').mkdir()
   (workspace/'in'/'fixture.txt').write_text('workspace-ok\n'); (workspace/'in'/'image.png').write_bytes(bytes.fromhex('89504e470d0a1a0a0000000d4948445200000001000000010802000000907753de'))
@@ -68,12 +68,14 @@ def main()->int:
   if completed.returncode: raise SystemExit(f'native probe failed rc={completed.returncode}: {completed.stderr[-1000:]}')
   report=validate_report(completed.stdout)
   if sha(probe)!=probe_hash or stat.S_IMODE(probe.stat().st_mode)&0o222: raise SystemExit('immutable probe changed')
- status_after=keychain_status(service); credential_exists_after=credential.is_file(); credential_hash_after=sha(credential) if credential_exists_after else None
- if status_after!=status_before or credential_exists_after!=credential_exists_before or credential_hash_after!=credential_hash_before:
-  raise SystemExit('parent exact-service lookup status or credential hash changed')
- # Status and hashes are safe evidence; no Keychain secret or secret derivative is printed.
+ status_after=keychain_status(service)
+ if status_after!=status_before:
+  raise SystemExit('parent exact-service lookup status changed')
+ # Status is safe evidence; no Keychain secret or secret derivative is materialized.
  print(json.dumps({'schema':1,'status':'passed','single_native_sandbox':True,
-  'nested_sandbox':False,'service':service,'parent_keychain_status_unchanged':True,
-  'credential_file_state_unchanged':True,'probe_report':report},separators=(',',':')))
+  'nested_sandbox':False,'backend':'macos-security-framework-generic-password',
+  'service':service,'status_before':status_before,'status_after':status_after,
+  'service_exists':status_before==0,'parent_keychain_status_unchanged':True,
+  'probe_report':report},separators=(',',':')))
  return 0
 if __name__=='__main__': raise SystemExit(main())

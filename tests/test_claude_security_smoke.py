@@ -18,8 +18,10 @@ def report():
  return {'schema':1,'script_exit_status':0,'probes':probes}
 
 def trace(paths,command,nonce,value=None):
- rows=[{'type':'system','subtype':'init'}]; ids=[]
- calls=[('Read',{'file_path':paths[0]}),('Edit',{'file_path':paths[1],'old_string':'__HB_NEVER_PRESENT__','new_string':'x'}),('Write',{'file_path':paths[2],'content':'HB_DENY_PROBE'}),('Glob',{'path':str(Path(paths[3]).parent),'pattern':'**/*'}),('Grep',{'path':str(Path(paths[4]).parent),'pattern':'HB_DENY_PROBE'}),('Bash',{'command':command})]
+ rows=[{'type':'system','subtype':'init'}]; ids=[]; calls=[]
+ for path in paths:
+  calls += [('Read',{'file_path':path}),('Edit',{'file_path':path,'old_string':'__HB_NEVER_PRESENT__','new_string':'x'}),('Write',{'file_path':path,'content':'HB_DENY_PROBE'}),('Glob',{'path':path,'pattern':'**/*'}),('Grep',{'path':path,'pattern':'HB_DENY_PROBE'})]
+ calls.append(('Bash',{'command':command}))
  for index,(name,input_) in enumerate(calls):
   tid=f'tool-{index}'; ids.append(tid)
   rows.append({'type':'assistant','message':{'content':[{'type':'tool_use','id':tid,'name':name,'input':input_}]}})

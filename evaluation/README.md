@@ -56,17 +56,15 @@ The comparison uses completion/oracle outcome only. The public baseline records 
 `claude-opus-4-6`, and effort `medium`. The committed offline tests make no auth
 or model calls.
 
-Provision a dedicated mode-0700 directory containing a mode-0600
-`.credentials.json` with subscription OAuth. It must not be `~/.claude`, and no
-component copies credentials from the normal profile. This directory is the one
-stable canonical `CLAUDE_CONFIG_DIR` and `CLAUDE_SECURESTORAGE_CONFIG_DIR` for
-the entire run. On macOS 2.1.227 its Keychain service is
-`Claude Code-credentials-<first 8 hex of SHA256(NFC(absolute config path))>`.
-A single process lock covers each invocation and refresh, so the harness does
-**not** create per-task Keychain namespaces. The adapter does not claim that
-removing a file proves Keychain deletion; no ephemeral Keychain item is created
-or cleanup attempted. Refreshed plaintext fallback credentials remain in the
-dedicated namespace.
+Provision a dedicated mode-0700 namespace (never `~/.claude`) and log in so
+Claude 2.1.227 stores subscription OAuth only in its macOS Keychain service,
+`Claude Code-credentials-<first 8 hex of SHA256(NFC(absolute namespace path))>`.
+The directory contains no plaintext authentication file or customization. It is
+the exact stable `CLAUDE_CONFIG_DIR` and `CLAUDE_SECURESTORAGE_CONFIG_DIR` for
+the entire run. A symlink-safe namespace lock serializes status-only exact-service
+Security.framework checks, pinned `claude auth status --json`, and each complete
+invocation. Only status codes and authorization booleans are retained; normal
+`~/.claude` authentication is neither used nor changed.
 
 Inspect the SHA/task/prompt/fixture/oracle-bound immutable plan offline:
 
