@@ -545,6 +545,12 @@ class ClaudeCodeAdapter(BaseAdapter):
                 "enabled": True, "failIfUnavailable": True,
                 "autoAllowBashIfSandboxed": True, "allowUnsandboxedCommands": False,
                 "excludedCommands": [], "filesystem": filesystem,
+                # The benchmark fixture listens on a parent-owned dynamic loopback port.
+                # strictAllowlist makes every other Bash destination a hard denial.
+                "network": {
+                    "allowedDomains": ["127.0.0.1", "localhost"],
+                    "strictAllowlist": True,
+                },
                 "credentials": {
                     "files": [{"path": value, "mode": "deny"} for value in credential_sensitive],
                     "envVars": [{"name": "HOME", "mode": "deny"},
@@ -558,6 +564,10 @@ class ClaudeCodeAdapter(BaseAdapter):
         if (settings_payload["sandbox"].get("enabled") is not True or
             settings_payload["sandbox"].get("failIfUnavailable") is not True or
             settings_payload["sandbox"].get("allowUnsandboxedCommands") is not False or
+            settings_payload["sandbox"].get("network") != {
+                "allowedDomains": ["127.0.0.1", "localhost"],
+                "strictAllowlist": True,
+            } or
             not validate_native_policy_shape(filesystem, credential_sensitive, sensitive) or
             str(ctx.workspace.resolve()) not in filesystem["allowRead"] or
             not validate_builtin_permission_denies(sensitive, permission_denies)):

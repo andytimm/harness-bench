@@ -18,6 +18,8 @@ class ClaudePlanTests(unittest.TestCase):
   source=(ROOT/'src/harnessbench/adapters/claude_code.py').read_text()
   self.assertIn('"failIfUnavailable": True',source); self.assertIn('"credentials": {',source)
   self.assertIn('"mode": "deny"',source); self.assertIn('"allowUnsandboxedCommands": False',source)
+  self.assertIn('"allowedDomains": ["127.0.0.1", "localhost"]',source)
+  self.assertIn('"strictAllowlist": True',source); self.assertNotIn('"allowLocalBinding": True',source)
   self.assertNotIn('[str(sandbox_exec), "-p", profile, *cmd]',source)
   with tempfile.TemporaryDirectory() as tmp:
    workspace=Path(tmp)/'workspace'; workspace.mkdir(); auth=Path(tmp)/'seed'; auth.mkdir(mode=0o700)
