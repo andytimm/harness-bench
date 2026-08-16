@@ -17,7 +17,8 @@
       "model_reasoning_effort": "medium",
       "sandbox": "workspace-write",
       "sync_refreshed_auth": true,
-      "stream_to_console": false
+      "stream_to_console": false,
+      "allowed_hook_env": ["MOCK_FORM_URL"]
     },
     "prime-agent-gpt-5.4-medium": {
       "adapter": "prime_agent",

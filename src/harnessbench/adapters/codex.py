@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import platform
+import re
 import shutil
 import signal
 import subprocess
@@ -341,6 +342,22 @@ def _staged_auth_lifetime(source: Path, target_home: Path):
 _FORBIDDEN_ENV_PARTS = ("TOKEN", "SECRET", "COOKIE", "CREDENTIAL", "PASSWORD", "PASSWD", "DSN", "API_KEY", "AUTH")
 _BASE_ENV_ALLOWLIST = {"PATH", "TMPDIR", "TMP", "TEMP", "LANG", "TZ", "SYSTEMROOT", "COMSPEC", "PATHEXT"}
 _BENCH_ENV_ALLOWLIST = {"HARNESSBENCH_LLM_PROXY_URL", "HARNESSBENCH_LLM_PROXY_ROUTES"}
+_ENV_NAME_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+
+
+def _normalize_hook_env_names(raw: Any) -> tuple[list[str], bool]:
+    if raw is None:
+        return [], True
+    if not isinstance(raw, list):
+        return [], False
+    names: list[str] = []
+    for value in raw:
+        if not isinstance(value, str) or not _ENV_NAME_RE.fullmatch(value):
+            return [], False
+        if value in names:
+            return [], False
+        names.append(value)
+    return names, True
 
 
 def _sensitive_env_name(name: str) -> bool:
@@ -349,7 +366,10 @@ def _sensitive_env_name(name: str) -> bool:
 
 
 def _filtered_env(overrides: dict[str, str], approved_hook_vars: list[str] | None = None) -> tuple[dict[str, str], list[str]]:
-    approved = set(approved_hook_vars or [])
+    normalized, valid = _normalize_hook_env_names(approved_hook_vars)
+    if not valid:
+        raise ValueError("allowed_hook_env must be a list of unique, valid environment variable names")
+    approved = set(normalized)
     unsafe_approved = sorted(name for name in approved if _sensitive_env_name(name))
     if unsafe_approved:
         raise ValueError(f"sensitive hook env names cannot be approved: {unsafe_approved}")
@@ -598,8 +618,8 @@ def codex_preflight(model_config: dict[str, Any]) -> dict[str, Any]:
     auth = _benchmark_auth_file(model_config)
     dedicated_auth = _is_dedicated_auth_file(auth)
     auth_kind = _auth_kind(auth) if dedicated_auth and auth is not None else ("rejected_normal_host_path" if auth is not None else "missing")
-    approved_hook_env = [str(x) for x in (model_config.get("allowed_hook_env") or [])]
-    hook_env_safe = not any(_sensitive_env_name(name) for name in approved_hook_env)
+    approved_hook_env, hook_env_valid = _normalize_hook_env_names(model_config.get("allowed_hook_env"))
+    hook_env_safe = hook_env_valid and not any(_sensitive_env_name(name) for name in approved_hook_env)
     checks = {
         "executable": bool(provenance.get("valid")),
         "native_binary": bool(provenance.get("native_executable") and provenance.get("native_sha256")),
@@ -608,7 +628,7 @@ def codex_preflight(model_config: dict[str, Any]) -> dict[str, Any]:
         "model_pin": model == "gpt-5.4", "reasoning_pin": reasoning == "medium",
         "provider_pin": provider == "openai", "billing_pin": billing == "subscription_oauth",
         "sandbox_pin": str(model_config.get("sandbox") or "workspace-write") == "workspace-write",
-        "controls_allowlisted": controls_ok, "hook_env_safe": hook_env_safe,
+        "controls_allowlisted": controls_ok, "hook_env_valid": hook_env_valid, "hook_env_safe": hook_env_safe,
         "dedicated_auth_path": dedicated_auth,
         "auth_exists": bool(dedicated_auth and auth is not None and auth.is_file() and not auth.is_symlink()),
         "subscription_oauth": auth_kind == "subscription_oauth",
@@ -616,7 +636,7 @@ def codex_preflight(model_config: dict[str, Any]) -> dict[str, Any]:
     return {"ok": all(checks.values()), "checks": checks, "provenance": provenance,
             "argument_parse": parse, "unknown_config_keys": unknown_keys,
             "benchmark_auth_file": str(auth or ""), "normal_host_auth_file": str(_normal_host_auth_file()),
-            "auth_kind": auth_kind,
+            "auth_kind": auth_kind, "allowed_hook_env": approved_hook_env,
             "model": model, "reasoning": reasoning, "provider": provider, "billing_mode": billing}
 
 
@@ -651,7 +671,7 @@ class CodexAdapter(BaseAdapter):
                 cmd = [executable, "exec", "--cd", str(ctx.workspace), "--skip-git-repo-check",
                        "--sandbox", "workspace-write", *common,
                        "--output-last-message", str(last_message), "-"]
-            env, removed_secrets = _filtered_env(ctx.env, [str(x) for x in (ctx.model_config.get("allowed_hook_env") or [])])
+            env, removed_secrets = _filtered_env(ctx.env, preflight["allowed_hook_env"])
             env.update({"HOME": str(ctx.sandbox), "CODEX_HOME": str(codex_home), "NO_COLOR": "1",
                 "CODEX_TELEMETRY_DISABLED": "1", "WORKSPACE": str(ctx.workspace),
                 "HARNESSBENCH_TASK_ID": ctx.task.task_id, "HARNESSBENCH_WORKSPACE": str(ctx.workspace),
