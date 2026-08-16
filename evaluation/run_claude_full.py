@@ -183,14 +183,37 @@ def validate_result(path:Path,task:str,plan_digest:str='',expected_binding:dict[
  return {'task_id':task,'result_file':str(path),'result_sha256':sha(path),'plan_digest':plan_digest,
          'plan_binding':expected_binding or {},'artifact_receipts':artifact_receipts,
          'usage':usage,'outcome_score':(data.get('oracle_result') or {}).get('outcome_score')}
+def archive_completed_sandbox(result_file:Path,run:Path)->Path:
+ """Move a completed sandbox behind one stable deny prefix, retaining path compatibility."""
+ data=json.loads(result_file.read_text())
+ link=Path(data['sandbox'])
+ active=(run/'active').resolve(); archive=(run/'archive'/'work').resolve()
+ if link.is_symlink() or not link.is_dir(): raise RuntimeError('completed sandbox is not an unarchived directory')
+ resolved=link.resolve()
+ try: relative=resolved.relative_to(active)
+ except ValueError as exc: raise RuntimeError('completed sandbox escaped active work root') from exc
+ destination=archive/relative
+ if destination.exists() or destination.is_symlink(): raise RuntimeError('completed sandbox archive collision')
+ destination.parent.mkdir(parents=True,exist_ok=True)
+ os.replace(resolved,destination)
+ try: link.symlink_to(destination,target_is_directory=True)
+ except OSError:
+  os.replace(destination,resolved)
+  raise
+ return destination
+
+
 def main()->int:
  ap=argparse.ArgumentParser(); ap.add_argument('--run-root',type=Path,required=True); ap.add_argument('--tranche',choices=['1','2'],required=True); ap.add_argument('--dry-plan',action='store_true'); ap.add_argument('--live',action='store_true'); ap.add_argument('--ack'); ap.add_argument('--smoke-approval',type=Path); ap.add_argument('--benchmark-seed',type=Path,default=Path('~/.harnessbench/claude-code-opus-4.6').expanduser()); a=ap.parse_args()
  root=Path(__file__).resolve().parents[1]; run=a.run_root.expanduser().resolve()
  if run==root or root in run.parents: raise SystemExit('--run-root must be a stable path outside the benchmark checkout')
- plan=build_plan(root,a.benchmark_seed); binding=plan_binding(plan); plan_path=run/'plan.json'
+ plan=build_plan(root,a.benchmark_seed); binding=plan_binding(plan); control_plane=run/'control-plane'; plan_path=control_plane/'plan.json'
  if plan_path.exists():
   if json.loads(plan_path.read_text())!=plan: raise SystemExit('immutable plan differs; choose a new run root')
  else: immutable_json(plan_path,plan)
+ legacy_plan=run/'plan.json'
+ if not legacy_plan.exists() and not legacy_plan.is_symlink(): legacy_plan.symlink_to(plan_path)
+ elif legacy_plan.resolve()!=plan_path.resolve(): raise SystemExit('legacy plan link differs; choose a new run root')
  print(json.dumps(plan,indent=2))
  if a.dry_plan: return 0
  dirty=subprocess.check_output(['git','-C',str(root),'status','--porcelain'],text=True)
@@ -233,13 +256,19 @@ def main()->int:
   after=_keychain_status(binding['keychain_service'])
   if after!=before: raise SystemExit('dedicated Claude Keychain exact-service status changed')
  verify_repo_containment(root); verify_task_capabilities(root,seed,binary=binary)
- paid_cfg=adapter_model_config(plan); paid_cfg['containment_control_roots']=[str(run)]
+ external=control_plane/'config'; claims=control_plane/'claims'; receipts=control_plane/'receipts'; results_root=control_plane/'results'; data_root=control_plane/'data'; archive=run/'archive'
+ for directory in (external,claims,receipts,results_root,data_root,archive): directory.mkdir(parents=True,exist_ok=True)
+ for name,target in (("control",external),("claims",claims),("receipts",receipts),("results",results_root),("data",data_root)):
+  legacy=run/name
+  if not legacy.exists() and not legacy.is_symlink(): legacy.symlink_to(target,target_is_directory=True)
+  elif legacy.resolve()!=target.resolve(): raise SystemExit(f'legacy {name} link differs; choose a new run root')
+ paid_cfg=adapter_model_config(plan)
+ paid_cfg['containment_control_roots']=[str(control_plane),str(archive)]
  cfg={'models':{MODEL_ID:paid_cfg}}
- external=run/'control'; external.mkdir(parents=True,exist_ok=True)
  harness_cfg=external/'harness.json'; harness_cfg.write_text(json.dumps(cfg,indent=2)+'\n')
- app_cfg=external/'app.json'; app_cfg.write_text(json.dumps({'tasks_dir':str(root/'tasks'),'data_dir':str(run/'data'),'results_dir':str(run/'results'),'work_root':str(run/'work'),'default_timeout_sec':2400})+'\n')
+ app_cfg=external/'app.json'; app_cfg.write_text(json.dumps({'tasks_dir':str(root/'tasks'),'data_dir':str(data_root),'results_dir':str(run/'results'),'work_root':str(run/'active'),'default_timeout_sec':2400})+'\n')
  env=os.environ.copy(); env.update({'HARNESSBENCH_APP_CONFIG':str(app_cfg),'HARNESSBENCH_HARNESS_CONFIG':str(harness_cfg),'HARNESSBENCH_SKIP_PROCESS_GRADE':'1','HARNESSBENCH_SKIP_ORACLE_QUALITY_LLM':'1','HARNESSBENCH_PUBLIC_URL_TEMPLATE':'{local_url}','PYTHONPATH':str(root/'src')})
- tasks=plan['tranches'][a.tranche]; receipts=run/'receipts'; claims=run/'claims'; results=run/'results'/MODEL_ID
+ tasks=plan['tranches'][a.tranche]; results=results_root/MODEL_ID
  for index,task in enumerate(tasks,1):
   receipt=receipts/f'{task}.json'; claim=claims/f'{task}.json'
   matches=list(results.glob(f'*/{task}.json'))
@@ -268,6 +297,7 @@ def main()->int:
     raise SystemExit('quota rejected: receipt marked quota_censored; scheduling stopped')
   if completed.returncode or len(matches)!=1: raise SystemExit(f'{task} launch failed; claim retained and no automatic retry permitted')
   record=validate_result(matches[0],task,plan['plan_digest'],binding)
+  archive_completed_sandbox(matches[0],run)
   immutable_json(receipt,{**record,'status':'complete','finished_at':now(),'claim_file':str(claim),'claim_sha256':claim_hash})
  return 0
 if __name__=='__main__': raise SystemExit(main())

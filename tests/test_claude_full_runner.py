@@ -49,25 +49,55 @@ class ClaudePlanTests(unittest.TestCase):
    self.assertIn(str(ROOT/'.venv'),policy['allowRead'])
    self.assertIn(str((ROOT/'.venv/bin/python').resolve().parents[1]),policy['allowRead'])
   self.assertEqual(FILE_TOOLS,("Read","Edit","Write","Glob","Grep"))
- def test_production_shaped_native_profile_is_small_and_nonoverlapping(self):
-  with tempfile.TemporaryDirectory(dir=Path.home()) as tmp:
-   run=Path(tmp); sandbox=run/'security-smoke'/'sandbox'; workspace=sandbox/'workspace'; workspace.mkdir(parents=True)
-   private=sandbox/'private-evidence'; private.mkdir(); targets=[]
-   for name in ('read','edit','write'):
-    target=private/name; targets.append(target)
-   (run/'plan.json').write_text('{}'); (run/'security-smoke'/'claim.json').write_text('{}'); (sandbox/'prompt.txt').write_text(''); (sandbox/'.claude-benchmark').mkdir()
+ def test_production_shaped_policy_is_constant_after_53_archived_tasks(self):
+  with tempfile.TemporaryDirectory(dir=Path.home(),prefix='hb-'+('x'*80)) as tmp:
+   run=Path(tmp); active=run/'active'; archive=run/'archive'; archive.mkdir(); sandbox=active/'model'/'api'/('task-105-'+('y'*120)); workspace=sandbox/'workspace'; workspace.mkdir(parents=True)
+   private=sandbox/'private-evidence'; private.mkdir(); targets=[private/name for name in ('read','edit','write')]
+   control_plane=run/'control-plane'; (control_plane/'claims').mkdir(parents=True); (control_plane/'plan.json').write_text('{}')
+   (sandbox/'.claude-benchmark').mkdir(); (sandbox/'usage-proxy').mkdir(); (sandbox/'prompt-round1.txt').write_text('task')
+   controls=[control_plane,archive,sandbox]
+   from harnessbench.models import TaskSpec
+   from harnessbench.tasks import load_hooks
+   hook_task=TaskSpec(task_id='018-provider-failover-audit',title='hook',task_dir=ROOT/'tasks'/'018-provider-failover-audit')
+   hook_state=load_hooks(hook_task).prepare_runtime({'task':hook_task,'sandbox':sandbox,'workspace':workspace})
+   hook_caps=[Path(value) for key,value in hook_state.items() if key.endswith(('_FILE','_DIR','_PATH')) and Path(value).is_absolute()]
    auth=run.parent/'.harnessbench'/'synthetic-dedicated-seed'
-   policy=native_sandbox_policy(ROOT,auth,workspace=workspace,sandbox=sandbox,control_paths=[run,*targets])
-   credentials=native_credential_paths(auth,workspace=workspace,control_paths=[run,*targets]); sensitive=builtin_sensitive_paths(ROOT,auth,workspace=workspace,control_paths=[run,*targets])
-   merged=merged_policy_for_probe(policy,credentials,sensitive); merged_profile=native_seatbelt_profile(merged)
-   self.assertTrue(validate_native_policy_shape(policy,credentials,sensitive)); self.assertLessEqual(len(merged['denyRead']),30); self.assertLess(len(merged_profile.encode()),128_000)
+   def shape():
+    policy=native_sandbox_policy(ROOT,auth,workspace=workspace,sandbox=sandbox,control_paths=controls,capability_paths=hook_caps)
+    credentials=native_credential_paths(auth,workspace=workspace,control_paths=controls)
+    sensitive=builtin_sensitive_paths(ROOT,auth,workspace=workspace,control_paths=controls)
+    merged=merged_policy_for_probe(policy,credentials,sensitive)
+    rules=builtin_permission_denies(sensitive)
+    return policy,credentials,sensitive,merged,rules
+   before=shape()
+   for index in range(53):
+    prior=archive/'work'/f'model-{index:02d}'/('z'*120)/'workspace'; prior.mkdir(parents=True); (prior/'prior.txt').write_text('prior')
+   after=shape()
+   self.assertEqual(tuple(len(x) for x in before[1:]),tuple(len(x) for x in after[1:]))
+   policy,credentials,sensitive,merged,rules=after
+   self.assertTrue(validate_native_policy_shape(policy,credentials,sensitive))
+   self.assertLessEqual(len(merged['denyRead']),30); self.assertLess(len(json.dumps({'permissions':{'deny':rules},'sandbox':{'filesystem':policy,'credentials':credentials}}).encode()),128_000)
+   self.assertIn(str(archive.resolve()),sensitive); self.assertFalse(any('model-52' in path for path in sensitive))
+   for current_control in (sandbox/'.claude-benchmark',sandbox/'usage-proxy',sandbox/'prompt-round1.txt'):
+    self.assertIn(str(current_control.resolve()),sensitive); self.assertIn(f'Read({current_control.resolve()})',rules)
+   self.assertEqual(len(rules),len(sensitive)*len(FILE_TOOLS)*2)
+   self.assertTrue(all(any(cap.resolve()==Path(path) or cap.resolve().is_relative_to(Path(path)) for path in policy['allowRead']) for cap in hook_caps))
+   prior=(archive/'work'/'model-52'/('z'*120)/'workspace'/'prior.txt').resolve()
+   self.assertTrue(any(prior.is_relative_to(Path(path)) for path in sensitive))
+   self.assertFalse(any(workspace.resolve()==Path(path) or workspace.resolve().is_relative_to(Path(path)) for path in sensitive))
    self.assertFalse(any((ROOT/'.venv').resolve().is_relative_to(Path(path)) for path in merged['denyRead']))
+   profile=native_seatbelt_profile(merged); self.assertLess(len(profile.encode()),128_000)
    if sys.platform=='darwin' and Path('/usr/bin/sandbox-exec').is_file():
-    for args in (['-c','print("PYTHON_OK")'],['-m','pytest','--version']):
-     completed=subprocess.run(['/usr/bin/sandbox-exec','-p',merged_profile,str(ROOT/'.venv/bin/python'),*args],cwd=workspace,text=True,capture_output=True)
-     self.assertEqual(completed.returncode,0,completed.stderr)
-   for denied in map(Path,policy['denyRead']):
-    for allowed in map(Path,policy['allowRead']): self.assertFalse(allowed==denied or allowed.is_relative_to(denied) or denied.is_relative_to(allowed))
+    completed=subprocess.run(['/usr/bin/sandbox-exec','-p',profile,'/bin/sh','-c',f'printf ok > {workspace}/out.txt; cat {prior}'],text=True,capture_output=True)
+    self.assertNotEqual(completed.returncode,0); self.assertEqual((workspace/'out.txt').read_text(),'ok')
+ def test_completed_sandbox_archives_behind_stable_prefix_and_keeps_paths(self):
+  with tempfile.TemporaryDirectory() as tmp:
+   run=Path(tmp); sandbox=run/'active'/'model'/'api'/'task'; workspace=sandbox/'workspace'; workspace.mkdir(parents=True); (workspace/'out.txt').write_text('ok')
+   result=run/'result.json'; result.write_text(json.dumps({'sandbox':str(sandbox),'workspace':str(workspace)}))
+   destination=module.archive_completed_sandbox(result,run)
+   self.assertTrue(sandbox.is_symlink()); self.assertEqual(sandbox.resolve(),destination.resolve()); self.assertEqual((workspace/'out.txt').read_text(),'ok')
+   self.assertTrue(destination.is_relative_to((run/'archive'/'work').resolve()))
+   with self.assertRaisesRegex(RuntimeError,'unarchived'): module.archive_completed_sandbox(result,run)
  def test_plan_binds_canonical_namespace_keychain_and_binary(self):
   with tempfile.TemporaryDirectory() as tmp:
    seed=Path(tmp)/'café'; plan=module.build_plan(ROOT,seed)

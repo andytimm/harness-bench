@@ -55,11 +55,23 @@ class SecuritySmokeEvidenceTests(unittest.TestCase):
   with self.assertRaisesRegex(ValueError,'missing, extra'): self.validate(rows)
   rows=trace(self.paths,self.denied_files,self.command,self.nonce); rows.insert(-2,{'type':'assistant','message':{'content':[{'type':'tool_use','id':'extra','name':'Bash','input':{'command':'echo spoof'}}]}})
   with self.assertRaisesRegex(ValueError,'missing, extra'): self.validate(rows)
- def test_non_user_uncorrelated_and_spoofed_output_rejected(self):
+ def test_non_user_uncorrelated_output_rejected(self):
   rows=trace(self.paths,self.denied_files,self.command,self.nonce); rows[2]['type']='assistant'
   with self.assertRaisesRegex(ValueError,'correlation'): self.validate(rows)
-  rows=trace(self.paths,self.denied_files,self.command,self.nonce); rows[-2]['message']['content'].insert(0,{'type':'text','text':json.dumps(report())})
-  with self.assertRaisesRegex(ValueError,'exact nonce'): self.validate(rows)
+ def test_progress_text_allowed_but_final_nonce_is_unique_and_terminal(self):
+  rows=trace(self.paths,self.denied_files,self.command,self.nonce)
+  rows.insert(-2,{'type':'assistant','message':{'content':[{'type':'text','text':f'Progress {index}'} for index in range(1,8)]}})
+  self.assertEqual(self.validate(rows)['script_exit_status'],0)
+  post=list(rows)+[{'type':'assistant','message':{'content':[{'type':'text','text':'after final'}]}}]
+  with self.assertRaisesRegex(ValueError,'last assistant text'): self.validate(post)
+  duplicate=trace(self.paths,self.denied_files,self.command,self.nonce)
+  duplicate.insert(-2,{'type':'assistant','message':{'content':[{'type':'text','text':json.dumps({'security_smoke_complete':self.nonce},separators=(',',':'))}]}})
+  with self.assertRaisesRegex(ValueError,'duplicated'): self.validate(duplicate)
+  malformed=trace(self.paths,self.denied_files,self.command,self.nonce); malformed[-2]['message']['content'][0]['text']='done '+self.nonce
+  with self.assertRaisesRegex(ValueError,'last assistant text'): self.validate(malformed)
+  leaked=trace(self.paths,self.denied_files,self.command,self.nonce)
+  leaked.insert(-2,{'type':'assistant','message':{'content':[{'type':'text','text':'working '+self.nonce}]}})
+  with self.assertRaisesRegex(ValueError,'duplicated'): self.validate(leaked)
  def test_exact_edit_unread_prerequisite_is_accepted_with_external_postcheck(self):
   rows=trace(self.paths,self.denied_files,self.command,self.nonce)
   for row in rows:
@@ -79,7 +91,7 @@ class SecuritySmokeEvidenceTests(unittest.TestCase):
   with self.assertRaisesRegex(ValueError,'early exit'): self.validate(rows)
  def test_nonce_only_exact_final_schema(self):
   rows=trace(self.paths,self.denied_files,self.command,self.nonce); rows[-2]['message']['content'][0]['text']='done '+self.nonce
-  with self.assertRaisesRegex(ValueError,'exact nonce'): self.validate(rows)
+  with self.assertRaisesRegex(ValueError,'last assistant text'): self.validate(rows)
  def test_sanitized_failure_diagnostic_is_strict(self):
   path=Path(self.tmp.name)/'failure.json'; self.assertIsNone(smoke.read_probe_failure(path))
   path.write_text(json.dumps({'label':'image_png','status':126,'code':91}))

@@ -169,15 +169,17 @@ def validate_smoke_trace(rows:list[dict[str,Any]],*,read_paths:list[str],denied_
   item=probes[name]
   if item != {'expected_status':0,'observed_status':0,'observed_output':expected_outputs[name],'passed':True}: raise ValueError('failed positive probe '+name)
  final=json.dumps({'security_smoke_complete':nonce},separators=(',',':'))
- if assistant_text!=[final]: raise ValueError('final response is not the exact nonce schema or nonce appeared elsewhere')
+ if not assistant_text or assistant_text[-1]!=final:
+  raise ValueError('last assistant text block is not the exact nonce schema')
  def strings(value:Any):
   if isinstance(value,str): yield value
   elif isinstance(value,dict):
    for key,item in value.items(): yield from strings(key); yield from strings(item)
   elif isinstance(value,list):
    for item in value: yield from strings(item)
- if any(nonce in value and value!=final for value in strings(rows)):
-  raise ValueError('nonce appeared outside the exact final response schema')
+ nonce_values=[value for value in strings(rows) if nonce in value]
+ if nonce_values!=[final] or sum(value.count(nonce) for value in nonce_values)!=1:
+  raise ValueError('nonce is missing, duplicated, malformed, or outside the exact final response')
  if sha(probe_path)!=probe_sha256 or stat.S_IMODE(probe_path.stat().st_mode)&0o222: raise ValueError('probe script changed or became writable')
  return report
 

@@ -194,6 +194,17 @@ instruction only when a hook supplies a `MOCK_*` URL whose host is exactly
 and the instruction provenance. Parent-owned fixtures do not require
 `network.allowLocalBinding`, which remains disabled.
 
+Full-run task sandboxes are created under `active/` and, only after result
+validation succeeds, moved under the single `archive/` deny prefix. A symlink at
+the original sandbox path preserves receipt and artifact-path validation. Plan,
+configuration, claims, receipts, results, and data live below one
+`control-plane/` deny prefix, with compatibility symlinks at the historical
+run-root paths. The current `.claude-benchmark`, `usage-proxy`, and prompt file
+remain exact denies. Consequently native prefixes, built-in rules, and settings
+size are invariant as completed task count grows; archived workspaces remain
+unavailable while the current workspace and reviewed hook capabilities remain
+usable.
+
 The unavoidable supported-auth tradeoff is that the unsandboxed parent Claude
 process can read and may update normal `.claude.json` account-selection metadata;
 the adapter does not claim that file is immutable. Task tools cannot access it.

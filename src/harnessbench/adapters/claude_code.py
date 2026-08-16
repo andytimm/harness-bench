@@ -556,6 +556,9 @@ class ClaudeCodeAdapter(BaseAdapter):
             capability_paths=[Path(v) for k,v in ctx.env.items()
                               if k.endswith(("_FILE","_DIR","_PATH")) and v and Path(v).is_absolute()]
             control_paths=[Path(v) for v in cfg.get("containment_control_roots",[])]
+            # Stable external prefixes avoid enumerating prior task sandboxes;
+            # current task control artifacts are exact and never include workspace.
+            control_paths += [settings_dir, ctx.sandbox / "usage-proxy", ctx.prompt_file]
             filesystem = native_sandbox_policy(_project_root(), seed_dir, workspace=ctx.workspace,
                 sandbox=ctx.sandbox, binary=binary, capability_paths=capability_paths,
                 control_paths=control_paths)

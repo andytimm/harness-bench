@@ -93,7 +93,7 @@ def builtin_sensitive_paths(root: Path, auth_path: Path, *, workspace: Path,
     for control in (control_paths or []):
         resolved=control.resolve()
         entries=_frontier(resolved,[workspace]) if _within(workspace,resolved) else [resolved]
-        controls.extend(entry for entry in entries if entry.name != "prompt.txt")
+        controls.extend(entries)
     home=Path.home()
     explicit=[*benchmark_integrity_paths(root),*other_worktrees(root),*controls,
               auth_path,home/".harnessbench",
@@ -132,7 +132,7 @@ def native_sandbox_policy(root: Path, auth_path: Path, *, workspace: Path, sandb
     for control in (control_paths or []):
         resolved=control.resolve()
         entries=_frontier(resolved,[workspace]) if _within(workspace,resolved) else [resolved]
-        controls.extend(entry for entry in entries if entry.name != "prompt.txt")
+        controls.extend(entries)
     home=Path.home()
     high_value=[auth_path,home/".harnessbench",home/".claude",home/".claude.json",
                 home/"Library"/"Keychains",home/".ssh",home/".aws",home/".config",
