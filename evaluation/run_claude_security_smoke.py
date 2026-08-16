@@ -39,14 +39,15 @@ def build_probe_script(*,workspace:Path,plaintext:Path,python:Path,service:str,u
  # contain a credential if containment regressed. A successful lookup fails closed.
  return f"""#!/bin/bash
 set +e
+fail_probe() {{ local label="$1" status="$2" code="$3"; printf 'probe_failed label=%s status=%s code=%s\n' "$label" "$status" "$code" >&2; exit "$code"; }}
 run_deny() {{
  local label="$1"; shift; local output status lower
  output="$("$@" 2>&1)"; status=$?; lower="$(printf %s "$output" | /usr/bin/tr '[:upper:]' '[:lower:]')"
  printf -v "status_$label" %d "$status"
- if [[ $status -eq 0 || ! "$lower" =~ (operation[[:space:]]not[[:space:]]permitted|permission[[:space:]]denied|not[[:space:]]permitted|eperm|eacces|sandbox) ]]; then exit 90; fi
+ if [[ $status -eq 0 || ! "$lower" =~ (operation[[:space:]]not[[:space:]]permitted|permission[[:space:]]denied|not[[:space:]]permitted|eperm|eacces|sandbox) ]]; then fail_probe "$label" "$status" 90; fi
 }}
-run_unavailable() {{ local label="$1"; shift; local output status; output="$("$@" 2>&1)"; status=$?; printf -v "status_$label" %d "$status"; [[ $status -ne 0 ]] || exit 90; }}
-run_ok() {{ local label="$1" expected="$2"; shift 2; local output status; output="$("$@" 2>&1)"; status=$?; printf -v "status_$label" %d "$status"; [[ $status -eq 0 && "$output" == "$expected" ]] || exit 91; }}
+run_unavailable() {{ local label="$1"; shift; local output status; output="$("$@" 2>&1)"; status=$?; printf -v "status_$label" %d "$status"; [[ $status -ne 0 ]] || fail_probe "$label" "$status" 90; }}
+run_ok() {{ local label="$1" expected="$2"; shift 2; local output status; output="$("$@" 2>&1)"; status=$?; printf -v "status_$label" %d "$status"; [[ $status -eq 0 && "$output" == "$expected" ]] || fail_probe "$label" "$status" 91; }}
 run_deny deny_cat_plaintext /bin/cat {_q(plaintext)}
 run_deny deny_python_plaintext {_q(python)} -c "import pathlib;print(pathlib.Path({plaintext.as_posix()!r}).read_text())"
 run_deny deny_node_plaintext node -e {_q("process.stdout.write(require('fs').readFileSync("+json.dumps(str(plaintext))+",'utf8'))")}
@@ -58,7 +59,7 @@ run_ok workspace_read workspace-data /bin/cat {_q(workspace/'out'/'smoke.txt')}
 run_ok image_png PNG_OK {_q(python)} -c "import pathlib;assert pathlib.Path({str(workspace/'in'/'image.png')!r}).read_bytes()[:8]==b'\\x89PNG\\r\\n\\x1a\\n';print('PNG_OK')"
 run_ok subprocess_echo SUBPROCESS_OK /bin/echo SUBPROCESS_OK
 run_ok venv_python PYTHON_OK {_q(python)} -c "print('PYTHON_OK')"
-output="$({_q(python)} -m pytest --version 2>&1)"; status_venv_pytest=$?; [[ $status_venv_pytest -eq 0 && "$output" == pytest* ]] || exit 92
+output="$({_q(python)} -m pytest --version 2>&1)"; status_venv_pytest=$?; [[ $status_venv_pytest -eq 0 && "$output" == pytest* ]] || fail_probe venv_pytest "$status_venv_pytest" 92
 run_ok node NODE_OK node -e "console.log('NODE_OK')"
 run_ok loopback workspace-ok {_q(python)} -c "import urllib.request;print(urllib.request.urlopen({url!r},timeout=5).read().decode().strip())"
 printf '{{"schema":1,"script_exit_status":0,"probes":{{'

@@ -86,7 +86,8 @@ def builtin_sensitive_paths(root: Path, auth_path: Path, *, workspace: Path,
         entries=_frontier(resolved,[workspace]) if _within(workspace,resolved) else [resolved]
         controls.extend(entry for entry in entries if entry.name != "prompt.txt")
     home=Path.home()
-    explicit=[root,*other_worktrees(root),*controls,auth_path,home/".harnessbench",
+    explicit=[*repository_control_plane_paths(root),*other_worktrees(root),*controls,
+              auth_path,home/".harnessbench",
               home/".claude",home/".claude.json",home/"Library"/"Keychains",
               home/".ssh",home/".aws",home/".config",home/".codex",home/".hermes"/"auth.json",
               home/".hermes"/"config.yaml",home/".hermes"/".env",home/".prime",Path("/usr/bin/security"),
@@ -141,9 +142,9 @@ def native_sandbox_policy(root: Path, auth_path: Path, *, workspace: Path, sandb
             "denyRead":[str(p) for p in deny],"denyWrite":[str(p) for p in deny]}
 
 
-NATIVE_COMBINED_PREFIX_LIMIT = 24
+NATIVE_COMBINED_PREFIX_LIMIT = 40
 CLAUDE_OBSERVED_BYTES_PER_UNIQUE_PREFIX = 20000
-NATIVE_ESTIMATED_PROFILE_LIMIT = 480000
+NATIVE_ESTIMATED_PROFILE_LIMIT = 800000
 
 
 def validate_native_policy_shape(policy: dict, credential_paths: Iterable[str | Path],
@@ -159,10 +160,20 @@ def validate_native_policy_shape(policy: dict, credential_paths: Iterable[str | 
     combined=_prefix_minimize([*denies,*credentials,*builtins])
     home=Path.home().resolve()
     overlaps=any(denied == allowed or _within(allowed,denied) or _within(denied,allowed)
-                 for denied in denies for allowed in allows)
+                 for denied in combined for allowed in allows)
     return (not overlaps and home not in combined and
             len(combined) <= NATIVE_COMBINED_PREFIX_LIMIT and
             len(combined)*CLAUDE_OBSERVED_BYTES_PER_UNIQUE_PREFIX <= NATIVE_ESTIMATED_PROFILE_LIMIT)
+
+
+def merged_policy_for_probe(policy: dict, credential_paths: Iterable[str | Path],
+                            builtin_paths: Iterable[str | Path]) -> dict:
+    """Model the filesystem path union Claude merges into its Bash sandbox."""
+    if not validate_native_policy_shape(policy,credential_paths,builtin_paths):
+        raise RuntimeError("merged Claude sandbox policy shape is unsafe")
+    merged=[str(p) for p in _prefix_minimize([
+        *map(Path,policy["denyRead"]),*map(Path,credential_paths),*map(Path,builtin_paths)])]
+    return {**policy,"denyRead":merged,"denyWrite":merged}
 
 
 def builtin_permission_denies(paths: Iterable[str | Path]) -> list[str]:

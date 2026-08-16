@@ -4,7 +4,7 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('run_claude_full',ROOT/'evaluation/run_claude_full.py'); module=importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
-from harnessbench.macos_containment import native_sandbox_policy, native_seatbelt_profile, verify_repo_containment, verify_task_capabilities, FILE_TOOLS, builtin_permission_denies, builtin_sensitive_paths, native_credential_paths, validate_builtin_permission_denies, validate_native_policy_shape
+from harnessbench.macos_containment import native_sandbox_policy, native_seatbelt_profile, verify_repo_containment, verify_task_capabilities, FILE_TOOLS, builtin_permission_denies, builtin_sensitive_paths, merged_policy_for_probe, native_credential_paths, validate_builtin_permission_denies, validate_native_policy_shape
 from harnessbench.adapters.claude_code import EXPECTED_SHA256
 
 class ClaudePlanTests(unittest.TestCase):
@@ -54,7 +54,12 @@ class ClaudePlanTests(unittest.TestCase):
    auth=run.parent/'.harnessbench'/'synthetic-dedicated-seed'
    policy=native_sandbox_policy(ROOT,auth,workspace=workspace,sandbox=sandbox,control_paths=[run,*targets])
    credentials=native_credential_paths(auth,workspace=workspace,control_paths=[run,*targets]); sensitive=builtin_sensitive_paths(ROOT,auth,workspace=workspace,control_paths=[run,*targets])
-   self.assertTrue(validate_native_policy_shape(policy,credentials,sensitive)); self.assertLess(len(policy['denyRead']),64); self.assertLess(len(native_seatbelt_profile(policy).encode()),128_000)
+   merged=merged_policy_for_probe(policy,credentials,sensitive); merged_profile=native_seatbelt_profile(merged)
+   self.assertTrue(validate_native_policy_shape(policy,credentials,sensitive)); self.assertLess(len(policy['denyRead']),64); self.assertLess(len(merged_profile.encode()),128_000)
+   if sys.platform=='darwin' and Path('/usr/bin/sandbox-exec').is_file():
+    for args in (['-c','print("PYTHON_OK")'],['-m','pytest','--version']):
+     completed=subprocess.run(['/usr/bin/sandbox-exec','-p',merged_profile,str(ROOT/'.venv/bin/python'),*args],cwd=workspace,text=True,capture_output=True)
+     self.assertEqual(completed.returncode,0,completed.stderr)
    for denied in map(Path,policy['denyRead']):
     for allowed in map(Path,policy['allowRead']): self.assertFalse(allowed==denied or allowed.is_relative_to(denied) or denied.is_relative_to(allowed))
  def test_plan_binds_canonical_namespace_keychain_and_binary(self):

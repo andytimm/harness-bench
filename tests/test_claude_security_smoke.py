@@ -76,7 +76,7 @@ class SecuritySmokeEvidenceTests(unittest.TestCase):
  def test_probe_script_contains_every_capability_and_no_nonce(self):
   script=smoke.build_probe_script(workspace=Path('/w'),plaintext=Path('/seed/plain'),python=Path('/repo/.venv/bin/python'),service='Claude Code-credentials-12345678',url='http://127.0.0.1:1/in/fixture.txt')
   for name in smoke.DENIAL_PROBES+smoke.POSITIVE_PROBES: self.assertIn(name,script)
-  self.assertNotIn(self.nonce,script)
+  self.assertNotIn(self.nonce,script); self.assertIn('probe_failed label=%s status=%s code=%s',script); self.assertNotIn('output=%s',script)
  def test_live_probe_uses_visible_venv_interpreter(self):
   visible=smoke.ROOT/'.venv/bin/python'
   self.assertEqual(smoke.PROBE_PYTHON,visible)

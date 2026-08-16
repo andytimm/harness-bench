@@ -8,7 +8,8 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path[:0]=[str(ROOT/'src'),str(ROOT/'evaluation')]
 from harnessbench.adapters.claude_code import _keychain_service
-from harnessbench.macos_containment import native_sandbox_policy,native_seatbelt_profile,_sandbox_exec
+from harnessbench.macos_containment import (builtin_sensitive_paths,merged_policy_for_probe,
+ native_credential_paths,native_sandbox_policy,native_seatbelt_profile,_sandbox_exec)
 from run_claude_security_smoke import (build_probe_script,DENIAL_PROBES,POSITIVE_PROBES,
                                        PLAINTEXT_DENIAL_PROBES,PROBE_PYTHON)
 
@@ -62,8 +63,12 @@ def main()->int:
    url=f'http://127.0.0.1:{server.server_port}/in/fixture.txt'
    probe=workspace/'.native-sandbox-probe.sh'
    probe.write_text(build_probe_script(workspace=workspace,plaintext=plaintext,python=PROBE_PYTHON,service=service,url=url)); probe.chmod(0o400); probe_hash=sha(probe)
-   policy=native_sandbox_policy(ROOT,seed,workspace=workspace,sandbox=sandbox,binary=Path('/bin/bash'),control_paths=[private])
-   completed=subprocess.run([str(_sandbox_exec()),'-p',native_seatbelt_profile(policy),'/bin/bash',str(probe)],cwd=workspace,text=True,capture_output=True,stdin=subprocess.DEVNULL,timeout=60,check=False)
+   controls=[private]
+   policy=native_sandbox_policy(ROOT,seed,workspace=workspace,sandbox=sandbox,binary=Path('/bin/bash'),control_paths=controls)
+   builtins=builtin_sensitive_paths(ROOT,seed,workspace=workspace,control_paths=controls)
+   credentials=native_credential_paths(seed,workspace=workspace,control_paths=controls)
+   merged=merged_policy_for_probe(policy,credentials,builtins)
+   completed=subprocess.run([str(_sandbox_exec()),'-p',native_seatbelt_profile(merged),'/bin/bash',str(probe)],cwd=workspace,text=True,capture_output=True,stdin=subprocess.DEVNULL,timeout=60,check=False)
   finally: server.shutdown(); server.server_close(); thread.join(timeout=5)
   if completed.returncode: raise SystemExit(f'native probe failed rc={completed.returncode}: {completed.stderr[-1000:]}')
   report=validate_report(completed.stdout)
