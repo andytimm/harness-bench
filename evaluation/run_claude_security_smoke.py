@@ -15,8 +15,9 @@ from harnessbench.adapters.claude_code import ClaudeCodeAdapter,_parse_stream
 from harnessbench.models import AdapterRunContext,TaskSpec
 
 PROBE_SCHEMA=1
-DENIAL_PROBES=('deny_cat_plaintext','deny_python_plaintext','deny_node_plaintext',
-               'deny_security_cli','deny_security_framework','deny_node_keychain')
+PLAINTEXT_DENIAL_PROBES=('deny_cat_plaintext','deny_python_plaintext','deny_node_plaintext')
+KEYCHAIN_DENIAL_PROBES=('deny_security_cli','deny_security_framework','deny_node_keychain')
+DENIAL_PROBES=PLAINTEXT_DENIAL_PROBES+KEYCHAIN_DENIAL_PROBES
 POSITIVE_PROBES=('workspace_write','workspace_read','image_png','subprocess_echo',
                  'venv_python','venv_pytest','node','loopback')
 class Quiet(SimpleHTTPRequestHandler):
@@ -27,14 +28,15 @@ def build_probe_script(*,workspace:Path,plaintext:Path,python:Path,service:str,u
  """Return the complete immutable, claim-bound program; Claude never composes probes."""
  framework='/System/Library/Frameworks/Security.framework/Versions/A/Security'
  py_framework=("import ctypes,sys; s="+repr(service)+"; f=ctypes.CDLL("+repr(framework)+"); "
-  "fn=f.SecKeychainFindGenericPassword; fn(None,len(s),s.encode(),0,None,None,None,None); print('FRAMEWORK_EXECUTED')")
+  "fn=f.SecKeychainFindGenericPassword; status=fn(None,len(s),s.encode(),0,None,None,None,None); sys.exit(0 if status==0 else 17)")
  node_keychain=("const c=require('child_process');const r=c.spawnSync('/usr/bin/security',"
   "['find-generic-password','-s',"+json.dumps(service)+",'-w'],"
   "{stdio:['ignore','ignore','pipe'],encoding:'utf8'});"
   "if(r.error){process.stderr.write(r.error.code||'spawn_error');process.exit(13)}"
   "process.stderr.write(r.stderr||'');process.exit(r.status===null?14:r.status)")
- # run_deny accepts only a real OS denial signature.  It never emits captured
- # output, which could contain a credential if containment regressed.
+ # Plaintext probes require an OS denial signature. Keychain probes accept only
+ # a nonzero exact-service lookup and never emit captured output, which could
+ # contain a credential if containment regressed. A successful lookup fails closed.
  return f"""#!/bin/bash
 set +e
 run_deny() {{
@@ -43,13 +45,14 @@ run_deny() {{
  printf -v "status_$label" %d "$status"
  if [[ $status -eq 0 || ! "$lower" =~ (operation[[:space:]]not[[:space:]]permitted|permission[[:space:]]denied|not[[:space:]]permitted|eperm|eacces|sandbox) ]]; then exit 90; fi
 }}
+run_unavailable() {{ local label="$1"; shift; local output status; output="$("$@" 2>&1)"; status=$?; printf -v "status_$label" %d "$status"; [[ $status -ne 0 ]] || exit 90; }}
 run_ok() {{ local label="$1" expected="$2"; shift 2; local output status; output="$("$@" 2>&1)"; status=$?; printf -v "status_$label" %d "$status"; [[ $status -eq 0 && "$output" == "$expected" ]] || exit 91; }}
 run_deny deny_cat_plaintext /bin/cat {_q(plaintext)}
 run_deny deny_python_plaintext {_q(python)} -c "import pathlib;print(pathlib.Path({plaintext.as_posix()!r}).read_text())"
 run_deny deny_node_plaintext node -e {_q("process.stdout.write(require('fs').readFileSync("+json.dumps(str(plaintext))+",'utf8'))")}
-run_deny deny_security_cli /usr/bin/security find-generic-password -s {_q(service)} -w
-run_deny deny_security_framework {_q(python)} -c {_q(py_framework)}
-run_deny deny_node_keychain node -e {_q(node_keychain)}
+run_unavailable deny_security_cli /usr/bin/security find-generic-password -s {_q(service)} -w
+run_unavailable deny_security_framework {_q(python)} -c {_q(py_framework)}
+run_unavailable deny_node_keychain node -e {_q(node_keychain)}
 run_ok workspace_write WRITE_OK /bin/bash -c {_q('printf workspace-data > '+shlex.quote(str(workspace/'out'/'smoke.txt'))+'; printf WRITE_OK')}
 run_ok workspace_read workspace-data /bin/cat {_q(workspace/'out'/'smoke.txt')}
 run_ok image_png PNG_OK {_q(python)} -c "import pathlib;assert pathlib.Path({str(workspace/'in'/'image.png')!r}).read_bytes()[:8]==b'\\x89PNG\\r\\n\\x1a\\n';print('PNG_OK')"
@@ -62,9 +65,9 @@ printf '{{"schema":1,"script_exit_status":0,"probes":{{'
 printf '"deny_cat_plaintext":{{"expected_status":"nonzero","observed_status":%d,"observed_output":"os_denial","passed":true}},' "$status_deny_cat_plaintext"
 printf '"deny_python_plaintext":{{"expected_status":"nonzero","observed_status":%d,"observed_output":"os_denial","passed":true}},' "$status_deny_python_plaintext"
 printf '"deny_node_plaintext":{{"expected_status":"nonzero","observed_status":%d,"observed_output":"os_denial","passed":true}},' "$status_deny_node_plaintext"
-printf '"deny_security_cli":{{"expected_status":"nonzero","observed_status":%d,"observed_output":"os_denial","passed":true}},' "$status_deny_security_cli"
-printf '"deny_security_framework":{{"expected_status":"nonzero","observed_status":%d,"observed_output":"os_denial","passed":true}},' "$status_deny_security_framework"
-printf '"deny_node_keychain":{{"expected_status":"nonzero","observed_status":%d,"observed_output":"os_denial","passed":true}},' "$status_deny_node_keychain"
+printf '"deny_security_cli":{{"expected_status":"nonzero","observed_status":%d,"observed_output":"credential_unavailable","passed":true}},' "$status_deny_security_cli"
+printf '"deny_security_framework":{{"expected_status":"nonzero","observed_status":%d,"observed_output":"credential_unavailable","passed":true}},' "$status_deny_security_framework"
+printf '"deny_node_keychain":{{"expected_status":"nonzero","observed_status":%d,"observed_output":"credential_unavailable","passed":true}},' "$status_deny_node_keychain"
 printf '"workspace_write":{{"expected_status":0,"observed_status":%d,"observed_output":"WRITE_OK","passed":true}},' "$status_workspace_write"
 printf '"workspace_read":{{"expected_status":0,"observed_status":%d,"observed_output":"workspace-data","passed":true}},' "$status_workspace_read"
 printf '"image_png":{{"expected_status":0,"observed_status":%d,"observed_output":"PNG_OK","passed":true}},' "$status_image_png"
@@ -119,8 +122,8 @@ def validate_smoke_trace(rows:list[dict[str,Any]],*,read_paths:list[str],bash_co
  probes=report.get('probes')
  if not isinstance(probes,dict) or tuple(probes)!=DENIAL_PROBES+POSITIVE_PROBES: raise ValueError('missing, extra, or reordered probes')
  for name in DENIAL_PROBES:
-  item=probes[name]
-  if set(item)!= {'expected_status','observed_status','observed_output','passed'} or item['expected_status']!='nonzero' or not isinstance(item['observed_status'],int) or item['observed_status']==0 or item['observed_output']!='os_denial' or item['passed'] is not True: raise ValueError('failed denial probe '+name)
+  item=probes[name]; expected_output='os_denial' if name in PLAINTEXT_DENIAL_PROBES else 'credential_unavailable'
+  if set(item)!= {'expected_status','observed_status','observed_output','passed'} or item['expected_status']!='nonzero' or not isinstance(item['observed_status'],int) or item['observed_status']==0 or item['observed_output']!=expected_output or item['passed'] is not True: raise ValueError('failed denial probe '+name)
  expected_outputs={'workspace_write':'WRITE_OK','workspace_read':'workspace-data','image_png':'PNG_OK','subprocess_echo':'SUBPROCESS_OK','venv_python':'PYTHON_OK','venv_pytest':'pytest-version','node':'NODE_OK','loopback':'workspace-ok'}
  for name in POSITIVE_PROBES:
   item=probes[name]

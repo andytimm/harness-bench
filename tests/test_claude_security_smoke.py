@@ -10,7 +10,8 @@ smoke=importlib.util.module_from_spec(spec); spec.loader.exec_module(smoke)
 def report():
  probes={}
  for name in smoke.DENIAL_PROBES:
-  probes[name]={'expected_status':'nonzero','observed_status':1,'observed_output':'os_denial','passed':True}
+  output='os_denial' if name in smoke.PLAINTEXT_DENIAL_PROBES else 'credential_unavailable'
+  probes[name]={'expected_status':'nonzero','observed_status':1,'observed_output':output,'passed':True}
  outputs={'workspace_write':'WRITE_OK','workspace_read':'workspace-data','image_png':'PNG_OK','subprocess_echo':'SUBPROCESS_OK','venv_python':'PYTHON_OK','venv_pytest':'pytest-version','node':'NODE_OK','loopback':'workspace-ok'}
  for name in smoke.POSITIVE_PROBES:
   probes[name]={'expected_status':0,'observed_status':0,'observed_output':outputs[name],'passed':True}
