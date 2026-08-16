@@ -18,13 +18,36 @@ Preflight performs no model request and does not copy, refresh, or modify OAuth
 state. It checks all 106 tasks, the exact `codex-cli 0.139.0` version, executable
 launcher and native-binary path/SHA-256 provenance, the GPT-5.4/medium/provider/billing
 pins, a real 0.139 clap argument-parse probe using `--help`, all ordered task/input
-hashes, repository cleanliness, and only a non-secret classification of
-`~/.codex/auth.json`.
+hashes, repository cleanliness, and a dedicated Harness-Bench OAuth seed. The
+normal `~/.codex/auth.json` path is explicitly rejected.
 
 Current 0.139.0 help was inspected offline for `codex --help`, `codex exec
 --help`, and `codex exec resume --help`. The adapter uses supported flags:
 `exec`, `exec resume`, `--json`, `--model`, `--config`, `--strict-config`,
 `--ignore-user-config`, `--ignore-rules`, and `--output-last-message`.
+
+## Dedicated OAuth provisioning (only after Hermes)
+
+The checked-in namespace requires the regular, non-symlink file
+`~/.harnessbench/codex-gpt-5.4-medium-current-0.139/auth.json`. Provision it with
+a separate isolated `CODEX_HOME` login after Hermes completes; do **not** copy,
+move, symlink, or point the benchmark at `~/.codex/auth.json`. Preflight is
+expected to fail with `auth_exists=false` until this deliberate provisioning is
+done. The adapter rejects the normal host path even if it contains valid OAuth.
+A later operator can provision only that isolated home with:
+
+```bash
+install -d -m 700 ~/.harnessbench/codex-gpt-5.4-medium-current-0.139
+CODEX_HOME=~/.harnessbench/codex-gpt-5.4-medium-current-0.139 codex login
+```
+
+This command is documentation for the post-Hermes operator; it was not run during preparation.
+
+At execution start the runner copies the dedicated seed once into the plan's
+private manifest directory. OAuth rotations persist only in that run-private
+canonical file across all tasks. The dedicated seed and normal host Codex auth
+are never written during tasks. A nonblocking run-directory lock prevents two
+runners from sharing the same private canonical file.
 
 ## Later integration smokes and full run
 
@@ -40,7 +63,8 @@ uv run python -m harnessbench.codex_current_runner --plan full --execute --resum
 
 The default manifests are separate: `evaluation/runs/<namespace>/smoke` and
 `evaluation/runs/<namespace>/full`, so the commands above work without path
-collisions. Use `--manifest-dir` only for an intentionally separate run. Each manifest
+collisions. Use `--manifest-dir` only for an intentionally separate run. A custom path must
+be outside the repository or already covered by Git ignore rules. Each manifest
 records an attempt as `started` before launch. Terminal successes and failures
 are never retried by `--resume`; a non-terminal/interrupted attempt requires
 manual investigation rather than an implicit retry. Scores never participate in
@@ -53,12 +77,13 @@ directory.
 
 ## Adapter isolation and validation
 
-* Only `auth.json` is copied (mode 0600) into task-local `CODEX_HOME`; user
-  config/rules are ignored. The staged file is removed on success, timeout,
-  spawn error, pre-spawn error, and post-processing exceptions. Auth source and
-  staging paths must be non-symlink regular files. Refreshed subscription OAuth is
-  copied back only with a digest compare-and-swap under a lock; a concurrent host
-  refresh is never overwritten.
+* Only the required dedicated/run-private `auth.json` is staged (mode 0600) into
+task-local `CODEX_HOME`; normal host Codex auth is rejected and never seeded or
+written. Source, staging directory, staged file, and lock paths are checked for
+regular/non-symlink safety. Writes loop to completion and fsync. Refreshes are
+atomically persisted only to the run-private canonical file while its exclusive
+lock is held; unexpected source changes cause a refusal rather than an overwrite.
+The staged task copy is removed on all exit paths.
 * The child environment is built from a small operating-system allowlist. Only
   explicitly approved, non-secret benchmark hook variables may be added; names
   containing token/secret/cookie/credential/password/DSN/auth markers are rejected.
@@ -84,3 +109,5 @@ pins, and resolved launcher/native paths and SHA-256s. Resume compares this stru
 strictly. Immediately before every task, the runner re-hashes the task and repository,
 re-runs offline Codex preflight, and injects the manifest launcher/native path and digest
 as mandatory adapter expectations.
+
+Invalid proxy aggregate `call_count` values remain explicit integrity errors in the result; native-session fallback does not hide them.

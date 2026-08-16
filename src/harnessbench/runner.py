@@ -518,6 +518,11 @@ def _collect_proxy_usage_summary(log_file: Path, session_id: str) -> dict[str, A
     return summary
 
 
+
+def _proxy_usage_integrity_failure(summary: dict[str, Any]) -> bool:
+    reason = str(summary.get("reason") or "")
+    return reason.startswith(("invalid proxy call_count", "proxy call_count out of bounds"))
+
 def run_task(app: AppConfig, task: TaskSpec, model_id: str, model_cfg: dict[str, Any], mode: str, keep_workspace: bool = True) -> TaskRunResult:
     t_run_start = time.perf_counter()
     sandbox, _initial_api_seg, _sandbox_suffix = _create_sandbox_dir(app.work_root, task.task_id, model_id, model_cfg)
@@ -592,7 +597,9 @@ def run_task(app: AppConfig, task: TaskSpec, model_id: str, model_cfg: dict[str,
 
     assert adapter_result is not None
     usage_summary = _collect_proxy_usage_summary(proxy_log, session_id)
-    if not usage_summary.get("available"):
+    # Invalid aggregate call counts are integrity failures, not an invitation to
+    # silently hide the proxy error behind a native-session fallback.
+    if not usage_summary.get("available") and not _proxy_usage_integrity_failure(usage_summary):
         usage_summary = _collect_usage_summary(adapter_result, session_id)
     oracle_result = run_oracle(task, workspace)
 

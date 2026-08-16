@@ -25,7 +25,7 @@ _FAILURE_EVENTS = {"turn.failed", "error"}
 _ALLOWED_MODEL_CONFIG_KEYS = {
     "adapter", "command", "expected_version", "expected_executable_sha256",
     "expected_resolved_executable", "expected_native_executable", "expected_native_sha256",
-    "user_codex_home", "session_prefix", "timeout_sec", "timeout_grace_sec",
+    "benchmark_auth_file", "session_prefix", "timeout_sec", "timeout_grace_sec",
     "provider", "billing_mode", "model", "model_reasoning_effort", "sandbox",
     "sync_refreshed_auth", "stream_to_console", "allowed_hook_env", "use_usage_proxy",
 }
@@ -124,14 +124,24 @@ def _command_provenance(command: str, expected_version: str, expected_sha256: st
     return result
 
 
-def _source_codex_home(model_config: dict[str, Any]) -> Path:
-    explicit = str(model_config.get("user_codex_home") or "").strip()
-    if explicit:
-        return _resolve_path(explicit)
-    legacy = str(model_config.get("user_config") or "").strip()
-    if legacy:
-        return _resolve_path(legacy).parent
-    return _resolve_path("~/.codex")
+def _benchmark_auth_file(model_config: dict[str, Any]) -> Path | None:
+    raw = str(model_config.get("benchmark_auth_file") or "").strip()
+    return _resolve_path(raw) if raw else None
+
+
+def _normal_host_auth_file() -> Path:
+    return _resolve_path("~/.codex/auth.json")
+
+
+def _is_dedicated_auth_file(path: Path | None) -> bool:
+    if path is None:
+        return False
+    normal_home = _normal_host_auth_file().parent
+    try:
+        path.relative_to(normal_home)
+        return False
+    except ValueError:
+        return True
 
 
 def _read_regular_bytes(path: Path) -> bytes:
@@ -185,6 +195,16 @@ class StagedAuth:
     source_sha256: str
 
 
+
+def _write_all_fd(fd: int, raw: bytes) -> None:
+    view = memoryview(raw)
+    written = 0
+    while written < len(view):
+        count = os.write(fd, view[written:])
+        if count <= 0:
+            raise OSError("short credential write")
+        written += count
+
 def _stage_auth(source: Path, target_home: Path) -> StagedAuth:
     raw = _read_regular_bytes(source)
     if _auth_kind_bytes(raw) != "subscription_oauth":
@@ -198,7 +218,7 @@ def _stage_auth(source: Path, target_home: Path) -> StagedAuth:
         target.unlink()
     fd = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0), 0o600)
     try:
-        os.write(fd, raw)
+        _write_all_fd(fd, raw)
         os.fsync(fd)
     except BaseException:
         os.close(fd)
@@ -209,8 +229,40 @@ def _stage_auth(source: Path, target_home: Path) -> StagedAuth:
     return StagedAuth(source=source, target=target, source_sha256=hashlib.sha256(raw).hexdigest())
 
 
+
+def provision_run_private_auth(seed: Path, destination: Path) -> dict[str, str]:
+    """Create a run-private refreshable OAuth canonical file without modifying seed."""
+    if not _is_dedicated_auth_file(seed):
+        raise ValueError("normal host Codex auth cannot seed a Harness-Bench run")
+    seed_raw = _read_regular_bytes(seed)
+    if _auth_kind_bytes(seed_raw) != "subscription_oauth":
+        raise ValueError("dedicated auth seed is not subscription OAuth")
+    destination.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    parent_stat = destination.parent.lstat()
+    if destination.parent.is_symlink() or not stat.S_ISDIR(parent_stat.st_mode):
+        raise ValueError("unsafe run-private auth directory")
+    if destination.exists() or destination.is_symlink():
+        current = _read_regular_bytes(destination)
+        if _auth_kind_bytes(current) != "subscription_oauth":
+            raise ValueError("existing run-private auth is invalid")
+        return {"seed_sha256": hashlib.sha256(seed_raw).hexdigest(),
+                "private_sha256": hashlib.sha256(current).hexdigest(), "created": "false"}
+    fd = os.open(destination, os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0), 0o600)
+    try:
+        _write_all_fd(fd, seed_raw); os.fsync(fd)
+    except BaseException:
+        os.close(fd); _remove_auth(destination); raise
+    else:
+        os.close(fd)
+    return {"seed_sha256": hashlib.sha256(seed_raw).hexdigest(),
+            "private_sha256": hashlib.sha256(seed_raw).hexdigest(), "created": "true"}
+
 def _sync_staged_auth(stage: StagedAuth) -> tuple[bool, str]:
-    """CAS copy-back: never replace host auth if it changed since staging."""
+    """Persist only under our exclusive lock; refuse a detected unexpected change.
+
+    This digest guard is not claimed as a filesystem-wide cross-process CAS for
+    non-cooperating writers.
+    """
     try:
         staged_raw = _read_regular_bytes(stage.target)
         if _auth_kind_bytes(staged_raw) != "subscription_oauth":
@@ -235,7 +287,7 @@ def _sync_staged_auth(stage: StagedAuth) -> tuple[bool, str]:
                 os.fchmod(fd, 0o600)
                 with os.fdopen(fd, "wb") as out:
                     out.write(staged_raw); out.flush(); os.fsync(out.fileno())
-                # Recheck immediately before the atomic replacement (CAS under our lock).
+                # Recheck immediately before replacement while our runner lock is held.
                 if hashlib.sha256(_read_regular_bytes(stage.source)).hexdigest() != stage.source_sha256:
                     return False, "source_changed"
                 os.replace(temporary, stage.source)
@@ -255,13 +307,35 @@ def _remove_auth(path: Path) -> None:
         pass
 
 
+def _acquire_auth_run_lock(source: Path):
+    lock_path = source.with_suffix(source.suffix + ".run-exclusive.lock")
+    if lock_path.is_symlink():
+        raise ValueError(f"refusing symlink auth run lock: {lock_path}")
+    fd = os.open(lock_path, os.O_RDWR | os.O_CREAT | getattr(os, "O_NOFOLLOW", 0), 0o600)
+    handle = os.fdopen(fd, "a+", encoding="utf-8")
+    try:
+        if os.name == "posix":
+            import fcntl
+            fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        else:
+            raise OSError("exclusive Codex auth locks require POSIX")
+    except BaseException:
+        handle.close()
+        raise
+    return handle
+
+
 @contextmanager
 def _staged_auth_lifetime(source: Path, target_home: Path):
-    stage = _stage_auth(source, target_home)
+    run_lock = _acquire_auth_run_lock(source)
     try:
-        yield stage
+        stage = _stage_auth(source, target_home)
+        try:
+            yield stage
+        finally:
+            _remove_auth(stage.target)
     finally:
-        _remove_auth(stage.target)
+        run_lock.close()
 
 
 _FORBIDDEN_ENV_PARTS = ("TOKEN", "SECRET", "COOKIE", "CREDENTIAL", "PASSWORD", "PASSWD", "DSN", "API_KEY", "AUTH")
@@ -521,24 +595,28 @@ def codex_preflight(model_config: dict[str, Any]) -> dict[str, Any]:
         str(model_config.get("expected_native_sha256") or "").strip(),
     )
     parse = _offline_argument_parse(str(provenance.get("resolved") or model_config.get("command") or "codex"), model, reasoning) if provenance.get("valid") else {"ok": False, "results": []}
-    source_home = _source_codex_home(model_config); auth = source_home / "auth.json"
-    auth_kind = _auth_kind(auth)
+    auth = _benchmark_auth_file(model_config)
+    dedicated_auth = _is_dedicated_auth_file(auth)
+    auth_kind = _auth_kind(auth) if dedicated_auth and auth is not None else ("rejected_normal_host_path" if auth is not None else "missing")
     approved_hook_env = [str(x) for x in (model_config.get("allowed_hook_env") or [])]
     hook_env_safe = not any(_sensitive_env_name(name) for name in approved_hook_env)
     checks = {
         "executable": bool(provenance.get("valid")),
         "native_binary": bool(provenance.get("native_executable") and provenance.get("native_sha256")),
         "offline_argument_parse": bool(parse["ok"]),
+        "expected_version_pin": expected_version == EXPECTED_CODEX_VERSION,
         "model_pin": model == "gpt-5.4", "reasoning_pin": reasoning == "medium",
         "provider_pin": provider == "openai", "billing_pin": billing == "subscription_oauth",
         "sandbox_pin": str(model_config.get("sandbox") or "workspace-write") == "workspace-write",
         "controls_allowlisted": controls_ok, "hook_env_safe": hook_env_safe,
-        "auth_exists": auth.is_file() and not auth.is_symlink(),
+        "dedicated_auth_path": dedicated_auth,
+        "auth_exists": bool(dedicated_auth and auth is not None and auth.is_file() and not auth.is_symlink()),
         "subscription_oauth": auth_kind == "subscription_oauth",
     }
     return {"ok": all(checks.values()), "checks": checks, "provenance": provenance,
             "argument_parse": parse, "unknown_config_keys": unknown_keys,
-            "source_codex_home": str(source_home), "auth_kind": auth_kind,
+            "benchmark_auth_file": str(auth or ""), "normal_host_auth_file": str(_normal_host_auth_file()),
+            "auth_kind": auth_kind,
             "model": model, "reasoning": reasoning, "provider": provider, "billing_mode": billing}
 
 
@@ -551,7 +629,7 @@ class CodexAdapter(BaseAdapter):
             return AdapterRunResult(ok=False, stderr="Codex preflight failed", metadata={"preflight": preflight})
         model = preflight["model"]; reasoning = preflight["reasoning"]
         provider = preflight["provider"]; billing = preflight["billing_mode"]
-        source_home = Path(preflight["source_codex_home"]); source_auth = source_home / "auth.json"
+        source_auth = Path(preflight["benchmark_auth_file"])
         codex_home = ctx.sandbox / ".codex"; codex_home.mkdir(parents=True, exist_ok=True)
         try:
             auth_context = _staged_auth_lifetime(source_auth, codex_home)
@@ -656,6 +734,7 @@ class CodexAdapter(BaseAdapter):
                 "model_ok": model_ok, "reasoning_ok": reasoning_ok, "billing_ok": billing_ok, "native_version_ok": version_ok,
                 "stdout_json_ok": stdout_json_ok, "last_message_ok": last_message_ok, "call_count_ok": call_count_ok,
                 "codex_home": str(codex_home), "state_dir": str(codex_home),
+                "benchmark_auth_file": str(source_auth),
                 "native_session_id": native_session_id, "codex_session_file": str(session_file or ""),
                 "native_session_facts": facts, "native_call_count": native_call_count, "round_number": round_number, "resumed": bool(prior_session),
                 "stdout_log_file": str(stdout_log), "stderr_log_file": str(stderr_log),

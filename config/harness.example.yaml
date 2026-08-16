@@ -7,7 +7,7 @@
       "adapter": "codex",
       "command": "codex",
       "expected_version": "codex-cli 0.139.0",
-      "user_codex_home": "~/.codex",
+      "benchmark_auth_file": "~/.harnessbench/codex-gpt-5.4-medium-current-0.139/auth.json",
       "session_prefix": "harnessbench-codex-current-0139",
       "timeout_sec": 2400,
       "timeout_grace_sec": 5,

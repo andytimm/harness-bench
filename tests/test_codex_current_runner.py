@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 
 from harnessbench.codex_current_runner import (
-    NAMESPACE, _binary_pin, _execution_config, _parser, _tree_hash,
+    NAMESPACE, _acquire_run_lock, _binary_pin, _execution_config, _manifest_dir_allowed, _parser, _tree_hash,
 )
 
 
@@ -17,6 +17,22 @@ class CodexCurrentRunnerTests(unittest.TestCase):
         self.assertIsNone(full.manifest_dir)
         self.assertNotEqual(Path("evaluation/runs") / NAMESPACE / smoke.plan,
                             Path("evaluation/runs") / NAMESPACE / full.plan)
+
+    def test_custom_manifest_dir_must_be_external_or_ignored(self) -> None:
+        repository = Path(__file__).resolve().parents[1]
+        self.assertTrue(_manifest_dir_allowed(repository, repository / "evaluation" / "runs" / "custom"))
+        self.assertFalse(_manifest_dir_allowed(repository, repository / "not-ignored-manifest"))
+        with tempfile.TemporaryDirectory() as tmp:
+            self.assertTrue(_manifest_dir_allowed(repository, Path(tmp) / "manifest"))
+
+    def test_same_run_directory_is_exclusive(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            first = _acquire_run_lock(Path(tmp))
+            try:
+                with self.assertRaises(SystemExit):
+                    _acquire_run_lock(Path(tmp))
+            finally:
+                first.close()
 
     def test_task_tree_hash_detects_fixture_change(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
