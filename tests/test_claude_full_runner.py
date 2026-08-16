@@ -55,7 +55,8 @@ class ClaudePlanTests(unittest.TestCase):
    policy=native_sandbox_policy(ROOT,auth,workspace=workspace,sandbox=sandbox,control_paths=[run,*targets])
    credentials=native_credential_paths(auth,workspace=workspace,control_paths=[run,*targets]); sensitive=builtin_sensitive_paths(ROOT,auth,workspace=workspace,control_paths=[run,*targets])
    merged=merged_policy_for_probe(policy,credentials,sensitive); merged_profile=native_seatbelt_profile(merged)
-   self.assertTrue(validate_native_policy_shape(policy,credentials,sensitive)); self.assertLess(len(policy['denyRead']),64); self.assertLess(len(merged_profile.encode()),128_000)
+   self.assertTrue(validate_native_policy_shape(policy,credentials,sensitive)); self.assertLessEqual(len(merged['denyRead']),25); self.assertLess(len(merged_profile.encode()),128_000)
+   self.assertFalse(any((ROOT/'.venv').resolve().is_relative_to(Path(path)) for path in merged['denyRead']))
    if sys.platform=='darwin' and Path('/usr/bin/sandbox-exec').is_file():
     for args in (['-c','print("PYTHON_OK")'],['-m','pytest','--version']):
      completed=subprocess.run(['/usr/bin/sandbox-exec','-p',merged_profile,str(ROOT/'.venv/bin/python'),*args],cwd=workspace,text=True,capture_output=True)

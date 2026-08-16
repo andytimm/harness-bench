@@ -132,21 +132,21 @@ accepted only while neither `Agent` nor `Task` is exposed; any other agent list
 fails closed.
 
 Sensitive paths are enumerated at launch. The production native policy uses a
-compact explicit high-value frontier: every checkout/control-plane root except the
-runtime `.venv`, other worktrees, dedicated `.harnessbench`, normal `.claude` and
+compact explicit high-value frontier: the current checkout's `.git`, `tasks`,
+`grading`, `evaluation`, `src`, and `config` integrity roots, other worktrees, dedicated `.harnessbench`, normal `.claude` and
 `.claude.json`, `Library/Keychains`, `.ssh`, `.aws`, `.config`, Security.framework,
 `/usr/bin/security`, and private smoke evidence. No native deny overlaps any
 workspace/runtime allow, preventing Claude from expanding a broad HOME parent
 into a profile above macOS `ARG_MAX`. This is a calibrated trust boundary for
 authentication and benchmark integrity, not a claim that Bash or built-in tools
 are denied every benign file in the user's home. Built-ins use the same compact
-high-value roots and, like native Bash, enumerate only current-checkout entries
-other than `.venv`; a checkout-root deny would override the merged `.venv` allow.
-They do not enumerate HOME or any deeper checkout descendants. Native credential-file entries remain a small exact set and
+high-value roots and, like native Bash, list only those six current-checkout
+integrity roots; a checkout-root deny would override the merged `.venv` allow.
+They do not enumerate HOME or benign checkout files/docs/tests. Native credential-file entries remain a small exact set and
 never deny a workspace ancestor. Because Claude merges permission paths into its
 Bash profile, the fail-closed shape check prefix-minimizes the union of filesystem,
 credential, and built-in paths, prohibits a broad HOME prefix or any merged allow/deny ancestry, caps the union at
-40, and budgets 20 KB per prefix / 800 KB total from the observed 92-prefix to
+25, and budgets 32 KB per prefix / 800 KB total from the observed 92-prefix to
 325-generated-path, 1.9-MB smoke. A production-shaped test covers the combined
 union and native deny/allow ancestry. The offline Seatbelt probe preserves the
 same effective frontier.

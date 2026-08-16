@@ -26,6 +26,7 @@ class Quiet(SimpleHTTPRequestHandler):
 def _q(value:Path|str)->str: return shlex.quote(str(value))
 def build_probe_script(*,workspace:Path,plaintext:Path,python:Path,service:str,url:str)->str:
  """Return the complete immutable, claim-bound program; Claude never composes probes."""
+ diagnostic=workspace/'out'/'probe-failure.json'
  framework='/System/Library/Frameworks/Security.framework/Versions/A/Security'
  py_framework=("import ctypes,sys; s="+repr(service)+"; f=ctypes.CDLL("+repr(framework)+"); "
   "fn=f.SecKeychainFindGenericPassword; status=fn(None,len(s),s.encode(),0,None,None,None,None); sys.exit(0 if status==0 else 17)")
@@ -39,7 +40,7 @@ def build_probe_script(*,workspace:Path,plaintext:Path,python:Path,service:str,u
  # contain a credential if containment regressed. A successful lookup fails closed.
  return f"""#!/bin/bash
 set +e
-fail_probe() {{ local label="$1" status="$2" code="$3"; printf 'probe_failed label=%s status=%s code=%s\n' "$label" "$status" "$code" >&2; exit "$code"; }}
+fail_probe() {{ local label="$1" status="$2" code="$3"; printf '{{"label":"%s","status":%s,"code":%s}}\\n' "$label" "$status" "$code" > {_q(diagnostic)}; printf 'probe_failed label=%s status=%s code=%s\\n' "$label" "$status" "$code" >&2; exit "$code"; }}
 run_deny() {{
  local label="$1"; shift; local output status lower
  output="$("$@" 2>&1)"; status=$?; lower="$(printf %s "$output" | /usr/bin/tr '[:upper:]' '[:lower:]')"
@@ -79,6 +80,18 @@ printf '"node":{{"expected_status":0,"observed_status":%d,"observed_output":"NOD
 printf '"loopback":{{"expected_status":0,"observed_status":%d,"observed_output":"workspace-ok","passed":true}}' "$status_loopback"
 printf '}}}}\n'
 """
+
+def read_probe_failure(path:Path)->dict[str,Any]|None:
+ if not path.exists(): return None
+ try: value=json.loads(path.read_text())
+ except (OSError,json.JSONDecodeError) as exc: raise ValueError('probe failure diagnostic malformed') from exc
+ labels=set(DENIAL_PROBES+POSITIVE_PROBES); labels.add('venv_pytest')
+ if (not isinstance(value,dict) or set(value)!={'label','status','code'} or
+     value.get('label') not in labels or not isinstance(value.get('status'),int) or
+     value.get('code') not in (90,91,92)):
+  raise ValueError('probe failure diagnostic schema invalid')
+ return value
+
 
 def _content_text(content:Any)->str:
  if isinstance(content,str): return content
@@ -182,7 +195,7 @@ def main()->int:
   fd=os.open(target,flags,0o400)
   with os.fdopen(fd,'w') as handle: handle.write(content); handle.flush(); os.fsync(handle.fileno())
  sentinel_hashes={str(path):sha(path) for path in (plaintext,edit_sentinel)}; denied_files={'read':str(plaintext),'edit':str(edit_sentinel),'write':str(write_target)}; cfg['containment_control_roots'] += [str(x) for x in (plaintext,edit_sentinel,write_target)]; url=f'http://127.0.0.1:{server.server_port}/in/fixture.txt'
- probe=workspace/'.security-smoke-probe.sh'; probe.write_text(build_probe_script(workspace=workspace,plaintext=plaintext,python=PROBE_PYTHON,service=service,url=url)); probe.chmod(0o400); probe_hash=sha(probe)
+ diagnostic=workspace/'out'/'probe-failure.json'; probe=workspace/'.security-smoke-probe.sh'; probe.write_text(build_probe_script(workspace=workspace,plaintext=plaintext,python=PROBE_PYTHON,service=service,url=url)); probe.chmod(0o400); probe_hash=sha(probe)
  bash_command=f'/bin/bash {shlex.quote(str(probe))}'
  read_paths=[str(seed),str(ROOT/'tasks'),str(ROOT/'config'),str(Path.home()/'.claude'),
              '/System/Library/Frameworks/Security.framework',str(private)]
@@ -202,7 +215,9 @@ def main()->int:
  ctx=AdapterRunContext(task=TaskSpec(task_id='security-smoke-non-benchmark',title='security smoke'),workspace=workspace,sandbox=sandbox,prompt=prompt,prompt_file=sandbox/'prompt.txt',session_id='smoke-'+nonce,timeout_sec=600,env={'SMOKE_LOOPBACK_URL':url},model_id=MODEL_ID,model_config=cfg,mode='live'); (sandbox/'prompt.txt').write_text(prompt)
  try: result=ClaudeCodeAdapter().run(ctx)
  finally: server.shutdown(); server.server_close(); thread.join(timeout=5)
- errors=[]; report=None
+ errors=[]; report=None; failure_diagnostic=None
+ try: failure_diagnostic=read_probe_failure(diagnostic)
+ except ValueError as exc: errors.append(str(exc))
  try: report=validate_smoke_trace(_parse_stream(result.stdout),read_paths=read_paths,denied_files=denied_files,bash_command=bash_command,nonce=nonce,probe_sha256=probe_hash,probe_path=probe)
  except Exception as exc: errors.append(str(exc))
  if not result.ok: errors.append(result.stderr or 'adapter failed')
@@ -216,7 +231,7 @@ def main()->int:
  artifacts=[]
  for key in ('stdout_log_file','stderr_log_file','native_session_file'):
   path=Path(m.get(key,'')); artifacts.append({'path':str(path),'sha256':sha(path) if path.is_file() else ''})
- artifacts+=list(m.get('raw_response_artifacts') or []); normalized=sandbox/'claude-round1.normalized.json'; artifacts.append({'path':str(normalized),'sha256':sha(normalized) if normalized.is_file() else ''}); artifacts.append({'path':str(probe),'sha256':probe_hash}); artifacts += [{'path':str(path),'sha256':sha(path) if path.is_file() else ''} for path in (plaintext,edit_sentinel)]
- immutable_json(receipt,{'schema':3,'kind':'non-benchmark-security-smoke','status':'passed' if not errors else 'failed','finished_at':now(),'nonce':nonce,'plan_binding':binding,'claim_sha256':sha(claim),'probe_report':report,'artifacts':artifacts,'adapter_metadata':m,'security_smoke_marker':{'native_sandbox_runtime_evidence':report is not None and not errors,'all_builtin_file_tools_denied':report is not None and not errors,'tool_list_valid':bool(m.get('tool_list_valid'))},'errors':errors,'benchmark_claim':False,'score':None})
+ artifacts+=list(m.get('raw_response_artifacts') or []); normalized=sandbox/'claude-round1.normalized.json'; artifacts.append({'path':str(normalized),'sha256':sha(normalized) if normalized.is_file() else ''}); artifacts.append({'path':str(probe),'sha256':probe_hash}); artifacts += [{'path':str(path),'sha256':sha(path) if path.is_file() else ''} for path in (plaintext,edit_sentinel,diagnostic)]
+ immutable_json(receipt,{'schema':3,'kind':'non-benchmark-security-smoke','status':'passed' if not errors else 'failed','finished_at':now(),'nonce':nonce,'plan_binding':binding,'claim_sha256':sha(claim),'probe_report':report,'probe_failure':failure_diagnostic,'artifacts':artifacts,'adapter_metadata':m,'security_smoke_marker':{'native_sandbox_runtime_evidence':report is not None and not errors,'all_builtin_file_tools_denied':report is not None and not errors,'tool_list_valid':bool(m.get('tool_list_valid'))},'errors':errors,'benchmark_claim':False,'score':None})
  print(receipt); return 0 if not errors else 1
 if __name__=='__main__': raise SystemExit(main())

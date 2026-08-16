@@ -73,6 +73,12 @@ class SecuritySmokeEvidenceTests(unittest.TestCase):
  def test_nonce_only_exact_final_schema(self):
   rows=trace(self.paths,self.denied_files,self.command,self.nonce); rows[-2]['message']['content'][0]['text']='done '+self.nonce
   with self.assertRaisesRegex(ValueError,'exact nonce'): self.validate(rows)
+ def test_sanitized_failure_diagnostic_is_strict(self):
+  path=Path(self.tmp.name)/'failure.json'; self.assertIsNone(smoke.read_probe_failure(path))
+  path.write_text(json.dumps({'label':'image_png','status':126,'code':91}))
+  self.assertEqual(smoke.read_probe_failure(path),{'label':'image_png','status':126,'code':91})
+  path.write_text(json.dumps({'label':'image_png','status':126,'code':91,'output':'secret'}))
+  with self.assertRaisesRegex(ValueError,'schema'): smoke.read_probe_failure(path)
  def test_probe_script_contains_every_capability_and_no_nonce(self):
   script=smoke.build_probe_script(workspace=Path('/w'),plaintext=Path('/seed/plain'),python=Path('/repo/.venv/bin/python'),service='Claude Code-credentials-12345678',url='http://127.0.0.1:1/in/fixture.txt')
   for name in smoke.DENIAL_PROBES+smoke.POSITIVE_PROBES: self.assertIn(name,script)

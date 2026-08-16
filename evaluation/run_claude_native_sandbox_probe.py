@@ -73,6 +73,7 @@ def main()->int:
   if completed.returncode: raise SystemExit(f'native probe failed rc={completed.returncode}: {completed.stderr[-1000:]}')
   report=validate_report(completed.stdout)
   if sha(probe)!=probe_hash or stat.S_IMODE(probe.stat().st_mode)&0o222: raise SystemExit('immutable probe changed')
+  if (workspace/'out'/'probe-failure.json').exists(): raise SystemExit('unexpected native probe failure diagnostic')
   if not plaintext.is_file() or sha(plaintext)!=plaintext_hash: raise SystemExit('private denied sentinel changed')
  status_after=keychain_status(service)
  if status_after!=status_before:

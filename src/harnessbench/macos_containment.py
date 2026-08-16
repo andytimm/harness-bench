@@ -28,6 +28,15 @@ def repository_control_plane_paths(root: Path) -> list[Path]:
     return paths
 
 
+def benchmark_integrity_paths(root: Path) -> list[Path]:
+    """Minimal current-checkout roots whose mutation changes the evaluation."""
+    root=root.resolve(); names=(".git","tasks","grading","evaluation","src","config")
+    paths=[(root/name).resolve() for name in names]
+    if not all(path.exists() or path.is_symlink() for path in paths):
+        raise RuntimeError("benchmark integrity deny set is incomplete")
+    return paths
+
+
 def _within(path: Path, parent: Path) -> bool:
     try: path.relative_to(parent); return True
     except ValueError: return False
@@ -86,11 +95,11 @@ def builtin_sensitive_paths(root: Path, auth_path: Path, *, workspace: Path,
         entries=_frontier(resolved,[workspace]) if _within(workspace,resolved) else [resolved]
         controls.extend(entry for entry in entries if entry.name != "prompt.txt")
     home=Path.home()
-    explicit=[*repository_control_plane_paths(root),*other_worktrees(root),*controls,
+    explicit=[*benchmark_integrity_paths(root),*other_worktrees(root),*controls,
               auth_path,home/".harnessbench",
               home/".claude",home/".claude.json",home/"Library"/"Keychains",
               home/".ssh",home/".aws",home/".config",home/".codex",home/".hermes"/"auth.json",
-              home/".hermes"/"config.yaml",home/".hermes"/".env",home/".prime",Path("/usr/bin/security"),
+              Path("/usr/bin/security"),
               Path("/System/Library/Frameworks/Security.framework")]
     return [str(p) for p in _prefix_minimize(explicit)]
 
@@ -126,10 +135,9 @@ def native_sandbox_policy(root: Path, auth_path: Path, *, workspace: Path, sandb
     home=Path.home()
     high_value=[auth_path,home/".harnessbench",home/".claude",home/".claude.json",
                 home/"Library"/"Keychains",home/".ssh",home/".aws",home/".config",
-                home/".codex",home/".hermes"/"auth.json",home/".hermes"/"config.yaml",
-                home/".hermes"/".env",home/".prime",Path("/usr/bin/security"),
+                home/".codex",home/".hermes"/"auth.json",Path("/usr/bin/security"),
                 Path("/System/Library/Frameworks/Security.framework")]
-    denies=[*repository_control_plane_paths(root),*other_worktrees(root),*controls,*high_value]
+    denies=[*benchmark_integrity_paths(root),*other_worktrees(root),*controls,*high_value]
     deny=_prefix_minimize(denies)
     required=[auth_path.resolve(),(home/".claude").resolve(),(home/".claude.json").resolve(),
               (home/"Library"/"Keychains").resolve(),Path("/usr/bin/security").resolve(),
@@ -142,8 +150,8 @@ def native_sandbox_policy(root: Path, auth_path: Path, *, workspace: Path, sandb
             "denyRead":[str(p) for p in deny],"denyWrite":[str(p) for p in deny]}
 
 
-NATIVE_COMBINED_PREFIX_LIMIT = 40
-CLAUDE_OBSERVED_BYTES_PER_UNIQUE_PREFIX = 20000
+NATIVE_COMBINED_PREFIX_LIMIT = 25
+CLAUDE_OBSERVED_BYTES_PER_UNIQUE_PREFIX = 32000
 NATIVE_ESTIMATED_PROFILE_LIMIT = 800000
 
 
