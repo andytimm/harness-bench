@@ -14,6 +14,10 @@ uv run python -m harnessbench.codex_current_runner --plan smoke
 uv run python -m harnessbench.codex_current_runner --plan full
 ```
 
+The runner uses the checked-in `config/harness.example.yaml` by default and prepends
+the literal `Path(sys.executable).parent` to `PATH`, ensuring task commands and outcome
+oracles use the project environment rather than an unrelated system Python.
+
 Preflight performs no model request and does not copy, refresh, or modify OAuth
 state. It checks all 106 tasks, the exact `codex-cli 0.139.0` version, executable
 launcher and native-binary path/SHA-256 provenance, the GPT-5.4/medium/provider/billing

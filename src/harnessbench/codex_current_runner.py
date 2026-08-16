@@ -3,7 +3,9 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import subprocess
+import sys
 import time
 from pathlib import Path
 from typing import Any
@@ -16,6 +18,16 @@ from harnessbench.tasks import load_tasks
 NAMESPACE = "codex-gpt-5.4-medium-current-0.139"
 EXPECTED_TASK_COUNT = 106
 SMOKE_TASKS = ("001-file", "044-ci-config-repair")
+
+
+def _prepend_interpreter_bin_to_path() -> None:
+    """Make project-local CLIs available to tasks and outcome oracles."""
+    interpreter_bin = str(Path(sys.executable).parent)
+    current = os.environ.get("PATH", "")
+    parts = [part for part in current.split(os.pathsep) if part]
+    os.environ["PATH"] = os.pathsep.join(
+        [interpreter_bin, *(part for part in parts if part != interpreter_bin)]
+    )
 
 
 def _sort_key(task_id: str) -> tuple[int, str]:
@@ -122,13 +134,17 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--continue-on-failure", action="store_true")
     parser.add_argument("--manifest-dir", type=Path, default=None,
                         help="default: evaluation/runs/<namespace>/<smoke|full>")
-    parser.add_argument("--harness-config", type=Path, default=None)
+    parser.add_argument(
+        "--harness-config", type=Path, default=Path("config/harness.example.yaml"),
+        help="pinned checked-in harness config for this evaluation",
+    )
     parser.add_argument("--app-config", type=Path, default=None)
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
+    _prepend_interpreter_bin_to_path()
     app = load_app_config(args.app_config); models = load_model_config(args.harness_config)
     if NAMESPACE not in models:
         raise SystemExit(f"missing harness config namespace {NAMESPACE!r}")

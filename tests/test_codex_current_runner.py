@@ -1,11 +1,15 @@
 from __future__ import annotations
 
+import os
+import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from harnessbench.codex_current_runner import (
-    NAMESPACE, _acquire_run_lock, _binary_pin, _execution_config, _manifest_dir_allowed, _parser, _tree_hash,
+    NAMESPACE, _acquire_run_lock, _binary_pin, _execution_config, _manifest_dir_allowed,
+    _parser, _prepend_interpreter_bin_to_path, _tree_hash,
 )
 
 
@@ -15,8 +19,16 @@ class CodexCurrentRunnerTests(unittest.TestCase):
         full = _parser().parse_args(["--plan", "full"])
         self.assertIsNone(smoke.manifest_dir)
         self.assertIsNone(full.manifest_dir)
+        self.assertEqual(smoke.harness_config, Path("config/harness.example.yaml"))
         self.assertNotEqual(Path("evaluation/runs") / NAMESPACE / smoke.plan,
                             Path("evaluation/runs") / NAMESPACE / full.plan)
+
+
+    def test_project_interpreter_bin_is_first_on_path(self) -> None:
+        interpreter_bin = str(Path(sys.executable).parent)
+        with patch.dict(os.environ, {"PATH": f"/usr/bin{os.pathsep}{interpreter_bin}{os.pathsep}/bin"}):
+            _prepend_interpreter_bin_to_path()
+            self.assertEqual(os.environ["PATH"].split(os.pathsep), [interpreter_bin, "/usr/bin", "/bin"])
 
     def test_custom_manifest_dir_must_be_external_or_ignored(self) -> None:
         repository = Path(__file__).resolve().parents[1]
