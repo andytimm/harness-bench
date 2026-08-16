@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from harnessbench.adapters import (
     CodexAdapter,
+    ClaudeCodeAdapter,
     DemoAdapter,
     FairyClawAdapter,
     GenericCliAdapter,
@@ -22,6 +23,8 @@ from harnessbench.adapters.base import BaseAdapter
 def build_adapter(adapter_name: str) -> BaseAdapter:
     if adapter_name == "codex":
         return CodexAdapter()
+    if adapter_name == "claude_code":
+        return ClaudeCodeAdapter()
     if adapter_name == "demo":
         return DemoAdapter()
     if adapter_name == "nanobot":

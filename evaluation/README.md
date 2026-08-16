@@ -47,3 +47,38 @@ uv pip install --python .venv/bin/python matplotlib
 ```
 
 The comparison uses completion/oracle outcome only. The public baseline records exact task and model labels but omits reasoning effort, backend revision, harness versions, and benchmark SHA; see the comparison report for caveats.
+
+
+## Claude Code Opus 4.6 staged evaluation
+
+`run_claude_full.py` pins Claude Code `2.1.227 (Claude Code)` and the resolved
+binary SHA256 `7432511ba3be818e01f23f6eef8630d214a8b618451e188c3c7d61a987eef6c7`,
+model `claude-opus-4-6`, and effort `medium`. It never reads `~/.claude`.
+Before evaluation, an operator must independently provision subscription OAuth
+in the dedicated seed directory `~/.harnessbench/claude-code-opus-4.6`; this
+repository does not authenticate or copy normal Claude credentials.
+
+First inspect the immutable 106-task plan without authentication or model calls:
+
+```sh
+.venv/bin/python evaluation/run_claude_full.py \
+  --run-root /absolute/external/harnessbench-claude-opus46 \
+  --tranche 1 --dry-plan
+```
+
+Live execution is deliberately gated by `--live` plus the literal acknowledgement
+printed by `--help`. Run tranche 1 (odd numeric task IDs) and then tranche 2
+(even IDs). Each has 53 tasks from the same immutable plan. Claims are written
+before launch and receipts after strict validation; an interrupted claimed task
+is never retried automatically, and a rejected rate-limit event is recorded as
+`quota_censored` and stops scheduling. Process grading is off and
+`HARNESSBENCH_PUBLIC_URL_TEMPLATE` is exactly `{local_url}`.
+
+Containment is two-layered and fail closed: macOS Seatbelt denies the benchmark
+checkout/control plane, auth seed, and oracle data while preserving `.venv`, the
+workspace, shell/subprocess, Node, images, and loopback; Claude's explicit
+`--settings` disables hooks/plugins/MCP/skills/memory/customization and enables
+its native Bash sandbox with credential/read denies (including Keychain CLI).
+The built-in Read tool receives matching deny rules. A live launch still requires
+an operator security smoke proving OAuth succeeds while Read, cat, Python, Node,
+and `/usr/bin/security` cannot recover the staged credential.

@@ -243,3 +243,11 @@ OpenClaw 运行时会使用三层路径：
 - `sandbox`：本次任务的临时目录
 - `workspace`：`sandbox/workspace`，agent 真正读写任务文件的目录
 - `state_dir`：OpenClaw 的状态目录，默认放在 `sandbox/.openclaw`
+
+
+### Claude Code (pinned staged evaluation)
+
+The `claude_code` adapter supports isolated subscription OAuth, native UUID
+resume, raw stream-JSON/native transcript retention, authoritative cumulative
+`result.modelUsage` accounting, and strict terminal/model/session/version/hash
+validation. See `evaluation/README.md`; normal `~/.claude` auth is forbidden.

@@ -1,5 +1,6 @@
 from harnessbench.adapters.base import BaseAdapter
 from harnessbench.adapters.codex import CodexAdapter
+from harnessbench.adapters.claude_code import ClaudeCodeAdapter
 from harnessbench.adapters.demo import DemoAdapter
 from harnessbench.adapters.fairyclaw import FairyClawAdapter
 from harnessbench.adapters.generic_cli import GenericCliAdapter
@@ -17,6 +18,7 @@ from harnessbench.adapters.hermes import HermesAgentAdapter
 __all__ = [
     "BaseAdapter",
     "CodexAdapter",
+    "ClaudeCodeAdapter",
     "DemoAdapter",
     "GenericCliAdapter",
     "NanoBotAdapter",

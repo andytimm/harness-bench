@@ -3,6 +3,22 @@
     "demo-local": {
       "adapter": "demo"
     },
+    "claude-code-opus-4.6-medium": {
+      "adapter": "claude_code",
+      "command": "claude",
+      "expected_version": "2.1.227 (Claude Code)",
+      "expected_sha256": "7432511ba3be818e01f23f6eef8630d214a8b618451e188c3c7d61a987eef6c7",
+      "benchmark_config_seed": "~/.harnessbench/claude-code-opus-4.6",
+      "model": "claude-opus-4-6",
+      "effort": "medium",
+      "billing_mode": "subscription_oauth",
+      "timeout_sec": 2400,
+      "timeout_grace_sec": 5,
+      "sync_refreshed_auth": true,
+      "stream_to_console": false,
+      "use_usage_proxy": false,
+      "require_macos_containment": true
+    },
     "codex-gpt-5.4-medium-current-0.139": {
       "adapter": "codex",
       "command": "codex",
