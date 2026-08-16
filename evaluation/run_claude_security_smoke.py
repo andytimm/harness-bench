@@ -11,7 +11,7 @@ PROBE_PYTHON=ROOT/'.venv/bin/python'
 sys.path[:0]=[str(ROOT/'src'),str(ROOT/'evaluation')]
 from run_claude_full import (LIVE_ACK,MODEL_ID,build_plan,plan_binding,adapter_model_config,
                              immutable_json,sha,now)
-from harnessbench.adapters.claude_code import ClaudeCodeAdapter,_parse_stream
+from harnessbench.adapters.claude_code import ClaudeCodeAdapter,_parse_stream,_validate_seed
 from harnessbench.models import AdapterRunContext,TaskSpec
 
 PROBE_SCHEMA=1
@@ -155,9 +155,11 @@ def validate_smoke_trace(rows:list[dict[str,Any]],*,read_paths:list[str],bash_co
 def main()->int:
  ap=argparse.ArgumentParser(); ap.add_argument('--run-root',type=Path,required=True); ap.add_argument('--benchmark-seed',type=Path,default=Path('~/.harnessbench/claude-code-opus-4.6')); ap.add_argument('--live',action='store_true'); ap.add_argument('--ack'); a=ap.parse_args()
  if not a.live or a.ack!=LIVE_ACK: raise SystemExit(f'security smoke requires --live --ack {LIVE_ACK}')
+ try: seed=_validate_seed(a.benchmark_seed.expanduser())
+ except ValueError as exc: raise SystemExit(str(exc)) from exc
  run=a.run_root.expanduser().resolve()
  if run==ROOT or ROOT in run.parents: raise SystemExit('--run-root must be outside the checkout')
- plan=build_plan(ROOT,a.benchmark_seed); binding=plan_binding(plan); cfg=adapter_model_config(plan); cfg['containment_control_roots']=[str(run)]; plan_path=run/'plan.json'
+ plan=build_plan(ROOT,seed); binding=plan_binding(plan); cfg=adapter_model_config(plan); cfg['containment_control_roots']=[str(run)]; plan_path=run/'plan.json'
  if __import__('subprocess').check_output(['git','-C',str(ROOT),'status','--porcelain'],text=True): raise SystemExit('security smoke requires a clean checkout at the bound revision')
  if plan_path.exists():
   if json.loads(plan_path.read_text())!=plan: raise SystemExit('immutable plan differs')

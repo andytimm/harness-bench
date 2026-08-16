@@ -79,4 +79,12 @@ class SecuritySmokeEvidenceTests(unittest.TestCase):
   self.assertIn("plaintext=workspace/'.denied-sentinel'",source)
   self.assertIn('os.O_EXCL',source); self.assertIn("getattr(os,'O_NOFOLLOW',0)",source)
   self.assertNotIn("seed/'.harnessbench-smoke-plaintext'",source)
+ def test_normal_auth_seed_rejected_before_absent_run_root_is_created(self):
+  from unittest.mock import patch
+  run_root=Path(self.tmp.name)/'definitely-absent-run-root'
+  argv=['run_claude_security_smoke.py','--run-root',str(run_root),'--benchmark-seed',str(Path.home()/'.claude'),'--live','--ack',smoke.LIVE_ACK]
+  with patch.object(sys,'argv',argv):
+   with self.assertRaisesRegex(SystemExit,'must not use normal'):
+    smoke.main()
+  self.assertFalse(run_root.exists())
 if __name__=='__main__': unittest.main()
