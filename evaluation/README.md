@@ -178,8 +178,10 @@ structurally validated Edit deny, and unchanged sentinel hash. It separately pro
 blocking for every file-capable built-in and
 arbitrary Bash cat/Python/Node/`security`/Security.framework access, plus
 workspace, image, subprocess, literal venv Python, pytest, Node, and loopback
-capabilities.  Its immutable receipt carries a native-security marker required
-by both tranche gates.
+capabilities. Progress text is allowed, but the last assistant text must be the
+exact compact nonce JSON and the sole successful terminal result must mirror it
+exactly; every other parsed stream surface is nonce-free. Its immutable receipt
+carries a native-security marker required by both tranche gates.
 
 Claude Code 2.1.227 has a known loopback routing defect: its injected
 `NO_PROXY` includes `localhost`/`127.0.0.1`, so clients bypass the sandbox proxy
@@ -196,8 +198,10 @@ and the instruction provenance. Parent-owned fixtures do not require
 
 Full-run task sandboxes are created under `active/` and, only after result
 validation succeeds, moved under the single `archive/` deny prefix. A symlink at
-the original sandbox path preserves receipt and artifact-path validation. Plan,
-configuration, claims, receipts, results, and data live below one
+the original sandbox path preserves receipt and artifact-path validation. Archive parents are created component-by-component without following
+links, containment-checked, pinned with an `O_NOFOLLOW` directory descriptor, and
+revalidated immediately before rename; any ancestor link or leaf collision fails
+closed. Plan, configuration, claims, receipts, results, and data live below one
 `control-plane/` deny prefix, with compatibility symlinks at the historical
 run-root paths. The current `.claude-benchmark`, `usage-proxy`, and prompt file
 remain exact denies. Consequently native prefixes, built-in rules, and settings

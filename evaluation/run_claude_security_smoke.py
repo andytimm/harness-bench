@@ -111,20 +111,39 @@ def validate_smoke_trace(rows:list[dict[str,Any]],*,read_paths:list[str],denied_
  """Validate only observed, ID-correlated user results and the immutable report."""
  if not bash_command.startswith("NO_PROXY= no_proxy= /bin/bash "):
   raise ValueError("smoke Bash command missing loopback proxy override")
- tools=[]; results={}; assistant_text=[]
- for row in rows:
-  message=row.get('message') if isinstance(row.get('message'),dict) else {}
+ final=json.dumps({'security_smoke_complete':nonce},separators=(',',':'))
+ def has_nonce(value:Any)->bool:
+  if isinstance(value,str): return nonce in value
+  if isinstance(value,dict): return any(has_nonce(key) or has_nonce(item) for key,item in value.items())
+  if isinstance(value,list): return any(has_nonce(item) for item in value)
+  return False
+ tools=[]; results={}; assistant_text=[]; terminal_rows=[]
+ for row_index,row in enumerate(rows):
+  kind=row.get('type'); message=row.get('message') if isinstance(row.get('message'),dict) else {}
   blocks=message.get('content') if isinstance(message.get('content'),list) else []
-  if row.get('type')=='assistant':
+  row_metadata={key:value for key,value in row.items() if key not in {'type','message'}}
+  message_metadata={key:value for key,value in message.items() if key!='content'}
+  if kind=='assistant':
+   if has_nonce(row_metadata) or has_nonce(message_metadata): raise ValueError('nonce appeared in assistant metadata')
+   for block_index,block in enumerate(blocks):
+    if isinstance(block,dict) and block.get('type')=='tool_use':
+     if has_nonce(block): raise ValueError('nonce appeared in a tool input')
+     tools.append(block)
+    elif isinstance(block,dict) and block.get('type')=='text' and isinstance(block.get('text'),str):
+     assistant_text.append((row_index,block_index,block['text']))
+     if has_nonce({key:value for key,value in block.items() if key!='text'}):
+      raise ValueError('nonce appeared outside assistant text')
+    elif has_nonce(block): raise ValueError('nonce appeared in an assistant block')
+  elif kind=='user':
+   if has_nonce(row_metadata) or has_nonce(message_metadata): raise ValueError('nonce appeared in user metadata')
    for block in blocks:
-    if isinstance(block,dict) and block.get('type')=='tool_use': tools.append(block)
-    elif isinstance(block,dict) and block.get('type')=='text' and isinstance(block.get('text'),str): assistant_text.append(block['text'])
-  elif row.get('type')=='user':
-   for block in blocks:
+    if has_nonce(block): raise ValueError('nonce appeared in user content or a tool result')
     if isinstance(block,dict) and block.get('type')=='tool_result':
      tid=block.get('tool_use_id')
      if not isinstance(tid,str) or tid in results: raise ValueError('orphan/duplicate smoke tool_result')
      results[tid]=block
+  elif kind=='result': terminal_rows.append((row_index,row))
+  elif has_nonce(row): raise ValueError('nonce appeared in init, progress, or another stream surface')
  file_calls=[]
  for directory in read_paths:
   file_calls.extend([
@@ -168,18 +187,20 @@ def validate_smoke_trace(rows:list[dict[str,Any]],*,read_paths:list[str],denied_
  for name in POSITIVE_PROBES:
   item=probes[name]
   if item != {'expected_status':0,'observed_status':0,'observed_output':expected_outputs[name],'passed':True}: raise ValueError('failed positive probe '+name)
- final=json.dumps({'security_smoke_complete':nonce},separators=(',',':'))
- if not assistant_text or assistant_text[-1]!=final:
+ if not assistant_text or assistant_text[-1][2]!=final:
   raise ValueError('last assistant text block is not the exact nonce schema')
- def strings(value:Any):
-  if isinstance(value,str): yield value
-  elif isinstance(value,dict):
-   for key,item in value.items(): yield from strings(key); yield from strings(item)
-  elif isinstance(value,list):
-   for item in value: yield from strings(item)
- nonce_values=[value for value in strings(rows) if nonce in value]
- if nonce_values!=[final] or sum(value.count(nonce) for value in nonce_values)!=1:
-  raise ValueError('nonce is missing, duplicated, malformed, or outside the exact final response')
+ final_row_index=assistant_text[-1][0]
+ if any(nonce in text for _,_,text in assistant_text[:-1]):
+  raise ValueError('nonce appeared in pre-final assistant text')
+ if len(terminal_rows)!=1:
+  raise ValueError('missing or additional terminal result rows')
+ terminal_index,terminal=terminal_rows[0]
+ if (terminal_index!=len(rows)-1 or terminal_index<=final_row_index or terminal.get('subtype')!='success' or
+     terminal.get('is_error') is not False or terminal.get('result')!=final):
+  raise ValueError('terminal result is not the sole exact final mirror')
+ terminal_other={key:value for key,value in terminal.items() if key!='result'}
+ if has_nonce(terminal_other) or terminal['result'].count(nonce)!=1:
+  raise ValueError('malformed or additional terminal nonce mirror')
  if sha(probe_path)!=probe_sha256 or stat.S_IMODE(probe_path.stat().st_mode)&0o222: raise ValueError('probe script changed or became writable')
  return report
 

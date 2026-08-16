@@ -1,6 +1,7 @@
 from __future__ import annotations
 import importlib.util, json, os, shutil, subprocess, sys, tempfile, unittest
 from pathlib import Path
+from unittest import mock
 
 ROOT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('run_claude_full',ROOT/'evaluation/run_claude_full.py'); module=importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
@@ -98,6 +99,44 @@ class ClaudePlanTests(unittest.TestCase):
    self.assertTrue(sandbox.is_symlink()); self.assertEqual(sandbox.resolve(),destination.resolve()); self.assertEqual((workspace/'out.txt').read_text(),'ok')
    self.assertTrue(destination.is_relative_to((run/'archive'/'work').resolve()))
    with self.assertRaisesRegex(RuntimeError,'unarchived'): module.archive_completed_sandbox(result,run)
+ def test_archive_rejects_symlink_ancestors_and_leaf_collisions(self):
+  for symlink_at in ('archive','work','model','api'):
+   with self.subTest(symlink_at=symlink_at), tempfile.TemporaryDirectory() as tmp:
+    run=Path(tmp); sandbox=run/'active'/'model'/'api'/'task'; (sandbox/'workspace').mkdir(parents=True); result=run/'result.json'; result.write_text(json.dumps({'sandbox':str(sandbox)}))
+    outside=run/'outside'; outside.mkdir(); archive=run/'archive'
+    if symlink_at=='archive': archive.symlink_to(outside,target_is_directory=True); work=archive/'work'
+    elif symlink_at=='work': archive.mkdir(); work=archive/'work'; work.symlink_to(outside,target_is_directory=True)
+    else:
+     work=archive/'work'; work.mkdir(parents=True)
+     if symlink_at=='model': (work/'model').symlink_to(outside,target_is_directory=True)
+     else: (work/'model').mkdir(); (work/'model'/'api').symlink_to(outside,target_is_directory=True)
+    with self.assertRaisesRegex(RuntimeError,'symlink or non-directory'): module.archive_completed_sandbox(result,run)
+    self.assertTrue(sandbox.is_dir()); self.assertFalse(any(outside.iterdir()))
+  for collision_kind in ('directory','file'):
+   with self.subTest(collision=collision_kind), tempfile.TemporaryDirectory() as tmp:
+    run=Path(tmp); sandbox=run/'active'/'model'/'api'/'task'; (sandbox/'workspace').mkdir(parents=True); result=run/'result.json'; result.write_text(json.dumps({'sandbox':str(sandbox)}))
+    collision=run/'archive'/'work'/'model'/'api'/'task'; collision.parent.mkdir(parents=True)
+    collision.mkdir() if collision_kind=='directory' else collision.write_text('occupied')
+    with self.assertRaisesRegex(RuntimeError,'collision'): module.archive_completed_sandbox(result,run)
+    self.assertTrue(sandbox.is_dir()); self.assertTrue(collision.exists())
+ def test_archive_revalidation_rejects_ancestor_swap_before_rename(self):
+  with tempfile.TemporaryDirectory() as tmp:
+   run=Path(tmp); sandbox=run/'active'/'model'/'api'/'task'; (sandbox/'workspace').mkdir(parents=True); result=run/'result.json'; result.write_text(json.dumps({'sandbox':str(sandbox)})); outside=run/'outside'; outside.mkdir()
+   original=module._revalidate_archive_parent; calls=0
+   def swap(run_arg,parent,dirfd):
+    nonlocal calls; calls+=1
+    if calls==2:
+     parent.rmdir(); parent.symlink_to(outside,target_is_directory=True)
+    return original(run_arg,parent,dirfd)
+   with mock.patch.object(module,'_revalidate_archive_parent',side_effect=swap):
+    with self.assertRaisesRegex(RuntimeError,'changed'): module.archive_completed_sandbox(result,run)
+   self.assertTrue(sandbox.is_dir()); self.assertFalse(any(outside.iterdir()))
+ def test_archive_symlink_failure_rolls_back_rename(self):
+  with tempfile.TemporaryDirectory() as tmp:
+   run=Path(tmp); sandbox=run/'active'/'model'/'api'/'task'; (sandbox/'workspace').mkdir(parents=True); result=run/'result.json'; result.write_text(json.dumps({'sandbox':str(sandbox)}))
+   with mock.patch.object(Path,'symlink_to',side_effect=OSError('synthetic link failure')):
+    with self.assertRaisesRegex(OSError,'synthetic link failure'): module.archive_completed_sandbox(result,run)
+   self.assertTrue(sandbox.is_dir()); self.assertFalse((run/'archive'/'work'/'model'/'api'/'task').exists())
  def test_plan_binds_canonical_namespace_keychain_and_binary(self):
   with tempfile.TemporaryDirectory() as tmp:
    seed=Path(tmp)/'café'; plan=module.build_plan(ROOT,seed)

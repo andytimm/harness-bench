@@ -183,23 +183,69 @@ def validate_result(path:Path,task:str,plan_digest:str='',expected_binding:dict[
  return {'task_id':task,'result_file':str(path),'result_sha256':sha(path),'plan_digest':plan_digest,
          'plan_binding':expected_binding or {},'artifact_receipts':artifact_receipts,
          'usage':usage,'outcome_score':(data.get('oracle_result') or {}).get('outcome_score')}
+def _safe_archive_parent(run:Path,relative:Path)->tuple[Path,int]:
+ """Create/open an archive parent without following any destination symlink."""
+ run=run.resolve(); archive=run/'archive'; work=archive/'work'
+ for base in (archive,work):
+  try: info=os.lstat(base)
+  except FileNotFoundError:
+   os.mkdir(base,0o700)
+   info=os.lstat(base)
+  if stat.S_ISLNK(info.st_mode) or not stat.S_ISDIR(info.st_mode):
+   raise RuntimeError('archive destination ancestor is a symlink or non-directory')
+ current=work
+ for part in relative.parts:
+  if part in ('','.','..'): raise RuntimeError('archive destination component is invalid')
+  current=current/part
+  try: info=os.lstat(current)
+  except FileNotFoundError:
+   os.mkdir(current,0o700)
+   info=os.lstat(current)
+  if stat.S_ISLNK(info.st_mode) or not stat.S_ISDIR(info.st_mode):
+   raise RuntimeError('archive destination ancestor is a symlink or non-directory')
+ canonical=current.resolve(strict=True); canonical_work=work.resolve(strict=True)
+ if canonical==canonical_work or not canonical.is_relative_to(canonical_work):
+  raise RuntimeError('archive destination parent escaped archive/work')
+ flags=os.O_RDONLY|getattr(os,'O_DIRECTORY',0)|getattr(os,'O_NOFOLLOW',0)
+ return canonical,os.open(current,flags)
+
+
+def _revalidate_archive_parent(run:Path,parent:Path,dirfd:int)->None:
+ """Ensure the pinned destination parent still names the reviewed in-tree directory."""
+ work=run.resolve()/'archive'/'work'; relative=parent.relative_to(work.resolve(strict=True)); current=work
+ for part in relative.parts:
+  current=current/part; info=os.lstat(current)
+  if stat.S_ISLNK(info.st_mode) or not stat.S_ISDIR(info.st_mode):
+   raise RuntimeError('archive destination ancestor changed before rename')
+ canonical=current.resolve(strict=True); canonical_work=work.resolve(strict=True)
+ pinned=os.fstat(dirfd); named=os.stat(current,follow_symlinks=False)
+ if (canonical==canonical_work or not canonical.is_relative_to(canonical_work) or
+     (pinned.st_dev,pinned.st_ino)!=(named.st_dev,named.st_ino)):
+  raise RuntimeError('archive destination parent changed or escaped before rename')
+
+
 def archive_completed_sandbox(result_file:Path,run:Path)->Path:
  """Move a completed sandbox behind one stable deny prefix, retaining path compatibility."""
- data=json.loads(result_file.read_text())
- link=Path(data['sandbox'])
+ data=json.loads(result_file.read_text()); link=Path(data['sandbox'])
  active=(run/'active').resolve(); archive=(run/'archive'/'work').resolve()
  if link.is_symlink() or not link.is_dir(): raise RuntimeError('completed sandbox is not an unarchived directory')
  resolved=link.resolve()
  try: relative=resolved.relative_to(active)
  except ValueError as exc: raise RuntimeError('completed sandbox escaped active work root') from exc
- destination=archive/relative
- if destination.exists() or destination.is_symlink(): raise RuntimeError('completed sandbox archive collision')
- destination.parent.mkdir(parents=True,exist_ok=True)
- os.replace(resolved,destination)
- try: link.symlink_to(destination,target_is_directory=True)
- except OSError:
-  os.replace(destination,resolved)
-  raise
+ parent,dirfd=_safe_archive_parent(run,relative.parent); destination=parent/relative.name
+ try:
+  _revalidate_archive_parent(run,parent,dirfd)
+  try: os.stat(relative.name,dir_fd=dirfd,follow_symlinks=False)
+  except FileNotFoundError: pass
+  else: raise RuntimeError('completed sandbox archive collision')
+  # Revalidate immediately before rename; the O_NOFOLLOW fd pins the directory.
+  _revalidate_archive_parent(run,parent,dirfd)
+  os.rename(resolved,relative.name,dst_dir_fd=dirfd)
+  try: link.symlink_to(destination,target_is_directory=True)
+  except OSError:
+   os.rename(relative.name,resolved,src_dir_fd=dirfd)
+   raise
+ finally: os.close(dirfd)
  return destination
 
 

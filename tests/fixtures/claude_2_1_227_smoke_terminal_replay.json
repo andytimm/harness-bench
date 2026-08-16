@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "source": "sanitized preserved Claude Code 2.1.227 ab0aa43 smoke terminal/progress surfaces",
+  "progress_texts": [
+    "Starting exact security smoke calls.",
+    "Directory 1 complete.",
+    "Directory 2 complete.",
+    "Directory 3 complete.",
+    "Directory 4 complete.",
+    "Directory 5 complete.",
+    "All 30 file-tool calls denied; running the exact Bash probe."
+  ],
+  "terminal": {
+    "type": "result",
+    "subtype": "success",
+    "is_error": false,
+    "result": "{FINAL}",
+    "num_turns": 32,
+    "stop_reason": null,
+    "terminal_reason": "success"
+  }
+}

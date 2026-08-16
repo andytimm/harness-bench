@@ -28,7 +28,7 @@ def trace(paths,denied_files,command,nonce,value=None):
   content=f'Permission to use {name} has been denied because Claude Code is running in dont ask mode.' if name!='Bash' else json.dumps(value or report(),separators=(',',':'))
   rows.append({'type':'user','message':{'content':[{'type':'tool_result','tool_use_id':tid,'content':content,'is_error':name!='Bash'}]}})
  rows.append({'type':'assistant','message':{'content':[{'type':'text','text':json.dumps({'security_smoke_complete':nonce},separators=(',',':'))}]}})
- rows.append({'type':'result','subtype':'success','is_error':False})
+ rows.append({'type':'result','subtype':'success','is_error':False,'result':json.dumps({'security_smoke_complete':nonce},separators=(',',':'))})
  return rows
 
 class SecuritySmokeEvidenceTests(unittest.TestCase):
@@ -66,12 +66,34 @@ class SecuritySmokeEvidenceTests(unittest.TestCase):
   with self.assertRaisesRegex(ValueError,'last assistant text'): self.validate(post)
   duplicate=trace(self.paths,self.denied_files,self.command,self.nonce)
   duplicate.insert(-2,{'type':'assistant','message':{'content':[{'type':'text','text':json.dumps({'security_smoke_complete':self.nonce},separators=(',',':'))}]}})
-  with self.assertRaisesRegex(ValueError,'duplicated'): self.validate(duplicate)
+  with self.assertRaisesRegex(ValueError,'pre-final assistant text'): self.validate(duplicate)
   malformed=trace(self.paths,self.denied_files,self.command,self.nonce); malformed[-2]['message']['content'][0]['text']='done '+self.nonce
   with self.assertRaisesRegex(ValueError,'last assistant text'): self.validate(malformed)
   leaked=trace(self.paths,self.denied_files,self.command,self.nonce)
   leaked.insert(-2,{'type':'assistant','message':{'content':[{'type':'text','text':'working '+self.nonce}]}})
-  with self.assertRaisesRegex(ValueError,'duplicated'): self.validate(leaked)
+  with self.assertRaisesRegex(ValueError,'pre-final assistant text'): self.validate(leaked)
+ def test_preserved_2_1_227_terminal_progress_surface_replay(self):
+  fixture=json.loads((ROOT/'tests/fixtures/claude_2_1_227_smoke_terminal_replay.json').read_text())
+  rows=trace(self.paths,self.denied_files,self.command,self.nonce)
+  rows[-1]={**fixture['terminal'],'result':json.dumps({'security_smoke_complete':self.nonce},separators=(',',':'))}
+  for text in fixture['progress_texts']:
+   rows.insert(-2,{'type':'assistant','message':{'content':[{'type':'text','text':text}]}})
+  self.assertEqual(self.validate(rows)['script_exit_status'],0)
+ def test_terminal_mirror_and_all_nonce_surfaces_are_strict(self):
+  missing=trace(self.paths,self.denied_files,self.command,self.nonce); missing[-1].pop('result')
+  with self.assertRaisesRegex(ValueError,'terminal result'): self.validate(missing)
+  malformed=trace(self.paths,self.denied_files,self.command,self.nonce); malformed[-1]['result']='done '+self.nonce
+  with self.assertRaisesRegex(ValueError,'terminal result'): self.validate(malformed)
+  extra=trace(self.paths,self.denied_files,self.command,self.nonce); extra.append(dict(extra[-1]))
+  with self.assertRaisesRegex(ValueError,'additional terminal'): self.validate(extra)
+  surfaces=[]
+  tool=trace(self.paths,self.denied_files,self.command,self.nonce); tool[1]['message']['content'][0]['input']['leak']=self.nonce; surfaces.append((tool,'tool input'))
+  user=trace(self.paths,self.denied_files,self.command,self.nonce); user[2]['message']['content'][0]['content']+=' '+self.nonce; surfaces.append((user,'user content'))
+  init=trace(self.paths,self.denied_files,self.command,self.nonce); init[0]['detail']=self.nonce; surfaces.append((init,'init'))
+  progress=trace(self.paths,self.denied_files,self.command,self.nonce); progress.insert(-2,{'type':'progress','detail':self.nonce}); surfaces.append((progress,'progress'))
+  terminal_meta=trace(self.paths,self.denied_files,self.command,self.nonce); terminal_meta[-1]['detail']=self.nonce; surfaces.append((terminal_meta,'terminal nonce'))
+  for rows,label in surfaces:
+   with self.subTest(surface=label), self.assertRaises(ValueError): self.validate(rows)
  def test_exact_edit_unread_prerequisite_is_accepted_with_external_postcheck(self):
   rows=trace(self.paths,self.denied_files,self.command,self.nonce)
   for row in rows:
