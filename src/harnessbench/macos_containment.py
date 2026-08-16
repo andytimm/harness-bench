@@ -78,22 +78,20 @@ def _runtime_capabilities(root: Path, workspace: Path, *, binary: Path | None,
 
 def builtin_sensitive_paths(root: Path, auth_path: Path, *, workspace: Path,
                             control_paths: list[Path] | None = None) -> list[str]:
-    """Complete task-file-tool deny frontier, excluding only the workspace."""
+    """Prefix-minimal high-value file-tool frontier; no arbitrary HOME deny."""
     root=root.resolve(); workspace=workspace.resolve(); auth_path=auth_path.resolve()
-    home_denies=_frontier(Path.home(),[workspace])
     controls=[]
     for control in (control_paths or []):
         resolved=control.resolve()
-        controls.extend(_frontier(resolved,[workspace]) if _within(workspace,resolved) else [resolved])
-    explicit=[root,*other_worktrees(root),*controls,auth_path,Path.home()/".claude",
-              Path.home()/".claude.json",Path.home()/"Library"/"Keychains",
-              Path.home()/".ssh",Path.home()/".aws",Path.home()/".config",
-              Path("/usr/bin/security"),Path("/System/Library/Frameworks/Security.framework")]
-    minimized=_prefix_minimize([*home_denies,*explicit])
-    exact=[auth_path,(Path.home()/".claude").resolve(),(Path.home()/".claude.json").resolve(),
-           (Path.home()/"Library"/"Keychains").resolve(),root,
-           *(p.resolve() for p in (control_paths or []) if not _within(workspace,p.resolve()))]
-    return [str(p) for p in sorted(set([*minimized,*exact]),key=str)]
+        entries=_frontier(resolved,[workspace]) if _within(workspace,resolved) else [resolved]
+        controls.extend(entry for entry in entries if entry.name != "prompt.txt")
+    home=Path.home()
+    explicit=[root,*other_worktrees(root),*controls,auth_path,home/".harnessbench",
+              home/".claude",home/".claude.json",home/"Library"/"Keychains",
+              home/".ssh",home/".aws",home/".config",home/".codex",home/".hermes"/"auth.json",
+              home/".hermes"/"config.yaml",home/".hermes"/".env",home/".prime",Path("/usr/bin/security"),
+              Path("/System/Library/Frameworks/Security.framework")]
+    return [str(p) for p in _prefix_minimize(explicit)]
 
 
 def native_credential_paths(auth_path: Path, *, workspace: Path,
@@ -122,11 +120,14 @@ def native_sandbox_policy(root: Path, auth_path: Path, *, workspace: Path, sandb
     controls=[]
     for control in (control_paths or []):
         resolved=control.resolve()
-        controls.extend(_frontier(resolved,[workspace]) if _within(workspace,resolved) else [resolved])
+        entries=_frontier(resolved,[workspace]) if _within(workspace,resolved) else [resolved]
+        controls.extend(entry for entry in entries if entry.name != "prompt.txt")
     home=Path.home()
     high_value=[auth_path,home/".harnessbench",home/".claude",home/".claude.json",
                 home/"Library"/"Keychains",home/".ssh",home/".aws",home/".config",
-                Path("/usr/bin/security"),Path("/System/Library/Frameworks/Security.framework")]
+                home/".codex",home/".hermes"/"auth.json",home/".hermes"/"config.yaml",
+                home/".hermes"/".env",home/".prime",Path("/usr/bin/security"),
+                Path("/System/Library/Frameworks/Security.framework")]
     denies=[*repository_control_plane_paths(root),*other_worktrees(root),*controls,*high_value]
     deny=_prefix_minimize(denies)
     required=[auth_path.resolve(),(home/".claude").resolve(),(home/".claude.json").resolve(),
@@ -140,24 +141,28 @@ def native_sandbox_policy(root: Path, auth_path: Path, *, workspace: Path, sandb
             "denyRead":[str(p) for p in deny],"denyWrite":[str(p) for p in deny]}
 
 
-NATIVE_DENY_ENTRY_LIMIT = 96
-NATIVE_ESTIMATED_BYTES_PER_ENTRY = 6500
-NATIVE_ESTIMATED_PROFILE_LIMIT = 650000
+NATIVE_COMBINED_PREFIX_LIMIT = 24
+CLAUDE_OBSERVED_BYTES_PER_UNIQUE_PREFIX = 20000
+NATIVE_ESTIMATED_PROFILE_LIMIT = 480000
 
 
-def validate_native_policy_shape(policy: dict, credential_paths: Iterable[str | Path]) -> bool:
-    """Bound the production shape using the observed Claude expansion cost."""
+def validate_native_policy_shape(policy: dict, credential_paths: Iterable[str | Path],
+                                 builtin_paths: Iterable[str | Path]) -> bool:
+    """Bound all paths Claude merges, using the observed 92-prefix/1.9-MB smoke."""
     try:
         allows=[Path(x).resolve() for x in [*policy["allowRead"],*policy["allowWrite"]]]
         denies=[Path(x).resolve() for x in [*policy["denyRead"],*policy["denyWrite"]]]
         credentials=[Path(x).resolve() for x in credential_paths]
+        builtins=[Path(x).resolve() for x in builtin_paths]
     except (KeyError,TypeError):
         return False
-    unique=set([*denies,*credentials])
+    combined=_prefix_minimize([*denies,*credentials,*builtins])
+    home=Path.home().resolve()
     overlaps=any(denied == allowed or _within(allowed,denied) or _within(denied,allowed)
-                 for denied in unique for allowed in allows)
-    return (not overlaps and len(unique) <= NATIVE_DENY_ENTRY_LIMIT and
-            len(unique)*NATIVE_ESTIMATED_BYTES_PER_ENTRY <= NATIVE_ESTIMATED_PROFILE_LIMIT)
+                 for denied in denies for allowed in allows)
+    return (not overlaps and home not in combined and
+            len(combined) <= NATIVE_COMBINED_PREFIX_LIMIT and
+            len(combined)*CLAUDE_OBSERVED_BYTES_PER_UNIQUE_PREFIX <= NATIVE_ESTIMATED_PROFILE_LIMIT)
 
 
 def builtin_permission_denies(paths: Iterable[str | Path]) -> list[str]:

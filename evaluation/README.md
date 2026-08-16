@@ -64,9 +64,9 @@ the exact stable `CLAUDE_CONFIG_DIR` and `CLAUDE_SECURESTORAGE_CONFIG_DIR` for
 the entire run. The parent Claude/auth process retains the real login `HOME`:
 macOS Security.framework default-Keychain discovery fails under a synthetic HOME,
 and Claude 2.1.227 also consults normal non-secret `.claude.json` account-selection
-metadata. `HOME` is stripped from native Bash/descendants, while the exhaustive
-HOME deny frontier and exact high-value denies block all task tools from normal
-`.claude`, `.claude.json`, and `Library/Keychains` (except explicit workspace/runtime
+metadata. `HOME` is stripped from native Bash/descendants, while compact exact high-value
+denies block all task tools from normal `.claude`, `.claude.json`, Keychains,
+credential directories, and benchmark control planes (with explicit workspace/runtime
 capabilities). A symlink-safe namespace lock serializes status-only exact-service
 Security.framework checks, pinned `claude auth status --json`, and each complete
 invocation. Only status codes and authorization booleans are retained; normal
@@ -138,14 +138,17 @@ runtime `.venv`, other worktrees, dedicated `.harnessbench`, normal `.claude` an
 `/usr/bin/security`, and private smoke evidence. No native deny overlaps any
 workspace/runtime allow, preventing Claude from expanding a broad HOME parent
 into a profile above macOS `ARG_MAX`. This is a calibrated trust boundary for
-authentication and benchmark integrity, not a claim that Bash is denied every
-benign file in the user's home. Built-in file tools retain the broader complete
-HOME frontier. Native credential-file entries are a small exact high-value set
-and never deny an ancestor of the workspace. A fail-closed 96-unique-entry /
-650-KB estimated profile budget uses the observed ~6.5 KB per Claude-expanded
-entry, and a production-shaped test additionally requires a small offline profile
-with no deny/allow ancestry overlap. The offline Seatbelt probe preserves the same
-effective frontier.
+authentication and benchmark integrity, not a claim that Bash or built-in tools
+are denied every benign file in the user's home. Built-ins use the same compact
+high-value roots and deny the checkout root directly; they do not enumerate HOME
+or checkout children. Native credential-file entries remain a small exact set and
+never deny a workspace ancestor. Because Claude merges permission paths into its
+Bash profile, the fail-closed shape check prefix-minimizes the union of filesystem,
+credential, and built-in paths, prohibits a broad HOME prefix, caps the union at
+24, and budgets 20 KB per prefix / 480 KB total from the observed 92-prefix to
+325-generated-path, 1.9-MB smoke. A production-shaped test covers the combined
+union and native deny/allow ancestry. The offline Seatbelt probe preserves the
+same effective frontier.
 Native read capabilities include the workspace, literal `.venv`, resolved uv
 Python runtime, pinned binary, Node, and explicit task capabilities; the probe
 executes literal `ROOT/.venv/bin/python -m pytest --version`.

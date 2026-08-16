@@ -32,7 +32,7 @@ class ClaudePlanTests(unittest.TestCase):
      self.assertFalse(allowed_path==denied_path or allowed_path.is_relative_to(denied_path) or denied_path.is_relative_to(allowed_path))
    sensitive=builtin_sensitive_paths(ROOT,auth,workspace=workspace,control_paths=[control,denied])
    credentials=native_credential_paths(auth,workspace=workspace,control_paths=[control,denied])
-   self.assertIn(str(normal_state),sensitive); self.assertIn(str(denied.resolve()),sensitive); self.assertIn(str(keychains),credentials); self.assertIn(str(denied.resolve()),credentials); self.assertLess(len(credentials),12); self.assertTrue(validate_native_policy_shape(policy,credentials))
+   self.assertIn(str(normal_state),sensitive); self.assertIn(str(denied.resolve()),sensitive); self.assertIn(str(keychains),credentials); self.assertIn(str(denied.resolve()),credentials); self.assertLess(len(credentials),12); self.assertTrue(validate_native_policy_shape(policy,credentials,sensitive))
    rules=builtin_permission_denies(sensitive); self.assertTrue(validate_builtin_permission_denies(sensitive,rules))
    for path in (normal_state,keychains):
     for tool in FILE_TOOLS:
@@ -40,7 +40,7 @@ class ClaudePlanTests(unittest.TestCase):
    expected=[f'{tool}({path}{suffix})' for path in sorted(set(sensitive)) for tool in FILE_TOOLS for suffix in ('','/**')]
    self.assertEqual(rules,expected)
    overlapping={**policy,'denyRead':[str(workspace.parent)]}
-   self.assertFalse(validate_native_policy_shape(overlapping,credentials))
+   self.assertFalse(validate_native_policy_shape(overlapping,credentials,sensitive))
    self.assertIn(str(ROOT/'.venv'),policy['allowRead'])
    self.assertIn(str((ROOT/'.venv/bin/python').resolve().parents[1]),policy['allowRead'])
   self.assertEqual(FILE_TOOLS,("Read","Edit","Write","Glob","Grep"))
@@ -51,10 +51,10 @@ class ClaudePlanTests(unittest.TestCase):
    for name in ('read','edit','write'):
     target=private/name; targets.append(target)
    (run/'plan.json').write_text('{}'); (run/'security-smoke'/'claim.json').write_text('{}'); (sandbox/'prompt.txt').write_text(''); (sandbox/'.claude-benchmark').mkdir()
-   auth=run.parent/'.synthetic-dedicated-seed'
+   auth=run.parent/'.harnessbench'/'synthetic-dedicated-seed'
    policy=native_sandbox_policy(ROOT,auth,workspace=workspace,sandbox=sandbox,control_paths=[run,*targets])
-   credentials=native_credential_paths(auth,workspace=workspace,control_paths=[run,*targets])
-   self.assertTrue(validate_native_policy_shape(policy,credentials)); self.assertLess(len(policy['denyRead']),64); self.assertLess(len(native_seatbelt_profile(policy).encode()),128_000)
+   credentials=native_credential_paths(auth,workspace=workspace,control_paths=[run,*targets]); sensitive=builtin_sensitive_paths(ROOT,auth,workspace=workspace,control_paths=[run,*targets])
+   self.assertTrue(validate_native_policy_shape(policy,credentials,sensitive)); self.assertLess(len(policy['denyRead']),64); self.assertLess(len(native_seatbelt_profile(policy).encode()),128_000)
    for denied in map(Path,policy['denyRead']):
     for allowed in map(Path,policy['allowRead']): self.assertFalse(allowed==denied or allowed.is_relative_to(denied) or denied.is_relative_to(allowed))
  def test_plan_binds_canonical_namespace_keychain_and_binary(self):

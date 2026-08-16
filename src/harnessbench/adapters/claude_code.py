@@ -558,7 +558,7 @@ class ClaudeCodeAdapter(BaseAdapter):
         if (settings_payload["sandbox"].get("enabled") is not True or
             settings_payload["sandbox"].get("failIfUnavailable") is not True or
             settings_payload["sandbox"].get("allowUnsandboxedCommands") is not False or
-            not validate_native_policy_shape(filesystem, credential_sensitive) or
+            not validate_native_policy_shape(filesystem, credential_sensitive, sensitive) or
             str(ctx.workspace.resolve()) not in filesystem["allowRead"] or
             not validate_builtin_permission_denies(sensitive, permission_denies)):
             return AdapterRunResult(ok=False, stderr="native sandbox settings invariant failed")
