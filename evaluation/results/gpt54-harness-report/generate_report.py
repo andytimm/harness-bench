@@ -299,8 +299,9 @@ def plot_overall(agg: list[dict], out: Path):
     ax.set_xticks(x, [row["harness"] for row in ordered])
     ax.set_ylim(50, 100); ax.set_ylabel("Mean raw outcome score (%)")
     ax.yaxis.grid(True, color=GRID, lw=.7); ax.set_axisbelow(True)
-    for xi, val in zip(x, vals):
-        ax.text(xi, val + 1.25, f"{val:.1f}", ha="center", va="bottom", weight="bold")
+    for xi, val, row in zip(x, vals, ordered):
+        label_y = row["score_ci_high"] * 100 + 1.0
+        ax.text(xi, label_y, f"{val:.1f}", ha="center", va="bottom", weight="bold")
     ax.set_title("Harness-Bench quality", loc="left", fontsize=22, pad=18)
     ax.text(0, 1.015, "106 real-workspace tasks · GPT-5.4 medium · higher is better", transform=ax.transAxes, color=MUTED)
     ax.text(.995, .965, "FOCUSED AXIS · STARTS AT 50", transform=ax.transAxes, ha="right",
@@ -328,9 +329,9 @@ def plot_topics(topic_rows: list[dict], out: Path):
         ax.bar(x, vals, color=[COLORS[row["harness_id"]] for row in rows], edgecolor=INK,
                linewidth=.4, width=.67, yerr=err, error_kw={"ecolor": INK, "capsize": 2, "lw": .7})
         ax.set_xticks(x, short_labels, fontsize=8.5)
-        ax.set_ylim(45, 100); ax.yaxis.grid(True,color=GRID,lw=.6); ax.set_axisbelow(True)
-        for xi, val in zip(x, vals):
-            ypos = max(val + 1.0, 46.2)
+        ax.set_ylim(45, 105); ax.yaxis.grid(True,color=GRID,lw=.6); ax.set_axisbelow(True)
+        for xi, val, row in zip(x, vals, rows):
+            ypos = max(row["score_ci_high"] * 100 + 1.0, 46.2)
             ax.text(xi, ypos, f"{val:.0f}", ha="center", va="bottom", fontsize=8, weight="bold")
         n=rows[0]["tasks"]; ax.set_title(f"{topic}\n$n={n}$", loc="left", fontsize=12, pad=8)
     for ax in axes[:,0]: ax.set_ylabel("Mean outcome score (%)")
