@@ -168,9 +168,17 @@ Read/Edit/Write target that existing file while Glob/Grep target sensitive
 directories. Validation requires explicit policy-denial text rather than incidental
 file-shape/tool errors; Claude's Edit-only unread prerequisite is accepted because
 2.1.227 checks it before permissions, but only with the exact existing-file call,
-structurally validated Edit deny, and unchanged sentinel hash. It separately proves
-blocking for every file-capable built-in and
-arbitrary Bash cat/Python/Node/`security`/Security.framework access, plus
+structurally validated Edit deny, and unchanged sentinel hash. Five additional
+built-in calls use paths that are lexically inside the workspace but resolve to
+the private evidence root; all must be policy-denied. To bypass Claude’s Edit
+read prerequisite without weakening the check, the canary first successfully
+reads a regular staging file, then an exact immutable sandboxed Bash command
+replaces that same path with the outside-pointing symlink before Edit. An unread
+prerequisite is not accepted for this call. Bash separately tests a readable
+outside symlink and a distinct write symlink whose
+nonexistent target would be owner-writable without sandbox enforcement. It also
+proves blocking for every file-capable built-in and arbitrary Bash
+cat/Python/Node/`security`/Security.framework access, plus
 workspace, image, subprocess, literal venv Python, pytest, Node, and loopback
 capabilities. Progress text is allowed, but the last assistant text must be the
 exact compact nonce JSON and the sole successful terminal result must mirror it

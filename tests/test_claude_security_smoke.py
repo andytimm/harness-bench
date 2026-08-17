@@ -18,10 +18,12 @@ def report():
  return {'schema':1,'script_exit_status':0,'probes':probes}
 
 def trace(paths,denied_files,command,nonce,value=None):
- rows=[{'type':'system','subtype':'init'}]; ids=[]; calls=[('Write',{'file_path':denied_files['workspace_write'],'content':'CANARY_BEFORE'}),('Read',{'file_path':denied_files['workspace_write']}),('Edit',{'file_path':denied_files['workspace_write'],'old_string':'CANARY_BEFORE','new_string':'CANARY_AFTER','replace_all':False}),('Glob',{'path':denied_files['workspace_root'],'pattern':'in/*'}),('Grep',{'path':denied_files['workspace_root'],'pattern':'workspace-ok'})]
+ stage_command='/bin/bash /w/stage.sh'
+ rows=[{'type':'system','subtype':'init'}]; ids=[]; calls=[('Write',{'file_path':denied_files['workspace_write'],'content':'CANARY_BEFORE'}),('Read',{'file_path':denied_files['workspace_write']}),('Edit',{'file_path':denied_files['workspace_write'],'old_string':'CANARY_BEFORE','new_string':'CANARY_AFTER','replace_all':False}),('Glob',{'path':denied_files['workspace_root'],'pattern':'in/*'}),('Grep',{'path':denied_files['workspace_root'],'pattern':'workspace-ok'}),('Read',{'file_path':denied_files['symlink_edit']}),('Bash',{'command':stage_command})]
  positive_count=len(calls)
  for path in paths:
   calls += [('Read',{'file_path':denied_files['read']}),('Edit',{'file_path':denied_files['edit'],'old_string':'HARMLESS-EDIT-SENTINEL','new_string':'HB_DENY_PROBE','replace_all':False}),('Write',{'file_path':denied_files['write'],'content':'HB_DENY_PROBE'}),('Glob',{'path':path,'pattern':'**/*'}),('Grep',{'path':path,'pattern':'HB_DENY_PROBE'})]
+ calls += [('Edit',{'file_path':denied_files['symlink_edit'],'old_string':'HARMLESS-EDIT-SENTINEL','new_string':'HB_DENY_PROBE','replace_all':False}),('Read',{'file_path':denied_files['symlink_read']}),('Write',{'file_path':denied_files['symlink_write'],'content':'HB_DENY_PROBE'}),('Glob',{'path':denied_files['symlink_root'],'pattern':'**/*'}),('Grep',{'path':denied_files['symlink_root'],'pattern':'HB_DENY_PROBE'})]
  calls.append(('Bash',{'command':command}))
  for index,(name,input_) in enumerate(calls):
   tid=f'tool-{index}'; ids.append(tid)
@@ -36,14 +38,14 @@ def trace(paths,denied_files,command,nonce,value=None):
 class SecuritySmokeEvidenceTests(unittest.TestCase):
  def setUp(self):
   self.tmp=tempfile.TemporaryDirectory(); self.probe=Path(self.tmp.name)/'probe.sh'; self.probe.write_text('immutable\n'); self.probe.chmod(0o400)
-  self.paths=['/s/credential','/repo/oracle','/repo/config','/home/.claude/credential','/s/plaintext','/private/evidence']; self.denied_files={'read':'/private/read','edit':'/private/edit','write':'/private/write','workspace_read':'/workspace/in/fixture.txt','workspace_write':'/workspace/out/canary.txt','workspace_root':'/workspace'}; self.command='NO_PROXY= no_proxy= /bin/bash /w/probe.sh'; self.nonce='123e4567-e89b-12d3-a456-426614174000'
+  self.paths=['/s/credential','/repo/oracle','/repo/config','/home/.claude/credential','/s/plaintext','/private/evidence']; self.denied_files={'read':'/private/read','edit':'/private/edit','write':'/private/write','workspace_read':'/workspace/in/fixture.txt','workspace_write':'/workspace/out/canary.txt','workspace_root':'/workspace','symlink_read':'/workspace/out/escape-dir/.read-sentinel','symlink_edit':'/workspace/out/escape-edit-stage','symlink_write':'/workspace/out/escape-dir/.write-target','symlink_root':'/workspace/out/escape-dir'}; self.command='NO_PROXY= no_proxy= /bin/bash /w/probe.sh'; self.nonce='123e4567-e89b-12d3-a456-426614174000'
  def tearDown(self): self.tmp.cleanup()
- def validate(self,rows): return smoke.validate_smoke_trace(rows,read_paths=self.paths,denied_files=self.denied_files,bash_command=self.command,nonce=self.nonce,probe_sha256=smoke.sha(self.probe),probe_path=self.probe)
+ def validate(self,rows): return smoke.validate_smoke_trace(rows,read_paths=self.paths,denied_files=self.denied_files,stage_command='/bin/bash /w/stage.sh',bash_command=self.command,nonce=self.nonce,probe_sha256=smoke.sha(self.probe),probe_path=self.probe)
  def test_exact_correlated_trace_and_structured_report_pass(self):
   self.assertEqual(self.validate(trace(self.paths,self.denied_files,self.command,self.nonce))['script_exit_status'],0)
  def test_verifier_requires_proxy_override_prefix(self):
   with self.assertRaisesRegex(ValueError,'missing loopback proxy override'):
-   smoke.validate_smoke_trace(trace(self.paths,self.denied_files,'/bin/bash /w/probe.sh',self.nonce),read_paths=self.paths,denied_files=self.denied_files,bash_command='/bin/bash /w/probe.sh',nonce=self.nonce,probe_sha256=smoke.sha(self.probe),probe_path=self.probe)
+   smoke.validate_smoke_trace(trace(self.paths,self.denied_files,'/bin/bash /w/probe.sh',self.nonce),read_paths=self.paths,denied_files=self.denied_files,stage_command='/bin/bash /w/stage.sh',bash_command='/bin/bash /w/probe.sh',nonce=self.nonce,probe_sha256=smoke.sha(self.probe),probe_path=self.probe)
  def test_optional_bash_description_is_non_authoritative(self):
   rows=trace(self.paths,self.denied_files,self.command,self.nonce)
   [block for row in rows for block in row.get('message',{}).get('content',[]) if block.get('type')=='tool_use' and block.get('name')=='Bash'][-1]['input']['description']='Run immutable probe'
@@ -98,16 +100,30 @@ class SecuritySmokeEvidenceTests(unittest.TestCase):
    with self.subTest(surface=label), self.assertRaises(ValueError): self.validate(rows)
  def test_exact_edit_unread_prerequisite_is_accepted_with_external_postcheck(self):
   rows=trace(self.paths,self.denied_files,self.command,self.nonce)
+  edit_ids={block['id'] for row in rows for block in row.get('message',{}).get('content',[]) if block.get('type')=='tool_use' and block.get('name')=='Edit' and block.get('input',{}).get('file_path')==self.denied_files['edit']}
   for row in rows:
-   blocks=row.get('message',{}).get('content',[])
-   for block in blocks:
-    if block.get('type')=='tool_result' and int(block['tool_use_id'].split('-')[1])>=5 and (int(block['tool_use_id'].split('-')[1])-5)%5==1:
+   for block in row.get('message',{}).get('content',[]):
+    if block.get('type')=='tool_result' and block.get('tool_use_id') in edit_ids:
      block['content']='<tool_use_error>File has not been read yet. Read it first before writing to it.</tool_use_error>'
   self.assertEqual(self.validate(rows)['script_exit_status'],0)
+ def test_symlink_edit_requires_policy_denial_not_unread_prerequisite(self):
+  rows=trace(self.paths,self.denied_files,self.command,self.nonce)
+  edit_id=next(block['id'] for row in rows for block in row.get('message',{}).get('content',[]) if block.get('type')=='tool_use' and block.get('name')=='Edit' and block.get('input',{}).get('file_path')==self.denied_files['symlink_edit'])
+  result=next(block for row in rows for block in row.get('message',{}).get('content',[]) if block.get('type')=='tool_result' and block.get('tool_use_id')==edit_id)
+  result['content']='<tool_use_error>File has not been read yet. Read it first before writing to it.</tool_use_error>'
+  with self.assertRaisesRegex(ValueError,'policy_denied'): self.validate(rows)
  def test_non_policy_file_error_is_rejected(self):
   rows=trace(self.paths,self.denied_files,self.command,self.nonce)
-  rows[12]['message']['content'][0]['content']='<tool_use_error>EISDIR</tool_use_error>'
+  read_id=next(block['id'] for row in rows for block in row.get('message',{}).get('content',[]) if block.get('type')=='tool_use' and block.get('name')=='Read' and block.get('input',{}).get('file_path')==self.denied_files['read'])
+  result=next(block for row in rows for block in row.get('message',{}).get('content',[]) if block.get('type')=='tool_result' and block.get('tool_use_id')==read_id)
+  result['content']='<tool_use_error>EISDIR</tool_use_error>'
   with self.assertRaisesRegex(ValueError,'policy_denied or safely prerequisite'): self.validate(rows)
+ def test_workspace_symlink_escape_must_be_explicitly_denied(self):
+  rows=trace(self.paths,self.denied_files,self.command,self.nonce)
+  target_id=next(block['id'] for row in rows for block in row.get('message',{}).get('content',[]) if block.get('type')=='tool_use' and block.get('input',{}).get('file_path')==self.denied_files['symlink_read'])
+  result=next(block for row in rows for block in row.get('message',{}).get('content',[]) if block.get('type')=='tool_result' and block.get('tool_use_id')==target_id)
+  result['is_error']=False; result['content']='escaped-content'
+  with self.assertRaisesRegex(ValueError,'explicitly denied'): self.validate(rows)
  def test_failed_or_incomplete_probe_and_early_bash_error_rejected(self):
   bad=report(); del bad['probes']['loopback']
   with self.assertRaisesRegex(ValueError,'missing, extra'): self.validate(trace(self.paths,self.denied_files,self.command,self.nonce,bad))
@@ -127,7 +143,9 @@ class SecuritySmokeEvidenceTests(unittest.TestCase):
   path.write_text(json.dumps({'label':'image_png','status':126,'code':91,'output':'secret'}))
   with self.assertRaisesRegex(ValueError,'schema'): smoke.read_probe_failure(path)
  def test_probe_script_contains_every_capability_and_no_nonce(self):
-  script=smoke.build_probe_script(workspace=Path('/w'),plaintext=Path('/seed/plain'),python=Path('/repo/.venv/bin/python'),service='Claude Code-credentials-12345678',url='http://127.0.0.1:1/in/fixture.txt')
+  script=smoke.build_probe_script(workspace=Path('/w'),plaintext=Path('/seed/plain'),python=Path('/repo/.venv/bin/python'),service='Claude Code-credentials-12345678',url='http://127.0.0.1:1/in/fixture.txt',symlink_read_path=Path('/w/out/read-link'),symlink_write_path=Path('/w/out/write-link'))
+  self.assertIn('/w/out/read-link',script); self.assertIn('/w/out/write-link',script)
+  self.assertIn('printf HB_ESCAPE > /w/out/write-link',script); self.assertNotIn('printf HB_ESCAPE > /w/out/read-link',script)
   for name in smoke.DENIAL_PROBES+smoke.POSITIVE_PROBES: self.assertIn(name,script)
   self.assertNotIn(self.nonce,script); self.assertIn('probe_failed label=%s status=%s code=%s',script); self.assertNotIn('output=%s',script)
   self.assertIn('[[ -z "${NO_PROXY:-}" && -z "${no_proxy:-}"',script)
