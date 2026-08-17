@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
   "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="662.206pt" height="546.83472pt" viewBox="0 0 662.206 546.83472" xmlns="http://www.w3.org/2000/svg" version="1.1">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="662.206pt" height="507.77464pt" viewBox="0 0 662.206 507.77464" xmlns="http://www.w3.org/2000/svg" version="1.1">
  <metadata>
   <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
@@ -20,10 +20,10 @@
  </defs>
  <g id="figure_1">
   <g id="patch_1">
-   <path d="M 0 546.83472 
-L 662.206 546.83472 
-L 662.206 0 
-L 0 0 
+   <path d="M 0 507.77464 
+L 662.206 507.77464 
+L 662.206 -0 
+L 0 -0 
 z
 " style="fill: #fafaf8"/>
   </g>
@@ -282,12 +282,6 @@ L 655.006 424.192
     <text style="font-size: 9px; font-family: 'Avenir Next', 'DejaVu Sans'; text-anchor: start; fill: #6f716d" x="52.366" y="497.28064" transform="rotate(-0 52.366 497.28064)">Whiskers: 95% task-bootstrap interval (task-sampling uncertainty, not run-to-run variance).</text>
    </g>
    <g id="text_19">
-    <text style="font-weight: 700; font-size: 9px; font-family: 'Avenir Next', 'DejaVu Sans'; text-anchor: start; fill: #8a3f3a" x="52.366" y="521.78512" transform="rotate(-0 52.366 521.78512)">NOT RANKED  ·  Original Hermes: oracle leakage  ·  Claude pilot: stopped after systemic tool failures</text>
-   </g>
-   <g id="text_20">
-    <text style="font-size: 8px; font-family: 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Computer Modern Typewriter', 'Andale Mono', 'Nimbus Mono L', 'Courier New', 'Courier', 'Fixed', 'Terminal', monospace; text-anchor: end; fill: #6f716d" x="651.9928" y="537.712845" transform="rotate(-0 651.9928 537.712845)">PRIME-INSPIRED / INDEPENDENT ANALYSIS</text>
-   </g>
-   <g id="text_21">
     <text style="font-weight: 700; font-size: 22px; font-family: 'Avenir Next', 'DejaVu Sans'; text-anchor: start; fill: #111111" x="52.366" y="29.2" transform="rotate(-0 52.366 29.2)">Harness-Bench quality</text>
    </g>
   </g>

@@ -323,10 +323,6 @@ def plot_overall(agg: list[dict], out: Path):
             fontsize=8, color="#8A3F3A", family="monospace", weight="bold")
     ax.text(0, -0.17, "Whiskers: 95% task-bootstrap interval (task-sampling uncertainty, not run-to-run variance).",
             transform=ax.transAxes, fontsize=9, color=MUTED, va="top")
-    ax.text(0, -.235, "NOT RANKED  ·  Original Hermes: oracle leakage  ·  Claude pilot: stopped after systemic tool failures",
-            transform=ax.transAxes, fontsize=9, color="#8A3F3A", va="top", weight="bold")
-    ax.text(.995, -.285, "PRIME-INSPIRED / INDEPENDENT ANALYSIS", transform=ax.transAxes, ha="right", va="top",
-            fontsize=8, color=MUTED, family="monospace")
     save(fig, out / "overall_quality")
 
 
