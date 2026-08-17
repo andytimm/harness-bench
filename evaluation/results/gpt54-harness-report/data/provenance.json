@@ -4,6 +4,21 @@
     "hermes_aggressive": "100 fixed-root results plus six watchdog-correction results (091,094,096,097,099,106)"
   },
   "exclusions": {
+    "claude_pilot": {
+      "finding": "all nine retained results contain systemic tool-failure markers; not a model-quality baseline",
+      "mean_score": 0.09333333333333332,
+      "tasks": [
+        "001-file",
+        "003-browser",
+        "005-email-triage",
+        "007-session-memory",
+        "009-git-pr-merge",
+        "011-code-debug",
+        "013-image-edit",
+        "015-security-injection-defense",
+        "017-db-doc-consistency"
+      ]
+    },
     "original_hermes": {
       "finding": "retained result records contain ground_truth and benchmark task-root access markers",
       "tasks": [
@@ -14,7 +29,7 @@
       ]
     }
   },
-  "input_count": 656,
+  "input_count": 665,
   "inputs": [
     {
       "dataset": "task_metadata",
@@ -565,6 +580,51 @@
       "dataset": "excluded_original_hermes_evidence",
       "path": "repo/data_try6/results/hermes-gpt-5.4-medium/gpt-5.4/079-smallfile-batch-reject-ledger.json",
       "sha256": "0be906c07bbfdb42ff1bdb68f5b167b175de6d0f8ce67ade76542376fa28121e"
+    },
+    {
+      "dataset": "invalid_claude_pilot_evidence",
+      "path": "home/harnessbench-claude-opus46-odd-53-e529f64/control-plane/results/claude-code-opus-4.6-medium/claude-opus-4-6/001-file.json",
+      "sha256": "38ec08ea9d4e032536fd84d547b0c52420b92c6882d3dc3f662bbb4130370f26"
+    },
+    {
+      "dataset": "invalid_claude_pilot_evidence",
+      "path": "home/harnessbench-claude-opus46-odd-53-e529f64/control-plane/results/claude-code-opus-4.6-medium/claude-opus-4-6/003-browser.json",
+      "sha256": "645c1b3b9b102b949dc344b80a2a9a375a040663e9b22e4bf3b10a6e42d94c9d"
+    },
+    {
+      "dataset": "invalid_claude_pilot_evidence",
+      "path": "home/harnessbench-claude-opus46-odd-53-e529f64/control-plane/results/claude-code-opus-4.6-medium/claude-opus-4-6/005-email-triage.json",
+      "sha256": "91d16cdcc90111a88491fccc6026bfcc525f8f85dd8e3590bb81c3edfc35f667"
+    },
+    {
+      "dataset": "invalid_claude_pilot_evidence",
+      "path": "home/harnessbench-claude-opus46-odd-53-e529f64/control-plane/results/claude-code-opus-4.6-medium/claude-opus-4-6/007-session-memory.json",
+      "sha256": "1f0f25f47c0ed2f3316c802414db2f8ed3ba42959f39144e1a8a16d7f051de0e"
+    },
+    {
+      "dataset": "invalid_claude_pilot_evidence",
+      "path": "home/harnessbench-claude-opus46-odd-window2-e529f64/control-plane/results/claude-code-opus-4.6-medium/claude-opus-4-6/009-git-pr-merge.json",
+      "sha256": "ef49e94afda62336dbb26fb5fc61579c850906db44d9eb6010571187a0291dc4"
+    },
+    {
+      "dataset": "invalid_claude_pilot_evidence",
+      "path": "home/harnessbench-claude-opus46-odd-window2-e529f64/control-plane/results/claude-code-opus-4.6-medium/claude-opus-4-6/011-code-debug.json",
+      "sha256": "1044de350c18d85412fce53fc9c624dfd3d33da1da79b5aef467d0c25c1d2702"
+    },
+    {
+      "dataset": "invalid_claude_pilot_evidence",
+      "path": "home/harnessbench-claude-opus46-odd-window2-e529f64/control-plane/results/claude-code-opus-4.6-medium/claude-opus-4-6/013-image-edit.json",
+      "sha256": "189562d59d3e4cf2c6cfd6b72042d5663125d609505f1e3a178fe65c5f5a15fc"
+    },
+    {
+      "dataset": "invalid_claude_pilot_evidence",
+      "path": "home/harnessbench-claude-opus46-odd-window2-e529f64/control-plane/results/claude-code-opus-4.6-medium/claude-opus-4-6/015-security-injection-defense.json",
+      "sha256": "8c5c32319130062188e15e7a65fd4ac59925409a70c2e541c76b51b9e8206c24"
+    },
+    {
+      "dataset": "invalid_claude_pilot_evidence",
+      "path": "home/harnessbench-claude-opus46-odd-window2-e529f64/control-plane/results/claude-code-opus-4.6-medium/claude-opus-4-6/017-db-doc-consistency.json",
+      "sha256": "7fc105d71328bc3e5e4dd896c0b245ef8354311a788633d44dacdaa4e9eb7c5b"
     },
     {
       "dataset": "prime",
@@ -1638,7 +1698,7 @@
     },
     {
       "dataset": "codex",
-      "path": "gate/AUDIT.json",
+      "path": "home/.harnessbench/evaluation-gates/codex-gpt-5.4-medium-current-0.139/AUDIT.json",
       "sha256": "62210571ea2023a2b69c684dcf5d2a8f2789e8317f19f8ded0f6297249bb89ec"
     },
     {

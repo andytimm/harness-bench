@@ -55,7 +55,8 @@ META = {
     "hermes_focused": ("Hermes — focused*", "GPT-5.4 medium"),
     "hermes_aggressive": ("Hermes — aggressive*", "GPT-5.4 medium"),
 }
-ORDER = ["prime", "pi", "hermes_aggressive", "hermes_focused", "hermes_default", "codex"]
+ALL_ORDER = ["prime", "pi", "hermes_default", "codex", "hermes_aggressive", "hermes_focused"]
+MAIN_ORDER = ["prime", "pi", "hermes_default", "codex"]
 
 
 def read_json(path: Path):
@@ -78,9 +79,24 @@ def build_provenance(repo: Path, runs: Path) -> dict:
         text = path.read_text()
         if "ground_truth" not in text or "/tasks/" not in text:
             raise RuntimeError(f"historical Hermes contamination evidence missing expected markers: {path}")
+    claude_first = ("001-file", "003-browser", "005-email-triage", "007-session-memory")
+    claude_second = ("009-git-pr-merge", "011-code-debug", "013-image-edit", "015-security-injection-defense", "017-db-doc-consistency")
+    claude_roots = [(Path.home() / "harnessbench-claude-opus46-odd-53-e529f64", claude_first),
+                    (Path.home() / "harnessbench-claude-opus46-odd-window2-e529f64", claude_second)]
+    claude_pilot_paths = []
+    for root, tasks in claude_roots:
+        for task in tasks:
+            matches = list((root / "control-plane/results").rglob(f"{task}.json"))
+            if len(matches) != 1:
+                raise RuntimeError(f"expected one Claude pilot result for {task}, got {matches}")
+            text = matches[0].read_text()
+            if not any(marker in text for marker in ("E2BIG", "don't-ask", "denied by policy", "blanket-denied")):
+                raise RuntimeError(f"Claude pilot result lacks expected systemic tool-failure marker: {matches[0]}")
+            claude_pilot_paths.append(matches[0])
     groups = {
         "task_metadata": list((repo / "tasks").glob("*/task.yaml")),
         "excluded_original_hermes_evidence": leak_paths,
+        "invalid_claude_pilot_evidence": claude_pilot_paths,
         "prime": list((repo / "data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4").glob("*.json")) + [repo / "reports/prime-agent-gpt-5.4-full-manifest.json"],
         "pi": list((repo / "data_try6/results/pi-gpt-5.4-medium/gpt-5.4").glob("*.json")) + [repo / "reports/pi-gpt-5.4-full-manifest.json"],
         "codex": [repo / "evaluation/runs/codex-gpt-5.4-medium-current-0.139/full/manifest.json", repo / "evaluation/runs/codex-gpt-5.4-medium-current-0.139/correction-023-loopback-network/manifest.json", repo / "evaluation/runs/codex-gpt-5.4-medium-current-0.139/correction-023-loopback-network/CORRECTION_ATTEMPT_AUDIT.json", Path.home() / ".harnessbench/evaluation-gates/codex-gpt-5.4-medium-current-0.139/AUDIT.json"],
@@ -98,12 +114,15 @@ def build_provenance(repo: Path, runs: Path) -> dict:
                 logical = "repo/" + str(path.relative_to(repo))
             except ValueError:
                 try: logical = "runs/" + str(path.relative_to(runs))
-                except ValueError: logical = "gate/" + path.name
+                except ValueError:
+                    try: logical = "home/" + str(path.relative_to(Path.home()))
+                    except ValueError: logical = "external/" + path.name
             entries.append({"dataset": dataset, "path": logical, "sha256": sha256_file(path)})
     return {"schema": 1, "metric": "scoring.outcome_score", "task_count_per_option": 106,
             "input_count": len(entries), "inputs": entries,
             "composition": {"codex": "105 full-manifest entries plus correction-023-loopback-network task 023", "hermes_aggressive": "100 fixed-root results plus six watchdog-correction results (091,094,096,097,099,106)"},
-            "exclusions": {"original_hermes": {"tasks": list(leak_tasks), "finding": "retained result records contain ground_truth and benchmark task-root access markers"}}}
+            "exclusions": {"original_hermes": {"tasks": list(leak_tasks), "finding": "retained result records contain ground_truth and benchmark task-root access markers"},
+                           "claude_pilot": {"tasks": list(claude_first + claude_second), "mean_score": 0.09333333333333332, "finding": "all nine retained results contain systemic tool-failure markers; not a model-quality baseline"}}}
 
 
 def result_row(task_id: str, result: dict, harness: str, topic: str, provenance: str) -> dict:
@@ -219,7 +238,7 @@ def aggregate(rows: list[dict]) -> tuple[list[dict], list[dict]]:
         by_ht[(row["harness_id"], row["topic"])].append(row)
     rng = np.random.default_rng(20260816)
     aggregates = []
-    for h in ORDER:
+    for h in ALL_ORDER:
         rs = by_h[h]
         scores = [r["score"] for r in rs]
         lo, hi = bootstrap_mean_ci(scores, rng)
@@ -269,7 +288,7 @@ def save(fig, base: Path):
 
 def plot_overall(agg: list[dict], out: Path):
     lookup = {x["harness_id"]: x for x in agg}
-    ordered = sorted(agg, key=lambda x: x["score"])
+    ordered = sorted((x for x in agg if x["harness_id"] in MAIN_ORDER), key=lambda x: x["score"])
     fig, ax = plt.subplots(figsize=(10.8, 6.5))
     y = np.arange(len(ordered))
     vals = np.array([x["score"] * 100 for x in ordered])
@@ -282,12 +301,11 @@ def plot_overall(agg: list[dict], out: Path):
     for yi, val in zip(y, vals): ax.text(val + 1.0, yi, f"{val:.1f}", va="center", weight="bold")
     ax.set_title("Harness-Bench quality", loc="left", fontsize=22, pad=18)
     ax.text(0, 1.015, "106 real-workspace tasks · GPT-5.4 medium · higher is better", transform=ax.transAxes, color=MUTED)
-    ax.text(0, -0.16, "Whiskers: 95% task-bootstrap interval (task-sampling uncertainty, not run-to-run variance).\n"
-            "* Fixed Hermes profiles are post-hoc ablations; benchmark-default Hermes remains the headline profile.",
+    ax.text(0, -0.16, "Whiskers: 95% task-bootstrap interval (task-sampling uncertainty, not run-to-run variance).",
             transform=ax.transAxes, fontsize=9, color=MUTED, va="top")
-    ax.text(0, -.265, "NOT RANKED  ·  Original Hermes: oracle leakage  ·  Claude Code Opus 4.6: evaluation in progress",
+    ax.text(0, -.225, "NOT RANKED  ·  Original Hermes: oracle leakage  ·  Claude pilot: stopped after systemic tool failures",
             transform=ax.transAxes, fontsize=9, color="#8A3F3A", va="top", weight="bold")
-    ax.text(.995, -.315, "PRIME-INSPIRED / INDEPENDENT ANALYSIS", transform=ax.transAxes, ha="right", va="top",
+    ax.text(.995, -.275, "PRIME-INSPIRED / INDEPENDENT ANALYSIS", transform=ax.transAxes, ha="right", va="top",
             fontsize=8, color=MUTED, family="monospace")
     save(fig, out / "overall_quality")
 
@@ -297,7 +315,7 @@ def plot_topics(topic_rows: list[dict], out: Path):
     topics = sorted({x["topic"] for x in topic_rows}, key=lambda t: -sum(x["tasks"] for x in topic_rows if x["topic"] == t))
     fig, axes = plt.subplots(4, 2, figsize=(15, 15), sharex=True)
     for ax, topic in zip(axes.flat, topics):
-        rs = [lookup[(h, topic)] for h in reversed(ORDER)]
+        rs = [lookup[(h, topic)] for h in reversed(MAIN_ORDER)]
         y = np.arange(len(rs)); vals = [x["score"]*100 for x in rs]
         err = np.array([[x["score"]-x["score_ci_low"] for x in rs], [x["score_ci_high"]-x["score"] for x in rs]])*100
         ax.barh(y, vals, color=[COLORS[x["harness_id"]] for x in rs], edgecolor=INK, linewidth=.4, height=.62,
@@ -308,7 +326,7 @@ def plot_topics(topic_rows: list[dict], out: Path):
     for ax in axes[-1]: ax.set_xlabel("Mean raw outcome score (%)")
     fig.suptitle("Quality by task topic", x=.055, ha="left", fontsize=22, fontweight="bold", y=.995)
     fig.text(.055,.952,"Faceted using each task’s declared class · whiskers are 95% task-bootstrap intervals",color=MUTED)
-    fig.text(.055,.005,"* Fixed Hermes profiles are post-hoc ablations and are not pooled with benchmark-default Hermes.",fontsize=9,color=MUTED)
+    fig.text(.055,.005,"Headline comparison includes only the contained benchmark-default Hermes profile.",fontsize=9,color=MUTED)
     fig.subplots_adjust(hspace=.58,wspace=.42,top=.90,bottom=.05)
     save(fig,out/"topic_quality_facets")
 
@@ -320,6 +338,7 @@ def pareto(points, xkey):
 
 
 def plot_frontier(agg, out):
+    agg = [p for p in agg if p["harness_id"] in MAIN_ORDER]
     fig, axes=plt.subplots(1,2,figsize=(14,6),sharey=True)
     specs=[("total_tokens",1e6,"Total model-context tokens (millions)"),("elapsed_seconds",3600,"Total task runtime (hours)")]
     for ax,(key,scale,xlabel) in zip(axes,specs):
@@ -338,7 +357,7 @@ def plot_frontier(agg, out):
     axes[0].set_ylim(lo,hi)
     fig.suptitle("Quality–efficiency frontier",x=.06,ha="left",fontsize=22,fontweight="bold",y=.985)
     fig.text(.06,.885,"Higher and farther left is better · totals across the same 106 tasks",color=MUTED)
-    fig.text(.06,.015,"Runtime is summed task elapsed time, not end-to-end wall-clock. Fixed Hermes profiles are post-hoc ablations.",fontsize=9,color=MUTED)
+    fig.text(.06,.015,"Runtime is summed task elapsed time, not end-to-end wall-clock.",fontsize=9,color=MUTED)
     fig.subplots_adjust(top=.79,bottom=.14,wspace=.16)
     save(fig,out/"quality_efficiency_frontier")
 
@@ -346,8 +365,8 @@ def plot_frontier(agg, out):
 def plot_task_facets(rows, out, metric, filename, xlabel):
     by_h=defaultdict(list)
     for r in rows: by_h[r["harness_id"]].append(r)
-    fig,axes=plt.subplots(2,3,figsize=(16,9),sharey=True)
-    for ax,h in zip(axes.flat,ORDER):
+    fig,axes=plt.subplots(2,2,figsize=(13,10),sharey=True)
+    for ax,h in zip(axes.flat,MAIN_ORDER):
         rs=by_h[h];x=np.array([r[metric] for r in rs],float);y=np.array([r["score"]*100 for r in rs])
         lx=np.log10(np.maximum(x,1e-9))
         for topic,color in TOPIC_COLORS.items():
@@ -376,27 +395,38 @@ def comparison_markdown(agg):
     lines=["# Harness-Bench comparison table","", "Raw outcome score; 106 tasks per option. Token fields follow each native source; components may overlap, so use Total for cross-harness comparison.","",
            "| Option | Score | Reported input | Reported cache read | Output | Total tokens | Calls | Runtime |",
            "|---|---:|---:|---:|---:|---:|---:|---:|"]
-    for x in sorted(agg,key=lambda r:-r["score"]):
+    for x in sorted((r for r in agg if r["harness_id"] in MAIN_ORDER),key=lambda r:-r["score"]):
         lines.append(f"| {x['harness']} | {x['score']*100:.2f}% | {x['input_tokens']:,} | {x['cache_read_tokens']:,} | {x['output_tokens']:,} | {x['total_tokens']:,} | {x['calls']:,} | {x['elapsed_seconds']/3600:.2f} h |")
-    lines += ["", "* Post-hoc fixed-profile ablation; do not pool with benchmark-default Hermes.",
-              "", "Excluded: original Hermes (oracle leakage); Claude Code Opus 4.6 (evaluation incomplete)."]
+    lines += ["", "Excluded: original Hermes (oracle leakage); Claude Code pilot (systemic tool failures; not a valid baseline).",
+              "", "## Hermes profile comparison", "",
+              "Contained default is the headline Hermes result. Focused/aggressive were a separate, counterbalanced post-hoc ablation.", "",
+              "| Hermes profile | Role | Score | Total tokens | Calls | Runtime |", "|---|---|---:|---:|---:|---:|"]
+    for h,role in [("hermes_default","Headline contained rerun"),("hermes_focused","Post-hoc: fixed skills surface"),("hermes_aggressive","Post-hoc: same surface minus skills")]:
+        x=next(r for r in agg if r["harness_id"]==h)
+        lines.append(f"| {x['harness'].replace('*','')} | {role} | {x['score']*100:.2f}% | {x['total_tokens']:,} | {x['calls']:,} | {x['elapsed_seconds']/3600:.2f} h |")
+    lines += ["", "Aggressive minus focused: **+0.21 percentage points**; paired wins/ties/losses **15/67/24**; paired t-test **p=0.861**; task-bootstrap 95% CI approximately **[-2.12, +2.59] points**. No statistically detectable quality difference was observed in this single-run paired comparison, while aggressive used about 40% fewer tokens, 9.9% fewer calls, and 4.9% less runtime."]
     return "\n".join(lines)+"\n"
 
 
 def render_html(agg):
     table=[]
-    for x in sorted(agg,key=lambda r:-r["score"]):
+    for x in sorted((r for r in agg if r["harness_id"] in MAIN_ORDER),key=lambda r:-r["score"]):
         table.append("<tr>"+"".join(f"<td>{v}</td>" for v in [html.escape(x["harness"]),f"{x['score']*100:.2f}%",f"{x['input_tokens']:,}",f"{x['cache_read_tokens']:,}",f"{x['output_tokens']:,}",f"{x['total_tokens']:,}",f"{x['calls']:,}",f"{x['elapsed_seconds']/3600:.2f} h"])+"</tr>")
+    hermes_table=[]
+    for h,role in [("hermes_default","Headline contained rerun"),("hermes_focused","Post-hoc fixed skills"),("hermes_aggressive","Post-hoc minus skills")]:
+        x=next(r for r in agg if r["harness_id"]==h)
+        hermes_table.append("<tr>"+"".join(f"<td>{v}</td>" for v in [html.escape(x["harness"].replace("*","")),role,f"{x['score']*100:.2f}%",f"{x['total_tokens']:,}",f"{x['calls']:,}",f"{x['elapsed_seconds']/3600:.2f} h"])+"</tr>")
     return f'''<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Harness-Bench comparison</title><style>
     :root{{--ink:#111;--paper:#fafaf8;--muted:#6f716d;--accent:#85ed75;--line:#d9dad5}}*{{box-sizing:border-box}}body{{margin:0;background:var(--paper);color:var(--ink);font-family:"Avenir Next",Inter,system-ui,sans-serif}}main{{max-width:1200px;margin:auto;padding:54px 28px 90px}}.eyebrow{{font:12px ui-monospace,monospace;letter-spacing:.12em}}h1{{font-size:54px;line-height:.98;max-width:850px;margin:18px 0}}.lede{{font-size:20px;color:var(--muted);max-width:840px}}.rule{{height:8px;background:var(--accent);width:128px;margin:28px 0 60px}}section{{margin:70px 0}}h2{{font-size:30px;margin-bottom:8px}}p.note{{color:var(--muted);max-width:900px}}img{{width:100%;display:block;border:1px solid var(--line);background:var(--paper)}}table{{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}}th,td{{padding:13px 10px;border-bottom:1px solid var(--line);text-align:right}}th:first-child,td:first-child{{text-align:left}}th{{font-size:12px;text-transform:uppercase;letter-spacing:.06em}}.callout{{border-left:8px solid var(--accent);padding:5px 20px}}code{{font-family:ui-monospace,monospace}}@media(max-width:700px){{h1{{font-size:38px}}.wide{{overflow-x:auto}}}}
     </style></head><body><main><div class="eyebrow">HARNESS-BENCH / INTERIM AUDITED COMPARISON</div><h1>Quality and efficiency across agent harnesses</h1><p class="lede">A like-for-like comparison on 106 real-workspace tasks using GPT-5.4 medium. This interim edition includes only complete, audited datasets.</p><div class="rule"></div>
     <section><h2>Overall quality</h2><p class="note">Raw outcome score is used because full-trace process grading is not yet available for every option.</p><img src="figures/overall_quality.svg" alt="Overall quality bar chart"></section>
     <section><h2>Score, tokens, and runtime</h2><div class="wide"><table><thead><tr><th>Option</th><th>Score</th><th>Reported input</th><th>Reported cache read</th><th>Output</th><th>Total tokens</th><th>Calls</th><th>Runtime</th></tr></thead><tbody>{''.join(table)}</tbody></table></div><p class="note">Token fields follow each native source and components may overlap (notably Codex reported input and cache read); use Total for cross-harness comparison. Reasoning tokens are not added again. Runtime is summed task elapsed time.</p></section>
-    <section class="callout"><h2>Audited composition</h2><p><strong>Codex:</strong> 105 entries from the initial full manifest plus the second, valid operational correction for task 023. The initial task and failed first correction remain preserved and excluded.</p><p><strong>Aggressive Hermes:</strong> 100 initial fixed-profile results plus separately preserved corrections for tasks 091, 094, 096, 097, 099, and 106 after a terminal audit classified them as watchdog-truncated infrastructure failures.</p></section>
+    <section class="callout"><h2>Audited composition</h2><p><strong>Codex:</strong> 105 entries from the initial full manifest plus the second, valid operational correction for task 023. The initial task and failed first correction remain preserved and excluded.</p></section>
     <section><h2>Quality by topic</h2><img src="figures/topic_quality_facets.svg" alt="Quality by task topic"></section>
     <section><h2>Quality–efficiency frontier</h2><img src="figures/quality_efficiency_frontier.svg" alt="Quality efficiency frontier"></section>
     <section><h2>Task-level detail</h2><p class="note">The regression lines are descriptive only; task difficulty affects both score and resource use.</p><img src="figures/task_tokens_facets.svg" alt="Task score versus tokens"><br><img src="figures/task_runtime_facets.svg" alt="Task score versus runtime"></section>
-    <section class="callout"><h2>Scope and exclusions</h2><p><strong>Original Hermes is excluded</strong> after confirmed access to oracle/ground-truth material. The contained benchmark-default rerun is the Hermes headline result. Fixed focused/aggressive profiles are post-hoc ablations and are never pooled with it.</p><p><strong>Claude Code Opus 4.6 is pending</strong> and will be added only after its evaluation and audit complete. Tasks 008 and 013 also carry the benchmark’s documented oracle-quality-LLM comparability caveat.</p></section>
+    <section><h2>Hermes profile note</h2><p class="note">Only contained benchmark-default Hermes appears in the headline charts. The other profiles came from a separate counterbalanced post-hoc ablation.</p><div class="wide"><table><thead><tr><th>Hermes profile</th><th>Role</th><th>Score</th><th>Total tokens</th><th>Calls</th><th>Runtime</th></tr></thead><tbody>{''.join(hermes_table)}</tbody></table></div><p>No statistically detectable quality difference was observed between focused and aggressive in this single-run paired comparison: aggressive minus focused was <strong>+0.21 points</strong> (wins/ties/losses 15/67/24; paired t-test p=0.861; task-bootstrap 95% CI ≈ [-2.12, +2.59] points). Aggressive used about <strong>40% fewer tokens</strong>, 9.9% fewer calls, and 4.9% less runtime.</p><p class="note">Six aggressive cells (091, 094, 096, 097, 099, 106) use separately preserved corrections after a terminal audit classified their originals as watchdog-truncated infrastructure failures.</p></section>
+    <section class="callout"><h2>Scope and exclusions</h2><p><strong>Original Hermes is excluded</strong> after confirmed access to oracle/ground-truth material. The contained benchmark-default rerun is the Hermes headline result.</p><p><strong>The Claude Code pilot is not a baseline.</strong> Nine completed tasks averaged 9.3%, but every trace reported systemic write-policy and/or E2BIG tool failures. The run was stopped; these scores measure a broken integration, not Claude capability. Tasks 008 and 013 also carry the benchmark’s documented oracle-quality-LLM comparability caveat.</p></section>
     <section><p class="eyebrow">GENERATED FROM AUDITED PER-TASK ARTIFACTS · SNAPSHOT DATA INCLUDED</p></section></main></body></html>'''
 
 
@@ -427,7 +457,7 @@ def main():
     (data / "provenance.json").write_text(json.dumps(build_provenance(args.repo, args.runs), indent=2, sort_keys=True) + "\n")
     write_csv(data/"exclusions.csv",[
         {"option":"Original Hermes GPT-5.4 medium","status":"excluded","reason":"confirmed oracle/ground-truth leakage on tasks 037, 046, 055, and 079"},
-        {"option":"Claude Code Opus 4.6 medium","status":"pending","reason":"evaluation incomplete; quota-censored partial results are non-authoritative"},
+        {"option":"Claude Code Opus 4.6 medium","status":"invalid_pilot","reason":"nine completed tasks all showed systemic write-policy and/or E2BIG tool failures; stopped and not interpretable as model quality"},
     ])
     setup_style();plot_overall(agg,figures);plot_topics(topics,figures);plot_frontier(agg,figures)
     plot_task_facets(rows,figures,"total_tokens","task_tokens_facets","Model-context tokens per task")
