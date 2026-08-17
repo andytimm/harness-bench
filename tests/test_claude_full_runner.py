@@ -5,7 +5,7 @@ from unittest import mock
 
 ROOT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('run_claude_full',ROOT/'evaluation/run_claude_full.py'); module=importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
-from harnessbench.macos_containment import native_sandbox_policy, native_seatbelt_profile, verify_repo_containment, verify_task_capabilities, FILE_TOOLS, builtin_permission_denies, builtin_sensitive_paths, merged_policy_for_probe, native_credential_paths, validate_builtin_permission_denies, validate_native_policy_shape
+from harnessbench.macos_containment import native_sandbox_policy, native_seatbelt_profile, verify_repo_containment, verify_task_capabilities, FILE_TOOLS, builtin_sensitive_paths, merged_policy_for_probe, native_credential_paths, validate_native_policy_shape
 from harnessbench.adapters.claude_code import EXPECTED_SHA256
 
 class ClaudePlanTests(unittest.TestCase):
@@ -35,18 +35,17 @@ class ClaudePlanTests(unittest.TestCase):
      self.assertFalse(allowed_path==denied_path or allowed_path.is_relative_to(denied_path) or denied_path.is_relative_to(allowed_path))
    sensitive=builtin_sensitive_paths(ROOT,auth,workspace=workspace,control_paths=[control,denied])
    credentials=native_credential_paths(auth,workspace=workspace,control_paths=[control,denied])
-   self.assertIn(str(normal_state),sensitive); self.assertIn(str(denied.resolve()),sensitive); self.assertIn(str(keychains),credentials); self.assertIn(str(denied.resolve()),credentials); self.assertLess(len(credentials),12); self.assertTrue(validate_native_policy_shape(policy,credentials,sensitive))
+   self.assertIn(str(normal_state),sensitive); self.assertIn(str(denied.resolve()),sensitive); self.assertEqual(credentials,[]); self.assertIn(str(keychains),policy['denyRead']); self.assertTrue(validate_native_policy_shape(policy,[]))
    for protected in (Path.home()/'.hermes'/'.env',Path.home()/'.hermes'/'config.yaml',Path.home()/'.prime'):
     self.assertIn(str(protected.resolve()),sensitive); self.assertIn(str(protected.resolve()),policy['denyRead'])
    self.assertNotIn(str((Path.home()/'.hermes').resolve()),policy['denyRead'])
-   rules=builtin_permission_denies(sensitive); self.assertTrue(validate_builtin_permission_denies(sensitive,rules))
-   for path in (normal_state,keychains):
-    for tool in FILE_TOOLS:
-     self.assertIn(f'{tool}({path})',rules); self.assertIn(f'{tool}({path}/**)',rules)
-   expected=[f'{tool}({path}{suffix})' for path in sorted(set(sensitive)) for tool in FILE_TOOLS for suffix in ('','/**')]
-   self.assertEqual(rules,expected)
+   self.assertEqual(policy['denyRead'],policy['denyWrite'])
+   self.assertEqual(len(policy['denyRead']),len(set(policy['denyRead'])))
    overlapping={**policy,'denyRead':[str(workspace.parent)]}
    self.assertFalse(validate_native_policy_shape(overlapping,credentials,sensitive))
+   self.assertFalse(validate_native_policy_shape({**policy,'denyWrite':policy['denyWrite'][:-1]},[],sensitive))
+   self.assertFalse(validate_native_policy_shape(policy,[str(auth)],sensitive))
+   self.assertFalse(validate_native_policy_shape({**policy,'denyRead':policy['denyRead']+[policy['denyRead'][0]]},[],sensitive))
    self.assertIn(str(ROOT/'.venv'),policy['allowRead'])
    self.assertIn(str((ROOT/'.venv/bin/python').resolve().parents[1]),policy['allowRead'])
   self.assertEqual(FILE_TOOLS,("Read","Edit","Write","Glob","Grep"))
@@ -56,7 +55,7 @@ class ClaudePlanTests(unittest.TestCase):
    private=sandbox/'private-evidence'; private.mkdir(); targets=[private/name for name in ('read','edit','write')]
    control_plane=run/'control-plane'; (control_plane/'claims').mkdir(parents=True); (control_plane/'plan.json').write_text('{}')
    (sandbox/'.claude-benchmark').mkdir(); (sandbox/'usage-proxy').mkdir(); (sandbox/'prompt-round1.txt').write_text('task')
-   controls=[control_plane,archive,sandbox]
+   controls=[control_plane,archive,sandbox/'.claude-benchmark',sandbox/'usage-proxy',sandbox/'prompt-round1.txt']
    from harnessbench.models import TaskSpec
    from harnessbench.tasks import load_hooks
    hook_task=TaskSpec(task_id='018-provider-failover-audit',title='hook',task_dir=ROOT/'tasks'/'018-provider-failover-audit')
@@ -67,21 +66,19 @@ class ClaudePlanTests(unittest.TestCase):
     policy=native_sandbox_policy(ROOT,auth,workspace=workspace,sandbox=sandbox,control_paths=controls,capability_paths=hook_caps)
     credentials=native_credential_paths(auth,workspace=workspace,control_paths=controls)
     sensitive=builtin_sensitive_paths(ROOT,auth,workspace=workspace,control_paths=controls)
-    merged=merged_policy_for_probe(policy,credentials,sensitive)
-    rules=builtin_permission_denies(sensitive)
-    return policy,credentials,sensitive,merged,rules
+    merged=merged_policy_for_probe(policy,[],sensitive)
+    return policy,credentials,sensitive,merged
    before=shape()
    for index in range(53):
     prior=archive/'work'/f'model-{index:02d}'/('z'*120)/'workspace'; prior.mkdir(parents=True); (prior/'prior.txt').write_text('prior')
    after=shape()
    self.assertEqual(tuple(len(x) for x in before[1:]),tuple(len(x) for x in after[1:]))
-   policy,credentials,sensitive,merged,rules=after
-   self.assertTrue(validate_native_policy_shape(policy,credentials,sensitive))
-   self.assertLessEqual(len(merged['denyRead']),30); self.assertLess(len(json.dumps({'permissions':{'deny':rules},'sandbox':{'filesystem':policy,'credentials':credentials}}).encode()),128_000)
+   policy,credentials,sensitive,merged=after
+   self.assertTrue(validate_native_policy_shape(policy,[],sensitive))
+   self.assertLessEqual(len(merged['denyRead']),40); self.assertEqual(credentials,[]); self.assertLess(len(json.dumps({'permissions':{'allow':[],'deny':[]},'sandbox':{'filesystem':policy,'credentials':{'files':[]}}}).encode()),64_000)
    self.assertIn(str(archive.resolve()),sensitive); self.assertFalse(any('model-52' in path for path in sensitive))
    for current_control in (sandbox/'.claude-benchmark',sandbox/'usage-proxy',sandbox/'prompt-round1.txt'):
-    self.assertIn(str(current_control.resolve()),sensitive); self.assertIn(f'Read({current_control.resolve()})',rules)
-   self.assertEqual(len(rules),len(sensitive)*len(FILE_TOOLS)*2)
+    self.assertIn(str(current_control.resolve()),sensitive); self.assertIn(str(current_control.resolve()),policy['denyRead'])
    self.assertTrue(all(any(cap.resolve()==Path(path) or cap.resolve().is_relative_to(Path(path)) for path in policy['allowRead']) for cap in hook_caps))
    prior=(archive/'work'/'model-52'/('z'*120)/'workspace'/'prior.txt').resolve()
    self.assertTrue(any(prior.is_relative_to(Path(path)) for path in sensitive))
@@ -150,6 +147,11 @@ class ClaudePlanTests(unittest.TestCase):
   self.assertEqual(cfg['canonical_benchmark_seed'],binding['canonical_benchmark_seed'])
   self.assertEqual(cfg['canonical_config_namespace'],binding['canonical_config_namespace'])
   self.assertEqual(cfg['keychain_service'],binding['keychain_service'])
+ def test_old_smoke_approval_schema_is_incompatible(self):
+  source=(ROOT/'evaluation/run_claude_full.py').read_text()
+  self.assertIn("'schema':2",source)
+  self.assertIn("claude-code-2.1.227-production-permission-canary-approval",source)
+  self.assertNotIn("expected_approval={'schema':1",source)
  @unittest.skipUnless(sys.platform=='darwin' and Path('/usr/bin/sandbox-exec').is_file() and shutil.which('claude'),'real macOS containment')
  def test_real_offline_containment_verifiers(self):
   with tempfile.TemporaryDirectory() as tmp:

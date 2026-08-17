@@ -24,14 +24,20 @@ def value(flag): return args[args.index(flag)+1]
 assert "--bare" not in args and value("--model")=="claude-opus-4-6" and value("--effort")=="medium"
 assert value("--output-format")=="stream-json" and value("--setting-sources")==""
 assert "--strict-mcp-config" in args and "--disable-slash-commands" in args
+assert value("--permission-mode")=="dontAsk"
+allowed_start=args.index("--allowedTools")+1; allowed=[]
+for item in args[allowed_start:]:
+ if item.startswith("--"): break
+ allowed.append(item)
+workspace=str(pathlib.Path.cwd().resolve()); assert allowed==[f"{{tool}}({{workspace}}/**)" for tool in ("Read","Edit","Write","Glob","Grep")]; assert not any(rule.startswith("Bash") for rule in allowed)
 assert "ANTHROPIC_API_KEY" not in os.environ
 config=pathlib.Path(os.environ["CLAUDE_CONFIG_DIR"]); assert os.environ["CLAUDE_SECURESTORAGE_CONFIG_DIR"]==str(config); assert os.environ["HOME"]==str(pathlib.Path.home())
-settings=json.loads(pathlib.Path(value("--settings")).read_text()); assert settings["sandbox"]["failIfUnavailable"] is True; assert settings["sandbox"]["allowUnsandboxedCommands"] is False; assert settings["sandbox"]["network"]=={{"allowedDomains":["127.0.0.1","localhost"],"strictAllowlist":True}}; assert "allowLocalBinding" not in settings["sandbox"]["network"]; assert settings["sandbox"]["credentials"]["files"][0]["mode"]=="deny"; assert {{"name":"HOME","mode":"deny"}} in settings["sandbox"]["credentials"]["envVars"]; assert str(pathlib.Path.home()) not in settings["sandbox"]["filesystem"]["denyRead"]; assert str(pathlib.Path.home()/".claude") in settings["sandbox"]["filesystem"]["denyRead"]; credential_files={{x["path"] for x in settings["sandbox"]["credentials"]["files"]}}; assert str(pathlib.Path.home()/".claude.json") in credential_files; assert str(pathlib.Path.home()/"Library"/"Keychains") in credential_files
+settings=json.loads(pathlib.Path(value("--settings")).read_text()); assert settings["permissions"]=={{"allow":[],"deny":[],"additionalDirectories":[]}}; assert settings["sandbox"]["failIfUnavailable"] is True; assert settings["sandbox"]["allowUnsandboxedCommands"] is False; assert settings["sandbox"]["network"]=={{"allowedDomains":["127.0.0.1","localhost"],"strictAllowlist":True}}; assert "allowLocalBinding" not in settings["sandbox"]["network"]; assert settings["sandbox"]["credentials"]["files"]==[]; assert {{"name":"HOME","mode":"deny"}} in settings["sandbox"]["credentials"]["envVars"]; assert str(pathlib.Path.home()) not in settings["sandbox"]["filesystem"]["denyRead"]; assert str(pathlib.Path.home()/".claude") in settings["sandbox"]["filesystem"]["denyRead"]; deny_read=set(settings["sandbox"]["filesystem"]["denyRead"]); assert str(pathlib.Path.home()/".claude.json") in deny_read; assert str(pathlib.Path.home()/"Library"/"Keychains") in deny_read
 session=value("--resume") if "--resume" in args else value("--session-id"); prompt=args[-1]
 if "MOCK_FORM_URL" in os.environ: assert "prefix that command exactly with `NO_PROXY= no_proxy=`" in prompt
 raw_prompt=prompt.split("\\n\\n[HarnessBench",1)[0]
 if raw_prompt=="SLEEP": time.sleep(30)
-print(json.dumps({{"type":"system","subtype":"init","session_id":session,"model":"claude-opus-4-6","claude_code_version":"2.1.227","permissionMode":"dontAsk","mcp_servers":[],"plugins":[],"skills":[],"slash_commands":[],"tools":["Bash","Edit","Glob","Grep","Read","Write"],"agents":["claude","Explore","general-purpose","Plan"]}}))
+print(json.dumps({{"type":"system","subtype":"init","session_id":session,"model":"claude-opus-4-6","claude_code_version":"2.1.227","permissionMode":"dontAsk","mcp_servers":[],"plugins":[],"skills":[],"slash_commands":[],"tools":["Read","Edit","Write","Glob","Grep","Bash"],"agents":["claude","Explore","general-purpose","Plan"]}}))
 print(json.dumps({{"type":"assistant","session_id":session,"uuid":"shared-event","message":{{"role":"assistant","content":[{{"type":"text","text":"done"}}]}}}}))
 resumed="--resume" in args; turns=4 if resumed else 2; inp=20 if resumed else 10; out=6 if resumed else 3
 print(json.dumps({{"type":"result","subtype":"success" if raw_prompt!="BAD" else "error_max_turns","is_error":raw_prompt=="BAD","session_id":session,"num_turns":turns,"modelUsage":{{"claude-opus-4-6":{{"inputTokens":inp,"outputTokens":out,"cacheReadInputTokens":4,"cacheCreationInputTokens":1}}}}}}))

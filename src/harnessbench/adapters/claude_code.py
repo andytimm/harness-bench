@@ -26,6 +26,29 @@ EXPECTED_VERSION = "2.1.227 (Claude Code)"
 EXPECTED_SHA256 = "7432511ba3be818e01f23f6eef8630d214a8b618451e188c3c7d61a987eef6c7"
 EXPECTED_MODEL = "claude-opus-4-6"
 EXPECTED_EFFORT = "medium"
+EXPOSED_TOOLS = ("Read", "Edit", "Write", "Glob", "Grep", "Bash")
+SCOPED_FILE_TOOLS = ("Read", "Edit", "Write", "Glob", "Grep")
+
+
+def workspace_allowed_tools(workspace: Path) -> list[str]:
+    root=str(workspace.resolve())
+    return [f"{tool}({root}/**)" for tool in SCOPED_FILE_TOOLS]
+
+
+def validate_production_permissions(settings: dict[str, Any], allowed_tools: object) -> bool:
+    """Pin the only preauthorization layer; Bash is approved by sandboxing alone."""
+    expected=workspace_allowed_tools(Path(settings.get("_workspace", "/__invalid__")))
+    sandbox=settings.get("sandbox") if isinstance(settings.get("sandbox"),dict) else {}
+    permissions=settings.get("permissions")
+    credentials=sandbox.get("credentials") if isinstance(sandbox.get("credentials"),dict) else {}
+    return (allowed_tools == expected and all(rule.split("(",1)[0] in SCOPED_FILE_TOOLS for rule in expected)
+            and not any(rule == "Bash" or rule.startswith("Bash(") for rule in expected)
+            and permissions == {"allow":[],"deny":[],"additionalDirectories":[]}
+            and credentials.get("files") == []
+            and sandbox.get("enabled") is True and sandbox.get("failIfUnavailable") is True
+            and sandbox.get("autoAllowBashIfSandboxed") is True
+            and sandbox.get("allowUnsandboxedCommands") is False)
+
 _SECRET_SUFFIXES = ("_API_KEY", "_ACCESS_TOKEN", "_AUTH_TOKEN", "_PASSWORD", "_SECRET")
 CLAUDE_PLAN_BINDING_KEYS = (
     "plan_digest", "benchmark_git_sha", "canonical_benchmark_seed",
@@ -548,10 +571,8 @@ class ClaudeCodeAdapter(BaseAdapter):
         settings_dir = ctx.sandbox / ".claude-benchmark"
         settings_dir.mkdir(parents=True, exist_ok=True)
         settings = settings_dir / "benchmark-settings.json"
-        from harnessbench.macos_containment import (builtin_permission_denies,
-            builtin_sensitive_paths, native_credential_paths,
-            validate_builtin_permission_denies, validate_native_policy_shape,
-            native_sandbox_policy)
+        from harnessbench.macos_containment import (canonical_native_deny_paths,
+            native_policy_metrics, validate_native_policy_shape, native_sandbox_policy)
         try:
             capability_paths=[Path(v) for k,v in ctx.env.items()
                               if k.endswith(("_FILE","_DIR","_PATH")) and v and Path(v).is_absolute()]
@@ -562,21 +583,15 @@ class ClaudeCodeAdapter(BaseAdapter):
             filesystem = native_sandbox_policy(_project_root(), seed_dir, workspace=ctx.workspace,
                 sandbox=ctx.sandbox, binary=binary, capability_paths=capability_paths,
                 control_paths=control_paths)
-            sensitive = builtin_sensitive_paths(_project_root(), seed_dir,
-                workspace=ctx.workspace, control_paths=control_paths)
-            credential_sensitive = native_credential_paths(seed_dir,
+            canonical_denies = canonical_native_deny_paths(_project_root(), seed_dir,
                 workspace=ctx.workspace, control_paths=control_paths)
         except (OSError, RuntimeError) as exc:
             return AdapterRunResult(ok=False, stderr=str(exc))
-        permission_denies = builtin_permission_denies(sensitive)
+        allowed_tools = workspace_allowed_tools(ctx.workspace)
         settings_payload = {
+            "_workspace": str(ctx.workspace.resolve()),
             "hooks": {}, "enabledPlugins": {}, "extraKnownMarketplaces": {},
-            "permissions": {
-                "allow": [f"Read({ctx.workspace}/**)", f"Write({ctx.workspace}/**)",
-                          f"Edit({ctx.workspace}/**)", f"Glob({ctx.workspace}/**)",
-                          f"Grep({ctx.workspace}/**)", "Bash"],
-                "deny": permission_denies, "additionalDirectories": [],
-            },
+            "permissions": {"allow": [], "deny": [], "additionalDirectories": []},
             "sandbox": {
                 "enabled": True, "failIfUnavailable": True,
                 "autoAllowBashIfSandboxed": True, "allowUnsandboxedCommands": False,
@@ -588,7 +603,9 @@ class ClaudeCodeAdapter(BaseAdapter):
                     "strictAllowlist": True,
                 },
                 "credentials": {
-                    "files": [{"path": value, "mode": "deny"} for value in credential_sensitive],
+                    # These paths are already present in filesystem.denyRead;
+                    # repeating them makes Claude emit duplicate Seatbelt DSL.
+                    "files": [],
                     "envVars": [{"name": "HOME", "mode": "deny"},
                                 {"name": "CLAUDE_CONFIG_DIR", "mode": "deny"},
                                 {"name": "CLAUDE_SECURESTORAGE_CONFIG_DIR", "mode": "deny"}],
@@ -604,11 +621,14 @@ class ClaudeCodeAdapter(BaseAdapter):
                 "allowedDomains": ["127.0.0.1", "localhost"],
                 "strictAllowlist": True,
             } or
-            not validate_native_policy_shape(filesystem, credential_sensitive, sensitive) or
+            not validate_native_policy_shape(filesystem, [], canonical_denies) or
             str(ctx.workspace.resolve()) not in filesystem["allowRead"] or
-            not validate_builtin_permission_denies(sensitive, permission_denies)):
+            not validate_production_permissions(settings_payload, allowed_tools)):
             return AdapterRunResult(ok=False, stderr="native sandbox settings invariant failed")
+        settings_payload.pop("_workspace")
         _atomic_json(settings, settings_payload)
+        settings_sha256 = _sha256(settings)
+        policy_metrics = native_policy_metrics(filesystem, [])
         mcp = settings_dir / "empty-mcp.json"; mcp.write_text('{"mcpServers": {}}\n', encoding="utf-8")
         state_file = settings_dir / "adapter-state.json"
         try: state = json.loads(state_file.read_text()) if state_file.is_file() else {}
@@ -647,7 +667,7 @@ class ClaudeCodeAdapter(BaseAdapter):
                "--effort", effort, "--permission-mode", "dontAsk", "--safe-mode", "--no-chrome",
                "--disable-slash-commands", "--setting-sources", "", "--settings", str(settings),
                "--strict-mcp-config", "--mcp-config", str(mcp),
-               "--tools", ",".join(("Read","Edit","Write","Glob","Grep","Bash"))]
+               "--tools", ",".join(EXPOSED_TOOLS), "--allowedTools", *allowed_tools]
         if prior: cmd += ["--resume", native_session]
         else: cmd += ["--session-id", native_session]
         cmd += extras + [effective_prompt]
@@ -708,10 +728,9 @@ class ClaudeCodeAdapter(BaseAdapter):
         ids = {str(r.get("session_id")) for r in rows if r.get("session_id")}
         session_ok = ids == {native_session}
         disabled_fields_ok = all(init.get(key) == [] for key in ("mcp_servers", "plugins", "skills", "slash_commands"))
-        expected_tools = ["Read", "Edit", "Write", "Glob", "Grep", "Bash"]
+        expected_tools = list(EXPOSED_TOOLS)
         init_tools = init.get("tools")
-        tool_list_ok = (isinstance(init_tools, list) and len(init_tools) == len(expected_tools)
-                        and set(init_tools) == set(expected_tools))
+        tool_list_ok = init_tools == expected_tools
         # Fields which would prove customization escaped safe mode are rejected;
         # absent fields are accepted because 2.1.227 does not emit all of them.
         inert_agents = ["claude", "Explore", "general-purpose", "Plan"]
@@ -788,9 +807,13 @@ class ClaudeCodeAdapter(BaseAdapter):
             "keychain_status_unchanged": True, "auth_status_code": auth_status_code,
             "auth_status_valid": True, "benchmark_config_seed": str(seed_dir),
             "settings_sources": [], "safe_mode": True, "chrome_disabled": True, "mcp_disabled": True,
+            "permission_mode": "dontAsk", "sandbox_auto_allow_bash": True,
             "native_sandbox_settings_valid": True, "native_sandbox_runtime_evidence": False,
-            "builtin_file_tool_denies_valid": validate_builtin_permission_denies(sensitive, permission_denies),
+            "builtin_file_tool_default_deny_valid": True,
             "exposed_tools": expected_tools, "init_tools": init_tools, "tool_list_valid": tool_list_ok,
+            "allowed_tools": allowed_tools, "allowed_tools_valid": True,
+            "bare_bash_preauthorized": False, "settings_sha256": settings_sha256,
+            "native_policy_metrics": policy_metrics,
             "containment_contract": containment_contract, "execution_command": execution_cmd,
             "prompt_integration": prompt_integration,
             "original_prompt_sha256": hashlib.sha256(ctx.prompt.encode()).hexdigest(),

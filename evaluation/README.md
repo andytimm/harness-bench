@@ -97,8 +97,10 @@ makes no score or benchmark claim and never retries):
 An independent reviewer must inspect its immutable claim, receipt, native/raw/
 normalized/stdout/stderr artifacts and hashes. The smoke command deliberately
 does **not** approve itself. The reviewer creates a read-only JSON approval with
-`schema: 1`, `approved: true`, the exact `plan_binding`, absolute
-`smoke_claim_file`/`smoke_receipt_file`, and their SHA256 values. Main tranche
+`schema: 2`, `kind: "claude-code-2.1.227-production-permission-canary-approval"`,
+`approved: true`, the exact `plan_binding`, absolute `smoke_claim_file`/
+`smoke_receipt_file`, and their SHA256 values. Schema-1 smoke approvals are
+intentionally incompatible and cannot authorize this policy. Main tranche
 `--live` fails closed without `--smoke-approval /path/to/reviewer-marker.json`.
 
 Live execution also requires a clean planned Git SHA plus `--live` and the
@@ -120,10 +122,12 @@ Bash descendant.  The parent Claude process remains outside that tool sandbox
 only so it can access the dedicated namespaced OAuth item.
 
 This is an explicit two-control threat model, not an outer-OS-sandbox claim.
-Bash/descendants are controlled by the native macOS sandbox.  The in-process
-Read, Edit, Write, Glob, and Grep tools are controlled by explicit built-in
-permission denies; they are not claimed to have a separate OS boundary.  The
-only exposed tools are exactly those five plus Bash.  `--safe-mode`, empty
+Bash/descendants are controlled by the native macOS sandbox. The in-process
+Read, Edit, Write, Glob, and Grep tools are preauthorized only by exact
+workspace-scoped `--allowedTools` rules; unmatched outside calls default-deny
+under `--permission-mode dontAsk`. Bash is never preauthorized by a permission
+rule: `autoAllowBashIfSandboxed` is its sole approval. The only exposed tools
+are exactly those five plus Bash.  `--safe-mode`, empty
 setting sources, strict empty MCP, disabled skills/slash commands, and the exact
 init tool list are runtime-validated.  Invalid or silently ignored settings,
 missing init evidence, or a changed tool list fail closed. Claude 2.1.227's exact
@@ -131,28 +135,18 @@ inert built-in agent-name list (`claude`, `Explore`, `general-purpose`, `Plan`) 
 accepted only while neither `Agent` nor `Task` is exposed; any other agent list
 fails closed.
 
-Sensitive paths are enumerated at launch. The production native policy uses a
-compact explicit high-value frontier: the current checkout's `.git`, `tasks`,
-`grading`, `evaluation`, `src`, and `config` integrity roots, other worktrees, dedicated `.harnessbench`, normal `.claude` and
-`.claude.json`, `Library/Keychains`, `.ssh`, `.aws`, `.config`, `.codex`, exact Hermes auth/config/`.env`, `.prime`, Security.framework,
-`/usr/bin/security`, and private smoke evidence. No native deny overlaps any
-workspace/runtime allow, preventing Claude from expanding a broad HOME parent
-into a profile above macOS `ARG_MAX`. This is a calibrated trust boundary for
-authentication and benchmark integrity, not a claim that Bash or built-in tools
-are denied every benign file in the user's home. Built-ins use the same compact
-high-value roots and, like native Bash, list only those six current-checkout
-integrity roots; a checkout-root deny would override the merged `.venv` allow.
-They do not enumerate HOME or benign checkout files/docs/tests. Native credential-file entries remain a small exact set and
-never deny a workspace ancestor. Because Claude merges permission paths into its
-Bash profile, the fail-closed shape check prefix-minimizes the union of filesystem,
-credential, and built-in paths, prohibits a broad HOME prefix or any merged allow/deny ancestry, caps the union at
-30, and budgets 32 KB per prefix / 960 KB total from the observed 92-prefix to
-325-generated-path, 1.9-MB smoke. A production-shaped test covers the combined
-union and native deny/allow ancestry. The offline Seatbelt probe preserves the
-same effective frontier.
-Native read capabilities include the workspace, literal `.venv`, resolved uv
-Python runtime, pinned binary, Node, and explicit task capabilities; the probe
-executes literal `ROOT/.venv/bin/python -m pytest --version`.
+Sensitive paths are enumerated at launch into one prefix-minimized native
+`filesystem.denyRead`/`denyWrite` frontier covering every checkout control-plane
+entry except the visible `.venv`, all oracle/benchmark roots and other
+worktrees, external run controls, the isolated seed, normal Claude/Keychain
+state, auth roots, Security.framework, and `/usr/bin/security`. Workspace and
+runtime capabilities are exact allows and may not overlap a deny. The same
+paths are not repeated under `sandbox.credentials.files` or a Cartesian
+`permissions.deny`; credential environment variables remain denied. Structural
+limits conservatively bound the post-dedup prefix count, emitted filesystem
+entries, and serialized policy size. Serialized JSON size is not an ARG_MAX
+proof: the one-shot production-sized canary must actually start its immutable
+Bash probe, which is the execution evidence against E2BIG.
 
 Run the production-equivalent offline native probe before review (no auth
 mutation, model call, or network service other than its loopback fixture):

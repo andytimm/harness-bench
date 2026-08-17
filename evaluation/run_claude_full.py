@@ -139,7 +139,7 @@ def validate_result(path:Path,task:str,plan_digest:str='',expected_binding:dict[
   native_session=current or native_session
   if not all(m.get(k) for k in ('session_ids_valid','init_valid','terminal_valid','disabled_features_valid',
                                   'auth_status_valid','keychain_status_unchanged','keychain_exists_before','keychain_exists_after','native_session_file','native_transcript_sha256',
-                                  'normalized_trace_sha256','stdout_sha256','stderr_sha256','safe_mode','chrome_disabled','canonical_config_namespace','native_sandbox_settings_valid','builtin_file_tool_denies_valid','tool_list_valid')):
+                                  'normalized_trace_sha256','stdout_sha256','stderr_sha256','safe_mode','chrome_disabled','canonical_config_namespace','native_sandbox_settings_valid','builtin_file_tool_default_deny_valid','tool_list_valid','allowed_tools_valid','settings_sha256')):
    errors.append('native terminal/session/security validation failed')
   if (m.get('auth_backend')!=AUTH_BACKEND or m.get('keychain_service')!=(expected_binding or {}).get('keychain_service')
       or m.get('keychain_status_before')!=m.get('keychain_status_after') or m.get('keychain_status_before')!=0
@@ -271,7 +271,7 @@ def main()->int:
  approval_path=a.smoke_approval.expanduser()
  try: approval=json.loads(approval_path.read_text())
  except (OSError,json.JSONDecodeError) as exc: raise SystemExit(f'smoke approval marker unavailable/malformed: {exc}')
- expected_approval={'schema':1,'approved':True,'plan_binding':binding}
+ expected_approval={'schema':2,'kind':'claude-code-2.1.227-production-permission-canary-approval','approved':True,'plan_binding':binding}
  if any(approval.get(k)!=v for k,v in expected_approval.items()): raise SystemExit('smoke approval is not bound to this exact immutable plan')
  if approval_path.is_symlink() or stat.S_IMODE(approval_path.stat().st_mode)&0o222: raise SystemExit('smoke approval is not immutable/auditable')
  try:
@@ -279,10 +279,11 @@ def main()->int:
   smoke_data=json.loads(smoke_receipt.read_text())
  except (KeyError,OSError,json.JSONDecodeError) as exc: raise SystemExit(f'audited smoke evidence unavailable: {exc}')
  if (sha(smoke_claim)!=approval.get('smoke_claim_sha256') or sha(smoke_receipt)!=approval.get('smoke_receipt_sha256')
+     or smoke_data.get('schema')!=4 or smoke_data.get('kind')!='claude-code-2.1.227-production-permission-canary'
      or smoke_data.get('status')!='passed' or smoke_data.get('plan_binding')!=binding
      or smoke_data.get('claim_sha256')!=sha(smoke_claim) or smoke_data.get('benchmark_claim') is not False
      or smoke_data.get('score') is not None
-     or smoke_data.get('security_smoke_marker')!={'native_sandbox_runtime_evidence':True,'all_builtin_file_tools_denied':True,'tool_list_valid':True}): raise SystemExit('audited smoke evidence hash/binding/native-security-marker failed')
+     or smoke_data.get('security_smoke_marker')!={'production_invocation_exec_started':True,'native_sandbox_runtime_evidence':True,'workspace_read_write_edit_bash':True,'outside_read_write_denied':True,'post_dedup_policy_budget':True,'settings_command_binding':True,'tool_list_valid':True}): raise SystemExit('audited smoke evidence hash/binding/native-security-marker failed')
  seed=Path(plan['canonical_benchmark_seed'])
  try: seed=_validate_seed(seed)
  except ValueError as exc: raise SystemExit(str(exc))
