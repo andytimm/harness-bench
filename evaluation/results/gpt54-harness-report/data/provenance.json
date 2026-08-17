@@ -1,0 +1,3303 @@
+{
+  "composition": {
+    "codex": "105 full-manifest entries plus correction-023-loopback-network task 023",
+    "hermes_aggressive": "100 fixed-root results plus six watchdog-correction results (091,094,096,097,099,106)"
+  },
+  "exclusions": {
+    "original_hermes": {
+      "finding": "retained result records contain ground_truth and benchmark task-root access markers",
+      "tasks": [
+        "037-policy-clause-retrieval",
+        "046-performance-regression",
+        "055-funnel-dropoff-analysis",
+        "079-smallfile-batch-reject-ledger"
+      ]
+    }
+  },
+  "input_count": 656,
+  "inputs": [
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/001-file/task.yaml",
+      "sha256": "e6fd7efeea17176e7cafb61fdd4f5b599183cd01c3dfdaad55896d2c15790126"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/002-exec/task.yaml",
+      "sha256": "df577b3a027051e72dddb0a79f2c8b854a88fd13cd881dfb383e5470461e464e"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/003-browser/task.yaml",
+      "sha256": "c8be85c093f81df2962ce86b2352708d687096b194dd2f59b3cbc660aab83166"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/004-meeting-summary/task.yaml",
+      "sha256": "6c74e747c13c0049c5da2686f72f7be36268dc118ac1864d6eb0da3608d2a5fe"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/005-email-triage/task.yaml",
+      "sha256": "e81893fefc18cabbac3a4e036efb4ca00fab755cae48892804658e6d3b8139c3"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/006-access-bilibili/task.yaml",
+      "sha256": "d74304932e705009037aaac7d65edc713e80962a1509d3520fe8249ee1f8b9f6"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/007-session-memory/task.yaml",
+      "sha256": "adec064bbb1ac2653433263f40acdc945e74f8f5685118b98323ff60c5bf64f4"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/008-image-recognize/task.yaml",
+      "sha256": "71846cbbf372d7e98deb6320eafc91caf365cc76ef1868824a386d142cda0019"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/009-git-pr-merge/task.yaml",
+      "sha256": "db62b01d40153d4e1f687be701c004e3fb84c2e267dec4dec7956f7b8342843a"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/010-office-docs/task.yaml",
+      "sha256": "9b79b69e4e82ea5d4235065eeaaa7124a53167f68d25fb24082afcd6054d7f19"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/011-code-debug/task.yaml",
+      "sha256": "910b1790db15328cb9f37919f8ec28c45d68e269b622d2b63accc7ff20d57f7d"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/012-doc-synthesis/task.yaml",
+      "sha256": "c80969b5e125692a49e91c834d78325d5f64f22b8535102014a9d7bad851c0b6"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/013-image-edit/task.yaml",
+      "sha256": "e48be047e210d5aef7df5136712a6c86b66966f670bf7451569496ad1699b3b9"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/014-task-decomposition/task.yaml",
+      "sha256": "5d5fc52bbc54444424bc55bf45992dabd1ac9c954ec9bcebb423770d08bee0c3"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/015-security-injection-defense/task.yaml",
+      "sha256": "6ac27ffd0ae7a74fefbd1b741d6c19286d7ddc1901adb41eb16e8b86d1a6486e"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/016-code-repair-pytest/task.yaml",
+      "sha256": "e040c1e459c1a611fb64a3c02b6c9c03752bc903e7acf36be8508a4409d4de54"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/017-db-doc-consistency/task.yaml",
+      "sha256": "2fa0fe77a0b9d29be629e78f960d3d496c9813fb77c4a7a7a75358031128ee31"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/018-provider-failover-audit/task.yaml",
+      "sha256": "9c4bc05d537c92b308b51083657216ff905d5a27f350b4ed9622ecb814a3b325"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/019-incident-runbook-synthesis/task.yaml",
+      "sha256": "79ecaf8753851687098031e18c2af936c443a9343d0cfaf49e8f0e8f951bb33d"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/020-archive-checksum/task.yaml",
+      "sha256": "f20095fff7d1142db62ce2932abae055edc3aae5241d91ce92b72d9531a45944"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/021-batch-rename-transform/task.yaml",
+      "sha256": "1b8908687989b02d598cc0fdda8b0489e4040956771c5f65ad7d4d784542a1ab"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/022-local-rest-api-summary/task.yaml",
+      "sha256": "279f24118e241ebc352848332bb7d91f2f164a7218ff07f66abd992583b08854"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/023-web-form-extraction/task.yaml",
+      "sha256": "48d9dc6840ec4da52bb53bc69ffdd1f2d235eae2ad98cac12a30f5b133311e21"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/024-calendar-scheduling-conflict/task.yaml",
+      "sha256": "e841a4f82b2f71a84da48f038492618f6e05d48e107d925885c2608db716da49"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/025-meeting-action-tracker/task.yaml",
+      "sha256": "c305810831d1189d3e1a40ee03c302dd5292c0f78541209ffb016512e5822b91"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/026-ppt-brief-generation/task.yaml",
+      "sha256": "bffaa5ec928360149b01f080f053c91146dd268504eb4869e4c5f793bdca7837"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/027-contract-summary-risk/task.yaml",
+      "sha256": "e243b7ec445e0f9bfdd28c165c565b405182814aee5e835a79ca28f5ac39236c"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/028-email-thread-merge/task.yaml",
+      "sha256": "16490682cbe4d054084c1bbecace4baf17df22a8794005383b4cadf9be5ccdf8"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/029-expense-packet-review/task.yaml",
+      "sha256": "82938acfbf6d09c24dafe83635e67a618afaf0597220dc8bfac4ae0e8b2679ad"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/030-word-revision-plan/task.yaml",
+      "sha256": "718e28e0bf4aa24b1c18a8582e433513342e425208106dad3afa0213571c7e83"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/031-cross-doc-citation-check/task.yaml",
+      "sha256": "66725926c30a6ac4f3e53a2f83269b90f885de55b03be8ed12fb9a79a4be99c1"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/032-customer-followup-draft/task.yaml",
+      "sha256": "acf274a55568d848767c3d29185d117f7362ec72bba4bbbaf5e0a0a7f4dc636a"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/033-offline-knowledge-qa/task.yaml",
+      "sha256": "908fd8c18be7f23dcd468624a4b8bb0fe64d0341726945a38bff6ad4129c23eb"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/034-evidence-matrix-claims/task.yaml",
+      "sha256": "d5857df52158665c267cce9bd439269bfe451415bc69b53f8dcfd7dc26eb44bd"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/035-conflicting-source-resolution/task.yaml",
+      "sha256": "2e59dca1fccf8e6a8b81f40ccda35924da54b25498ebec811ccdf41867a81189"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/036-citation-consistency-audit/task.yaml",
+      "sha256": "658bbcd108cab93d52418383edec47bff28775a9e979a247622644a94c689a84"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/037-policy-clause-retrieval/task.yaml",
+      "sha256": "486842ce1e44f686519d98256dbe8a90db17d859b01142615076ee3f20e3da02"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/038-research-brief-synthesis/task.yaml",
+      "sha256": "790fd511c249252016c710aa0bf8fe34cae7d9dc48d76e21416e18863280d42c"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/039-repo-architecture-map/task.yaml",
+      "sha256": "5f3b8a016f7763c2e57bfa9476bbded80e9ed057dfb7976e3e77027c1131cb2c"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/040-test-coverage-fill/task.yaml",
+      "sha256": "99d6adff072c05817386f18ac5eaf0fff608bcfcdfd9997b9e8df40163deafed"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/041-frontend-state-bug/task.yaml",
+      "sha256": "19c7a07da161817f42ff8c50cb798ce7d4448367edf785e1600d3b879ebe9250"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/042-api-schema-migration/task.yaml",
+      "sha256": "ffd3829775ec64c84a39cde555cdd71044affec235175f85efefe166a27a59b8"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/043-db-migration-safety/task.yaml",
+      "sha256": "349a967547a7271f3c65e7c705e78aeeff0083d7fa5d3bcb461bcccbd572e2ee"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/044-ci-config-repair/task.yaml",
+      "sha256": "e53b63ce6efb1a236f8b8112802062ae20ca5224697e82688dbf2ab1eeab6a60"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/045-dependency-upgrade-compat/task.yaml",
+      "sha256": "1cff1f56358777bc50fd924fb9168c2dda51a5f8ae9883bc71474c1cef3f6428"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/046-performance-regression/task.yaml",
+      "sha256": "c52c185fae84abdca31a59d05f10b3717cd22a584c547aee80f6f4ac6e1895b5"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/047-code-review-risk-report/task.yaml",
+      "sha256": "e185949bb551bc39ba6d5c2caf093b6b8dca2f5a568b486c1e0c7871425fb364"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/048-release-note-changelog/task.yaml",
+      "sha256": "56e4a4eb19ce22d55ade17a1325c9fcb552141f48328abc714f5bdc3d36cf72a"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/049-excel-like-cleaning/task.yaml",
+      "sha256": "c258d865e91d4f9ea9a3cefd71aafa7f2e91ae3e0b7eee9ac176145a1e95cd00"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/050-multitable-join-analysis/task.yaml",
+      "sha256": "3ebdc564a8f9380f2f0109d511612c288f64ae01499e26e5790ee92b632a146b"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/051-sql-query-report/task.yaml",
+      "sha256": "e413ae6f1298c27f36580fbad0c0125ab159ba29749067a7fda0dc9ae1d6230f"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/052-metric-definition-audit/task.yaml",
+      "sha256": "12a42543b79beb431dd0cb4f0a5cf7c31b61379403c279f45adc36dcdf6dffb8"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/053-anomalous-transaction-detect/task.yaml",
+      "sha256": "de76eb003eb88ba2df138f3f34c751504182e3e34d62912963027409423de849"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/054-budget-variance-analysis/task.yaml",
+      "sha256": "f1ce3b62733287eaadc7bc4939d618dd7b2e1ea7451e3ec7f4364b7d79808733"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/055-funnel-dropoff-analysis/task.yaml",
+      "sha256": "97719a0d049863c320281265b7837deaa29134bce3aac4ebf63979e0f0adb9ac"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/056-inventory-forecast/task.yaml",
+      "sha256": "6d033447e88e13351936eea539a5a688afc27197dbdf037307399df53c3ee34b"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/057-interruption-resume/task.yaml",
+      "sha256": "0e07277ab2ee4afde6271a49842880b931aad64e1bfcc8b2a3cc998e233808dc"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/058-multiday-project-state/task.yaml",
+      "sha256": "72da6e66eb8a594b4ac5a71736491d4c217c719c2f927f6007e9249748918176"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/059-event-update-replan/task.yaml",
+      "sha256": "c99535beece355db6afe5caa4d42510547850ef244f5a298d73cfdab92f72d97"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/060-task-cancellation-cleanup/task.yaml",
+      "sha256": "787313f7b45e954922c7c69e7a29c2368b40870f1197b34f7d20af6055ffa6e7"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/061-periodic-status-rollup/task.yaml",
+      "sha256": "1b846207333d8f0a13b005777d2bff6a9e58ed799fe2dd26db4e6b22909312fc"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/062-k8s-config-audit/task.yaml",
+      "sha256": "0736768bb6cdba7bf03b3a709e138dab74a6897d879625eccb15088695fa16fb"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/063-alert-dedup-noise/task.yaml",
+      "sha256": "ad7a5359efe6b9b27d309521634e9e8edfb39ee4d0c250ecf338c8a7fb9e83cd"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/064-service-dependency-triage/task.yaml",
+      "sha256": "49c3c48f624120f3b963acbf17c1aeb8b8881dfb527ad7d4377a396d12b1e5fc"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/065-capacity-planning/task.yaml",
+      "sha256": "2c562fbd172d8b1042cea951512cef0a713ba5365f071130a14f8d9c7b92739a"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/066-rollback-readiness/task.yaml",
+      "sha256": "dd28e3c13e3f702d3be28f89d0803ab63a0749de6e40ab1c1e6960e22f28da0a"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/067-canary-release-check/task.yaml",
+      "sha256": "1a452fc0dbe40bf875e02a90c110e0ab6faf8707344e86d5b6c85fbaf3732f3b"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/068-product-launch-ops/task.yaml",
+      "sha256": "1e87da8ab242afdf2f4400ffa6a06a8dd19e56996fd832b676c3d5ca5f055b43"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/069-legal-compliance-review/task.yaml",
+      "sha256": "a8340ba2f399b2003b370deb0bd07979abfb784a26734631903b5a69c75f2e3c"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/070-hr-resume-screening/task.yaml",
+      "sha256": "a9ba9e2a2520f32913687fad49bb479dffb86d7ef905dfe7c8af91cb7b8a299c"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/071-ecommerce-support-routing/task.yaml",
+      "sha256": "e007c1dd7b56ea033facee8d8059ae42efc07dc0e283a223badfaf1800371024"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/072-logistics-delay-response/task.yaml",
+      "sha256": "6ed0405b9a82853269e9db476b74c276dca45079c704109cd6e3748b2b04de1e"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/073-research-repro-package/task.yaml",
+      "sha256": "14ef43bc7c57b4d11c54b945a3e8a1d617b8803c0d9bf3dbd518be8904147705"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/074-education-grading-feedback/task.yaml",
+      "sha256": "a7113de9a1c4e98cabb270211630ab863e2091dcd9aeaf77b170bed45e76746b"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/075-platform-appeal-review/task.yaml",
+      "sha256": "3e0017c94ee5d1784f833b5cef482104dc6785051d68ab3b5a3c516b04224cce"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/076-medical-admin-claim-check/task.yaml",
+      "sha256": "52907861579e822bb785d74b0d95deff8cb6348b1251b6b8afabbb002d400482"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/077-archive-manifest-defense/task.yaml",
+      "sha256": "c7d63f06c225ba5bc699b2deddf27c517d9016b8fe878c0da14043f32d4e88cd"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/078-local-api-cursor-retry-ledger/task.yaml",
+      "sha256": "f9a2d4e18be85d0d61a0be77f862a2edeae1c262617555577f90b35e8fe8150c"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/079-smallfile-batch-reject-ledger/task.yaml",
+      "sha256": "cd91441253af1d5695c253c602d13c2936ff2121550d4356f70f7bb8a3ea8895"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/080-schema-roundtrip-conversion/task.yaml",
+      "sha256": "22417a594a08a7c44cb2bc1cf82d141d865b7a7e5138b9ed10fd28751b6f10e9"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/081-local-html-dom-form-extract/task.yaml",
+      "sha256": "48ac2da4792f38181d2bd98b9874eb2ef24a2052947e33fa61e5b00c6d2c2ac0"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/082-compose-config-repair/task.yaml",
+      "sha256": "9e003d2a7b6ce1d0e09f572926547bc218e99bb85ed9ba1bc3fa3b2cbdc0233b"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/083-monorepo-interface-repair/task.yaml",
+      "sha256": "88c5c46259d113cdbb335ba4561b669ecfdc9385a6ca940226fe2a5a2519089b"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/084-js-state-type-bug/task.yaml",
+      "sha256": "a5f64593b0f8d9041a9d7929545273a54503e5951021ab2cc54711c353409a98"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/085-flaky-test-root-cause/task.yaml",
+      "sha256": "accbadd4263422b47b5cbd62983743f4896875c636fdef6c0fb8dc3ad26df780"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/086-sql-migration-preflight-rollback/task.yaml",
+      "sha256": "9fb1eab1aa85aea476ce44da12c3292fd04d8392837c84cfe7832d59d90e04ca"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/087-cli-parser-bug-tests/task.yaml",
+      "sha256": "0a0b24043326ee76e9d4a8308a960a5570a1933883cd4b45ac60eb88198e3df6"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/088-api-contract-mock-client-compat/task.yaml",
+      "sha256": "9c2f849a506f950e6cebed9f524e2ed58d09618abb4112c027bd3536b2dd6c19"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/089-ab-test-caveat-analysis/task.yaml",
+      "sha256": "5434c3a35377f6c26619057b36869653427bf5ee20808eaff423b14fc37482a1"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/090-timeseries-anomaly-attribution/task.yaml",
+      "sha256": "57170583d3a6a175450ada679967cc45fb3c84c9d83d37eedc00e9952530a2b2"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/091-financial-close-reconciliation/task.yaml",
+      "sha256": "25cba3896ef5e0810a2775a9a43198635d853c4782a15cb2096ad27e9bacb544"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/092-schema-drift-audit/task.yaml",
+      "sha256": "42e53358db61b4dbfda3d035e2445e469040db7ab723422ad268f1aabfa8c099"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/093-jsonl-sessionization-analysis/task.yaml",
+      "sha256": "eb13eee43175a22421779375dce17d0fd934cf6a3aca472f0151d54c988d55e9"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/094-metric-definition-migration-diff/task.yaml",
+      "sha256": "7733c87fb8dc42b2b31d9498f93107e0e158a493c80a0b3c672dcd4594729dfe"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/095-policy-version-conflict-resolution/task.yaml",
+      "sha256": "ec17b1402c9fad581608fae158a785c3ead1a8209d5b9d47e51c15321ca1d028"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/096-offline-knowledge-qa-insufficient-evidence/task.yaml",
+      "sha256": "f2092600dc77d879e59f1f907092d36f5d5357c6511d075c9fc624a4b2aa7d04"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/097-research-claims-batch-evidence-audit/task.yaml",
+      "sha256": "fa2916d3ab90a8faf20fbd0e931b3d1bb34be5d4bc9d13b2c056e11057f6fd16"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/098-three-source-decision-record-synthesis/task.yaml",
+      "sha256": "e3f9e594c438f62bf20d93b0d443df048ca2f9c98a1f16c59b4c175eef3665f1"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/099-privacy-dsar-intake-review/task.yaml",
+      "sha256": "b64f0d94595ca2328f951b67b8fafe8c8bcf4952cc1c2b981f628a41fd6f3aa1"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/100-financial-kyc-admin-check/task.yaml",
+      "sha256": "a50ccfdfff7130f7e420f35dc46a5de5a7a9253fd77277fb6a0d331fb44f7361"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/101-marketing-sensitive-commitment-review/task.yaml",
+      "sha256": "a789b184f50b0305a59c8f337683f6e7a85f8f4dbf8953a9acbbb68bab6f17d9"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/102-internal-doc-retrieval-injection-defense/task.yaml",
+      "sha256": "8e1ab4c937137b2a6412d380cf62cb4fd1b327cd6ce56b207904123fa3dfd3a9"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/103-policy-update-replan-diff/task.yaml",
+      "sha256": "33052417e4aade81a4ceab19517051ceb7d875f155b37af3bec46341788243b4"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/104-async-ops-window-rollup/task.yaml",
+      "sha256": "a4aff7d7f94b057b79d993862e455937ccbca7cba309b579369ddbc9a299164f"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/105-partial-batch-resume-ledger/task.yaml",
+      "sha256": "1441b1dc53d191a8f7400e3104f4805865f0fe9321897e8152ab37ebdf8830ae"
+    },
+    {
+      "dataset": "task_metadata",
+      "path": "repo/tasks/106-release-approval-gate-plan/task.yaml",
+      "sha256": "80a8264a94fa30e4b7f91076572136b206c8f56dc2203bc1e64985879da3986f"
+    },
+    {
+      "dataset": "excluded_original_hermes_evidence",
+      "path": "repo/data_try6/results/hermes-gpt-5.4-medium/gpt-5.4/037-policy-clause-retrieval.json",
+      "sha256": "ddc0acba3000b1a025db384b40723d8652c3f6baa2f402cdab8b5af11047ba7e"
+    },
+    {
+      "dataset": "excluded_original_hermes_evidence",
+      "path": "repo/data_try6/results/hermes-gpt-5.4-medium/gpt-5.4/046-performance-regression.json",
+      "sha256": "69bd8512b23149ea0df8988a9ae8a41983122cbeafeebc6f7ac68bde9e4e414d"
+    },
+    {
+      "dataset": "excluded_original_hermes_evidence",
+      "path": "repo/data_try6/results/hermes-gpt-5.4-medium/gpt-5.4/055-funnel-dropoff-analysis.json",
+      "sha256": "9a424f6f904afc5fd404db92b4a4639b328ba84fe60673440e8f949fa0a72dcd"
+    },
+    {
+      "dataset": "excluded_original_hermes_evidence",
+      "path": "repo/data_try6/results/hermes-gpt-5.4-medium/gpt-5.4/079-smallfile-batch-reject-ledger.json",
+      "sha256": "0be906c07bbfdb42ff1bdb68f5b167b175de6d0f8ce67ade76542376fa28121e"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/001-file.json",
+      "sha256": "854d2406991cf4ed62d327872926fdecac68f3437cbe7598d2725a86a9f264e6"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/002-exec.json",
+      "sha256": "965e24cab4ad81813e62813f2403318526b5724f04bd9e641efe76b3d70abfff"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/003-browser.json",
+      "sha256": "5ba5b2155dc80560e822e743996f38560a0e224eb57688bfd69451975ad0c0ef"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/004-meeting-summary.json",
+      "sha256": "83b9ff28df4788834e01291322106f03565bb38ac44141fcc0f4980cfabf2055"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/005-email-triage.json",
+      "sha256": "574bc766420e67f43d3364c5b956ba7ab60809a17b0963228c1cc24d4f856cf2"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/006-access-bilibili.json",
+      "sha256": "c1fcbf66470c0edce7d9e9fad397ff964dd1763e472834054382d4b17981c2c4"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/007-session-memory.json",
+      "sha256": "23ed39b175ecd15e604e9d683d44915f0302e6ee934e2985cd75a9a34a2c9a28"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/008-image-recognize.json",
+      "sha256": "d8ff2d988fc74c16163ee8fd6fc8ef7a5f7b248f71df132f928e495b2a9309fc"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/009-git-pr-merge.json",
+      "sha256": "4059f0a7e64730bab7095d7d0d8c03d9b6270f8c84971d61c657c87f0e3cbd60"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/010-office-docs.json",
+      "sha256": "bef5456dfa4cba1e38fb9ab6866ea756c2f6f747658f12baa693545f8e728379"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/011-code-debug.json",
+      "sha256": "5b8148b697cfd64704959986fd850091aad0b3687e4a0202354cffe7a83dba5e"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/012-doc-synthesis.json",
+      "sha256": "25418a4cb6a406eb7a8288a0b37564a2ed95c634f13f7a0d09ae359b9cf28b7c"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/013-image-edit.json",
+      "sha256": "bfc6bb97aa3c5d705f36412ff75abe06cdc4b3441e14f6208e6fe0b236f98c2d"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/014-task-decomposition.json",
+      "sha256": "aaf9f2c6a93009a092dcb19779f890de7a13f8e77714232add27a444b6dc0c69"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/015-security-injection-defense.json",
+      "sha256": "204953b02e49b2c3c735c9ab34bcfe4d9d03a2db07eae2d90610bbb9f1690b6b"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/016-code-repair-pytest.json",
+      "sha256": "3eb25f8fd6db59a9945520e3b85352dc2e48e6d0ef0efbcf1f1db725e93fedfb"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/017-db-doc-consistency.json",
+      "sha256": "b1f54a24d915244f665300b2abbb74878c3445ddaadf914c74cb25876784a691"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/018-provider-failover-audit.json",
+      "sha256": "b895108ad77972e36db9db89a711f1ad41dcd67893f204e2e0de5247748fb8d8"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/019-incident-runbook-synthesis.json",
+      "sha256": "ef7a8766571212d1d7b8a69c73ca33bb54ea396221b4576603e3da4d60383d51"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/020-archive-checksum.json",
+      "sha256": "2e512460c75d81e387b80a30ef3eec37db3411b31149f67dc969860679b44aee"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/021-batch-rename-transform.json",
+      "sha256": "b3d32b173164e77259171e70236a1c4da78fd1471caf8530e44a8c00dad4f059"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/022-local-rest-api-summary.json",
+      "sha256": "b4ee2ef89328876bf4654e427033fe83b369c4f1678b42a5dba682e6e1053a43"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/023-web-form-extraction.json",
+      "sha256": "4fc8206435e00077326a908c7458339d7ea9d31d21a66f91ee909255742ac588"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/024-calendar-scheduling-conflict.json",
+      "sha256": "4f3606146c6581b0974b1635807a4adbde082c73a6afa04947bca275724093cb"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/025-meeting-action-tracker.json",
+      "sha256": "4dadd2d7a135cc1b3fb2bb11efac9fa53398a8645431d23c157dc627a6855562"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/026-ppt-brief-generation.json",
+      "sha256": "397d54b20825e2f6da0ad0ba90b24bb2776110c4338243f2947e5ae5af239500"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/027-contract-summary-risk.json",
+      "sha256": "f4111415bff7d5837fe7ec06a4042f641aca727ff87721987c7d89f524645848"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/028-email-thread-merge.json",
+      "sha256": "bf0d0be135f52decf0256a7601f6e88b765b49ea59eb61d9836aee4c963d6d27"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/029-expense-packet-review.json",
+      "sha256": "af45541949e269fda1715e5a6871ee8c2fc25750e57301421cf3c39337b7fdba"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/030-word-revision-plan.json",
+      "sha256": "bf6fa172908f37bb6293183d26f42304af1979188b26e664074957821da4bf55"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/031-cross-doc-citation-check.json",
+      "sha256": "0bdc6a76f281627e25925a2cbe80a623c13485c5bbf9be6f677bde488d85da4b"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/032-customer-followup-draft.json",
+      "sha256": "af953f5b093d30a321737d11ff4f4db6af7692f6da9394fd1a2943c04a78c912"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/033-offline-knowledge-qa.json",
+      "sha256": "b511f65e3ecda0421727dc73f4f7fe06f9a8a523d02c418aa8cedd914ce07c42"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/034-evidence-matrix-claims.json",
+      "sha256": "e5d0b597ca8720e09c4f5a4629d63f4f985b3893b82bebd1e1025c5e9e0d6ad2"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/035-conflicting-source-resolution.json",
+      "sha256": "8ea63376e18d77da2a43c8a79c34e4b4b4f3f5730f1a6371a6541b942e461466"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/036-citation-consistency-audit.json",
+      "sha256": "8aaef467256c91652f033667a665339c8ced88b253cf7214344ee238309091ee"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/037-policy-clause-retrieval.json",
+      "sha256": "3e20cf3aabd080e0fe414a0a00d05a81e0c60fe56445654b4c28a88e8d2e737e"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/038-research-brief-synthesis.json",
+      "sha256": "204cb9af281e3724e007fc4c5bf00e584d9a60bb10969386ace79a204122b576"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/039-repo-architecture-map.json",
+      "sha256": "6dc458ce8aa2f7d875c348260f01b2e990aa29d5a44e1598e566b1341b3d94f4"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/040-test-coverage-fill.json",
+      "sha256": "e0a9ce14e88a763cb84d80eb3de6b09ebe06f2c94c8f83ef9c699c73e84d953d"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/041-frontend-state-bug.json",
+      "sha256": "19059866c1ba3b8ab1525ee445076d3686dad4195d4fc167740f262a843d601a"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/042-api-schema-migration.json",
+      "sha256": "37dca60a02b1727158aaa8b5ae50b887f48bc15e86ed0169c82408fecafbf950"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/043-db-migration-safety.json",
+      "sha256": "f1a10080c0c0f9eb9dbad106c0b54b443dfdbee1ec7d26b17ebe77087159f332"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/044-ci-config-repair.json",
+      "sha256": "a2f913d92254a84c443607a89b317b775079d203b9e586610397463d149fde83"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/045-dependency-upgrade-compat.json",
+      "sha256": "bf38f7afa6ce421836f9bfc9d0894bce0c736e016dd1c7cf8445a07e0338fc95"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/046-performance-regression.json",
+      "sha256": "e7834a1b8b04080f792f58dc37a94e4dbf88cc6302f194330202cd9e37b10d9d"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/047-code-review-risk-report.json",
+      "sha256": "879ee6a4036021adeeabbc7dc85d6ca32b093dfd55a13d5f6657cd247df688bd"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/048-release-note-changelog.json",
+      "sha256": "962f935940c5d5e62d2fc71b9e8a509174b3d323df9f986f7934ae30b980cb06"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/049-excel-like-cleaning.json",
+      "sha256": "903191fb5a3fb6c4db30e8d732d19124096a1d56f179b40c1ab998289453f636"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/050-multitable-join-analysis.json",
+      "sha256": "28912881ff42ff8339fcd5f3a07a5996bd4473c24ed991cc6aa9f058a442e4bb"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/051-sql-query-report.json",
+      "sha256": "debdf06f3d7ccae8cec04b49eccbddd0fb031eac4ec6b976dfe91c838c9003ca"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/052-metric-definition-audit.json",
+      "sha256": "71c419a952069b9a005bd68ef160abf5a28814f79f773b73bae6487fae4b4247"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/053-anomalous-transaction-detect.json",
+      "sha256": "9a8ab3dbf7c3b8ff844abf4da50e396f37697988011fa919b19065058040d27c"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/054-budget-variance-analysis.json",
+      "sha256": "7b8db3127a0f8d6381470d030f3ba62f7f559212e2f13d62e626d4023ba6aa2a"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/055-funnel-dropoff-analysis.json",
+      "sha256": "490fe913796838f65e7dfbcab8cd566b6fdaf5decb4b4b808c73c5d56aa41dff"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/056-inventory-forecast.json",
+      "sha256": "27c80d88a6237def32b4f61c94d028a7126e8e32c5ba325662890291c1f12f82"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/057-interruption-resume.json",
+      "sha256": "ea40bb72cd90919b4ebfd81150cfb9ce55a4835c1e151734be18d02c550d3997"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/058-multiday-project-state.json",
+      "sha256": "d26da04ad01a8cb07c9f4a53646149c4b12d610ce27670541daa8182cf3f8e82"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/059-event-update-replan.json",
+      "sha256": "1a5aff136fd9ecabe7b3d2d3e67184cf8c2c94ce35a909f495cde98321bb94b1"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/060-task-cancellation-cleanup.json",
+      "sha256": "bbd69d933001ea7b47c91f3c677003013c4dc7331c466c11a20a466ee29c8b30"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/061-periodic-status-rollup.json",
+      "sha256": "03ae352bbd618848422343625ea04a2d51983f26c882e381c0a7fb4f1cb1ba6f"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/062-k8s-config-audit.json",
+      "sha256": "6c68943d5a6d822f7a5522d16d63dafd8389fe3fc9322dc4cca4b630d7ac50d5"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/063-alert-dedup-noise.json",
+      "sha256": "d4b9f6b6879bdedea2ec8d47399cdbc90d51e3671cfe8b1dab1dd8ded7f54ea7"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/064-service-dependency-triage.json",
+      "sha256": "ba707896e26b1cece285db88b7ec06bcc1699e602c2f89ccbf8ff79c2f0d9ce6"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/065-capacity-planning.json",
+      "sha256": "838ed3db284f6cc19ab9a1a51623cf7543b87155e067e916d0111278497fc199"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/066-rollback-readiness.json",
+      "sha256": "c7ce535c7318e0ee7f287bd599770ae148a7fd422bde5aa823be3269f71c309f"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/067-canary-release-check.json",
+      "sha256": "b854d1f7fed1cedb060c2313afb407f3f16f02203e5c3d2213e724f5b5e391b4"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/068-product-launch-ops.json",
+      "sha256": "cb44b5e784ed1fe5784e13a6efd8970779eb929bea41c98ebec47cd540e4b530"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/069-legal-compliance-review.json",
+      "sha256": "26580e3edf5d972ce4aad5a3f99d0d91e60212a4f091b5204227e2f5ec7c67ea"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/070-hr-resume-screening.json",
+      "sha256": "f3df271d76379c0593b88faaebe72f3cb89122e5ad3213332d52f33ba171ae6f"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/071-ecommerce-support-routing.json",
+      "sha256": "34e75c510fbc46aeb67bc2f8490e6256d7c2618ebf2725e1a2a85c2d60e30468"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/072-logistics-delay-response.json",
+      "sha256": "a7a623509f51c4df054ce989d62376a7d76ab59fe9cad670e895311aa4a900e0"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/073-research-repro-package.json",
+      "sha256": "ea122cf585d8b41f32594f55eb377ae768404d60dc97a2d24be3fee640063d92"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/074-education-grading-feedback.json",
+      "sha256": "d26c2646f30d7f53345e7f621ea4b01c6c435c6aec21bb2ff51717edaf36a6b1"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/075-platform-appeal-review.json",
+      "sha256": "5d7aabb0ba3a44a96531b37e223ec91f6e0cba0166272564fde1a82092a82fba"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/076-medical-admin-claim-check.json",
+      "sha256": "6796c48886f62d115a64613ddc97ebf602842b6a56f0775145ee40901e6a28a4"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/077-archive-manifest-defense.json",
+      "sha256": "50f9573d0c2d995119918edcb76d5b0655fb86e51f971a058958abac4e313eac"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/078-local-api-cursor-retry-ledger.json",
+      "sha256": "9aaeb21ad1d38695ba3b60f4be050b0ccc020ddd5f75a12c710d42ee8c774874"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/079-smallfile-batch-reject-ledger.json",
+      "sha256": "b4bd63eb4806f9628cc5a0599a1d16a2ee6b01394218c44b9ecf6cf44505264e"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/080-schema-roundtrip-conversion.json",
+      "sha256": "b63e177e73c8bce2440bd0792ec6047fb45097cccca6967d931523c9b9661580"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/081-local-html-dom-form-extract.json",
+      "sha256": "a9778a482773d1f4c1cc17e80effbcf7d6d7db24c2520523a245e052ae3cba26"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/082-compose-config-repair.json",
+      "sha256": "f38cf9c4b25419d93d5c9e7e54c20f7639297b13b50efe4e491476ea6a4f3a07"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/083-monorepo-interface-repair.json",
+      "sha256": "6c8a73379a315bbb98db9204097ddaf6429cbaf32224abd3f0b5bc778aeba219"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/084-js-state-type-bug.json",
+      "sha256": "f8b6f25ee78dfac65ace52d6d213a699a2e44ebe80ca3ce2c94da3e701ed4dab"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/085-flaky-test-root-cause.json",
+      "sha256": "02783b81f5eb5005a2df5cbe5aaefbe2cf816886d7fb68a3a605f734525c0553"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/086-sql-migration-preflight-rollback.json",
+      "sha256": "51101ce8b0b19bcdd3646e3920f77b12afd136d55e6e823d478f698d6162e782"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/087-cli-parser-bug-tests.json",
+      "sha256": "4beac57bf58a20a7525546c88a48063d2a1d5fc2f7d4b4cd9ecc1f94d6b17680"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/088-api-contract-mock-client-compat.json",
+      "sha256": "ff4a137643d8b7274d9362418fd92bcaf6c761a934fbe4309507ef94f0b1f73b"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/089-ab-test-caveat-analysis.json",
+      "sha256": "d2b3d8e69e2ad0bd658ca9d5afcda44d683c9b91ddfab8c8ac63987e7ad13a72"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/090-timeseries-anomaly-attribution.json",
+      "sha256": "0c48fec8f0947cd1e4603cbf37cec32c2328bd387e2bc07abd18931a654da724"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/091-financial-close-reconciliation.json",
+      "sha256": "d1ba3a148ed97957aaf26f61ea671937a4f9a0fafc1b2f6d73a0f525a713d188"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/092-schema-drift-audit.json",
+      "sha256": "c16c69508830a47a0fa56f68af67109af6468867a6dd0d7e46f26feb1c8d55ab"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/093-jsonl-sessionization-analysis.json",
+      "sha256": "fb903f09a845c1a95efc27f9b8064b98c36c0b6f6793b36448060179d896ffe6"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/094-metric-definition-migration-diff.json",
+      "sha256": "798bb7938f704ade2cf436cb511f06e5a33b28aa299c03e4f82655dd8ce25595"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/095-policy-version-conflict-resolution.json",
+      "sha256": "62156f632d3603dd9b8960316ee7ebb3b3086e24c48454f69143628f68c8e294"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/096-offline-knowledge-qa-insufficient-evidence.json",
+      "sha256": "5fb0b70782f9bdd7267fbdb26581ecd31c02a4eb668dcc1b836d2649001a299e"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/097-research-claims-batch-evidence-audit.json",
+      "sha256": "5a654a2cf5873f05d4e2986330232dd9757dad44294b57a4860a1b1de09d16a4"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/098-three-source-decision-record-synthesis.json",
+      "sha256": "2b4e536dd6e5eb6fddf51c555b8740146c56abbfa53d8ebde7d6260ea99e2f5f"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/099-privacy-dsar-intake-review.json",
+      "sha256": "01a32036483d2be89006e427707850c0f5825f854f029e8a9bd197da2e2d7981"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/100-financial-kyc-admin-check.json",
+      "sha256": "92a80ca49d7646b5e884315d229068e62aaae11e1c519c721dd2463aa4bf6d6b"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/101-marketing-sensitive-commitment-review.json",
+      "sha256": "99ba34bb3e81d008aaafe8cb0ade2a2b651dad73dc76a8bb0c52c96ea2824efd"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/102-internal-doc-retrieval-injection-defense.json",
+      "sha256": "de582f48c5fb15aa3a2c71cb4e773aaa987a3651de3db16a6c54892a1d27ac50"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/103-policy-update-replan-diff.json",
+      "sha256": "ca7cb3e28aef387eccb866edbf9112281d44c10f34fddb1fc96e27a022d72a99"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/104-async-ops-window-rollup.json",
+      "sha256": "86b51828aa7f6996186f93baf3133c80c659b8150eb051737ae1d37ea4507d96"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/105-partial-batch-resume-ledger.json",
+      "sha256": "1716f88c843be891d861a37361ca2a5d73717a83e0e40ff412f2798c50ef7485"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/data_try6/results/prime-agent-gpt-5.4-medium/gpt-5.4/106-release-approval-gate-plan.json",
+      "sha256": "7094a8b40ae6da5eeb3697267d8478bb7fa5b3c8d2da8328c838b8ef7a674bc3"
+    },
+    {
+      "dataset": "prime",
+      "path": "repo/reports/prime-agent-gpt-5.4-full-manifest.json",
+      "sha256": "78743934c473e2a22639ff09224913937a323c2c088eb97e8af926854374b102"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/001-file.json",
+      "sha256": "21255afaa4e6cce397a35aa0d2a6c564a9ad459e81af5893bb1b2e47e24f31bb"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/002-exec.json",
+      "sha256": "2c4c824dfa825419638e8fc4fb965f88f31e74f9809e7179cd2cb2d0e4de9f4a"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/003-browser.json",
+      "sha256": "25d84942241212630ad5a88700ff2158e8f2c3a751df1f9ec4dc471cafb3c489"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/004-meeting-summary.json",
+      "sha256": "0983c570c6b11c9cc2bf338f5b24534bb86f8a0872f7081f7d15ee61fff6be5f"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/005-email-triage.json",
+      "sha256": "01e01ea62b4ff512c1effd8ab5087d990d6e837d8b97798880e102c3ea752160"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/006-access-bilibili.json",
+      "sha256": "8e6649a045f6fa13829b992a20de377c7cd5e74624f9be5d4544d13354060119"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/007-session-memory.json",
+      "sha256": "233f1cf472295d41d7822aeaf1c0928b3bc3f864bb4952cbe6d0ecbc482f55a7"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/008-image-recognize.json",
+      "sha256": "21d57ba84922df6ca06f14eec2f3d8fcbd3767fef6849f9954d8f8bdf910a190"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/009-git-pr-merge.json",
+      "sha256": "4df469821cb9d4c16fccd7193bf78371d4c9b0a47be8b7d3c8d458d3d9bbdf63"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/010-office-docs.json",
+      "sha256": "50c12039ea985e92e32f5a0af6223ac04533bef454da653e54e016aaf1768978"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/011-code-debug.json",
+      "sha256": "08f04d3ada93b1716a3bc700a8a66d4ae3b16eee3d023dcd67a27a560bf14d6e"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/012-doc-synthesis.json",
+      "sha256": "465609b40a5775b1a52827363f7ccfe2060b583d1776ab4c10f4f3a04206d174"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/013-image-edit.json",
+      "sha256": "b07f7f1fc4cd745d94fa1052a47adcc99600505f3c12abb670622e980b226ad1"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/014-task-decomposition.json",
+      "sha256": "17453d6cfb4cb528428e2bf14e52bfacd87aa044a6d534156dc88c4657742ddf"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/015-security-injection-defense.json",
+      "sha256": "3139eabc0003c71c4c68b799dc6c659998a7d2816f4a412bf69ab36573fe5b16"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/016-code-repair-pytest.json",
+      "sha256": "934a8c2fc1cc335b9725f1642c5438f37190a9f8292115aa4ad4dfde7767617b"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/017-db-doc-consistency.json",
+      "sha256": "eec15feccfbb7a3f4b4a80b5372f655bbafc6270deef97cbac15b16976099b30"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/018-provider-failover-audit.json",
+      "sha256": "84ce6d992c0293f43718c34badb161ba7eb9a07d502cca08aadba27f7f98a3c8"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/019-incident-runbook-synthesis.json",
+      "sha256": "b8176bff7b63afa4d62f2db34108619c43114a3de88c773fe192233bba7cec13"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/020-archive-checksum.json",
+      "sha256": "3d684790d8b0aae4b0c11ae45e28ec70ce2c098ca65cf909569666f8ecf8f29e"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/021-batch-rename-transform.json",
+      "sha256": "42bce1148b6077c2d13c3bbcdabbfb5fd26522d373fb3eb0ef982d81993e34e1"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/022-local-rest-api-summary.json",
+      "sha256": "996bc99eb066211721ad701bc03ac524d59662547ecec1da083c601dbb43bac5"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/023-web-form-extraction.json",
+      "sha256": "33fa9991686823c04305a8355385dd54c67051656281f5a81827fbaee8fdd475"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/024-calendar-scheduling-conflict.json",
+      "sha256": "70fc8c3795e800d6f8857c7e3296f282143d2f1f64c2c231cb25b9646f1d189d"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/025-meeting-action-tracker.json",
+      "sha256": "3f11f856a667ce2e28709a028eae164be07f3e5519060f709f95f81901f3ae88"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/026-ppt-brief-generation.json",
+      "sha256": "3db410f6f8919c05f9b6e7d44c835c21dd7eaf0cb83ee11c0431295f2a062a5d"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/027-contract-summary-risk.json",
+      "sha256": "af4875726e06c185599e2823eaff5e2d2396ca9d9c5207a491c87666023a4c20"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/028-email-thread-merge.json",
+      "sha256": "eb618c728116741bb521e9e4927438279d5cd24f124046667124781b10cf54c0"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/029-expense-packet-review.json",
+      "sha256": "5090fc7437def1f246eab5bc097b1fa46f82cfe393c42bceb45c5f0019255b19"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/030-word-revision-plan.json",
+      "sha256": "cf0cb51b6c4a25145ea92cc43e4c24c06e851c1df48fa827e4d95f31490ca56b"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/031-cross-doc-citation-check.json",
+      "sha256": "1f756f5820a284b8892c21f5cae3945066afffefe05858b2b4ce8c61a00c8d04"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/032-customer-followup-draft.json",
+      "sha256": "3438855caec923820048733873dfe66cc9162e56912410088e03986a0fe4926a"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/033-offline-knowledge-qa.json",
+      "sha256": "efde7dfebf1d5ef4d55b77589c2be085c0c77346e7848e58c387f7ed78f928d6"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/034-evidence-matrix-claims.json",
+      "sha256": "2bc77fd25ec4f0ddccc554f8a8bcacec3a0bfd96786c89bf8caf7c9d14be90a4"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/035-conflicting-source-resolution.json",
+      "sha256": "0817cf0828b066f3986407330c40bdaf4a1b6715a2b386a4708be599fa3fff02"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/036-citation-consistency-audit.json",
+      "sha256": "5b2869483d36262a34de96b08a4267d2ac5a727d83ee9a57bc6ed494b5bbc6b6"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/037-policy-clause-retrieval.json",
+      "sha256": "2923c3acc97281aa1bdc3f7663f337f7044ca9e0d7554a950e7c8fac0b39be3d"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/038-research-brief-synthesis.json",
+      "sha256": "bd284f6bf83654b599be49b2be48d60ea4d92942db11f1aa6ab197afd124ef26"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/039-repo-architecture-map.json",
+      "sha256": "2d63a26d07c43b156d1aa9d10ee6eda90e37a05b1484e2cafb22601009232ac1"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/040-test-coverage-fill.json",
+      "sha256": "a424de42d0bef9e347ca523d5f3e1e43d42df4f21f5e80dc24d3ede29bda020e"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/041-frontend-state-bug.json",
+      "sha256": "86305f2ccd659254fd18ac3c6f24067be157eab4cdd114bf806822f24eb053c3"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/042-api-schema-migration.json",
+      "sha256": "bd21d0bfd9880a5242b7f7bdaad35845830f5e417127dfe0a309932570918ddc"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/043-db-migration-safety.json",
+      "sha256": "b5f97270b7d0a48087c45bb19cf5f0907d9bb9822e8f729f98e7f85398298c7d"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/044-ci-config-repair.json",
+      "sha256": "b4d135772390ce3803dd0ef3eab1ae64136a9ba9dcb3e48d74036c3045eb448e"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/045-dependency-upgrade-compat.json",
+      "sha256": "b24c20135b0d7343216331a6d8c4ff86034bca4228710a8e4fef1cd3be92a227"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/046-performance-regression.json",
+      "sha256": "0c4cb3d93597b4514be4d91368b2e314d39ce6ad19d0d047182ccc884ec3ae2f"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/047-code-review-risk-report.json",
+      "sha256": "bc932b9f908b95f3c1de8f7f4c574736f9e147bb040a7058d070788b2ef08c7c"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/048-release-note-changelog.json",
+      "sha256": "365719758370c420950d1e78f873ddf1979aefd3959feaed1932a7275843d149"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/049-excel-like-cleaning.json",
+      "sha256": "9d6c9694501197b33d61f32412fd4906e318d07f7455dc2dd0574e27cc412726"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/050-multitable-join-analysis.json",
+      "sha256": "00252480c4bf086ca41efa54995a383ab0440506dc9b5f4b910b72200fb5a847"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/051-sql-query-report.json",
+      "sha256": "8e06d8616a2a8de7d882e322df24cfc12aca9d96e1b0a2b6eccfcfee17adc5ce"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/052-metric-definition-audit.json",
+      "sha256": "905fe1d1f59268e4a46565916eea6212fbd7ef6a578e4073140f2cec51a40a37"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/053-anomalous-transaction-detect.json",
+      "sha256": "de07431c87b2eab2d21a4979b29c22bf831cf277e42200116de6dff13e02ec65"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/054-budget-variance-analysis.json",
+      "sha256": "bb38f52e96a7ce84170d0be106f1fcf171d22802896e833985051f05e8bdd56c"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/055-funnel-dropoff-analysis.json",
+      "sha256": "ea1e778b2d58433922fab1583254926b3a184c1d1d71f6def094245791f6af5f"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/056-inventory-forecast.json",
+      "sha256": "514509b24d162da6ea8515cbe7dc961468063202968cfa033717ffe1deebaa1c"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/057-interruption-resume.json",
+      "sha256": "0d46fef0ab6c639309ef0b945cdaa169514d7c7e7b3c71cddb90b1d8f4b79a64"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/058-multiday-project-state.json",
+      "sha256": "ce17d5a5940b3aedb4f78f1f40e80427586dad8ad512c9385d8267f06767f0d5"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/059-event-update-replan.json",
+      "sha256": "016c307498ec22aa89f45ca34d470a70a3749bb3b3cdeb0305a7d5d949514caa"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/060-task-cancellation-cleanup.json",
+      "sha256": "38a9379458db54751786ce3f8deb54d4e8b2b08c5349e708b02ba29cf0d3b508"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/061-periodic-status-rollup.json",
+      "sha256": "96a66682b821615227f854cf4da4ce7bf1229d9d43fa388d40ed2a2aa77130fd"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/062-k8s-config-audit.json",
+      "sha256": "f1ae3bdba7364204c7419c7850ce2213013e11c161cbbdae2b7caa9fa19947ae"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/063-alert-dedup-noise.json",
+      "sha256": "d5dbb652a17e9cd566e203ec33fa27a7907a3749b652a6fe4d7523d8e3c3ca25"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/064-service-dependency-triage.json",
+      "sha256": "02f8140d77cb743f477a557de3650cad89aa3b20e7ee0006cd09c8060f5bb9ff"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/065-capacity-planning.json",
+      "sha256": "7fea77fcc693d11bb219c5b0f10f39f1ad096d288c246803e093adbf6aad525f"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/066-rollback-readiness.json",
+      "sha256": "508d602744b35662929f6286d0818711b6b641d4fb3baf1c416f8ac0a449d91c"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/067-canary-release-check.json",
+      "sha256": "7f27c607da3cb0f42a4c8f7c7b8f47798a7d5787f25f9cc1283fd84014866db6"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/068-product-launch-ops.json",
+      "sha256": "cba34127c2e29cbb0d6a4e300f9d0184685e52d36ebbcd0e5b76f6ca9273b8a6"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/069-legal-compliance-review.json",
+      "sha256": "2d6a28162678bcfc251cff4534c6ca0d2709c49d29ac721e0e5bc9b2bdf92a51"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/070-hr-resume-screening.json",
+      "sha256": "a226bb6b8421835f41eb20286778eaab2d128806e7f37ce62c59e47ae06dd735"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/071-ecommerce-support-routing.json",
+      "sha256": "168d80c6708ae680061880bd9e2b1b6eaa8629f40e958eb77190e4b6e2beb68a"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/072-logistics-delay-response.json",
+      "sha256": "c2735ce1c5c1e860ffca326b72ec7cc129a3f2bdcac314ed061cb1dd3fd65d5f"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/073-research-repro-package.json",
+      "sha256": "10845b72ce0d45047402fc47db457f286082fab484c7e243420f76eec2812870"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/074-education-grading-feedback.json",
+      "sha256": "6826e653cf0f93cacbd6a6a1d441f23778cb8ef62f4f43bb69f7d7129d5914c5"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/075-platform-appeal-review.json",
+      "sha256": "447dd8234f4f6b0da19d2525ffb51de9998942922087207e008c2a98aaf33641"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/076-medical-admin-claim-check.json",
+      "sha256": "7047ba27dcd1bfeb132caa504f608747bb8082f31c928a7ac6f5b00137a20dc5"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/077-archive-manifest-defense.json",
+      "sha256": "8c526cdc1a362d92ab620ac6eb7527b0f5489dbeed5aee79b7ba0d4eadc47d2f"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/078-local-api-cursor-retry-ledger.json",
+      "sha256": "e92b75edb25f0da834ceec2163c35aeeb5ab58494b7bc6f31810f21443209cb8"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/079-smallfile-batch-reject-ledger.json",
+      "sha256": "d11f2f18c6a81d4c0740386d8e6206aeb26b01ff5eebe8a671c6df55a198f3c8"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/080-schema-roundtrip-conversion.json",
+      "sha256": "0e2d2928dc34c79395d91e88e0291c8480c1840b00b787f5f6436ddb5cb2c389"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/081-local-html-dom-form-extract.json",
+      "sha256": "43b722922dde31ff2d358a556000cb31b2205017d619ef401edeb3af577c6342"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/082-compose-config-repair.json",
+      "sha256": "bc1818257d23e9f23fe753b5a8ba3d58a27efb8244fa147ab130ccebc94a0d54"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/083-monorepo-interface-repair.json",
+      "sha256": "8e1c173636753c4043655bf4264cbd7f27a0ab06289f96aa5efc5cba9f54bc7b"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/084-js-state-type-bug.json",
+      "sha256": "d06b8158089bbfa9b906eb68c7ff02351e6c3aedd1ca133358637270db15ed1a"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/085-flaky-test-root-cause.json",
+      "sha256": "8a96e3aa23489ad0c225f19c16d8342aa23d8bf47abd7fd1fe57dae42e96c8e9"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/086-sql-migration-preflight-rollback.json",
+      "sha256": "e228f0d1160e29a5804893b299608647dc7652605b5c6100a54d8c11c302d3be"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/087-cli-parser-bug-tests.json",
+      "sha256": "813b4589cd787cf600ca8a845d45e550fb558a3a306221c14a43782b43a07a4e"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/088-api-contract-mock-client-compat.json",
+      "sha256": "9a4d0c57a8be6924ac0294edd5a0bc5b6b4a86ab17f2bb3a21451d12ae8fd702"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/089-ab-test-caveat-analysis.json",
+      "sha256": "9effe102a603ba11bbeb3b4e4fe68c6eed669090e03fad43a3c688f2e3a26a6b"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/090-timeseries-anomaly-attribution.json",
+      "sha256": "6a522d427093d0ad4226eec92bb4ab8168d8411024f66d513a39d375e90adf86"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/091-financial-close-reconciliation.json",
+      "sha256": "6e3b5b37cd656e811cbc472d23aa8f4fab60d383a557053eaa40524d0862bde0"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/092-schema-drift-audit.json",
+      "sha256": "3a7cead2e9ee4a7f3f1ee3bc3c282922b2dbac1e238a97c0614d1c29dae530f9"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/093-jsonl-sessionization-analysis.json",
+      "sha256": "72d15385b4f121f3ab3d7226cc3e7e2284c91e721dae205c9d43fd67c3e92136"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/094-metric-definition-migration-diff.json",
+      "sha256": "77e8e0dc9bddf65d5ee2dae1be1974b60061775416f9d441b91282a412d60415"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/095-policy-version-conflict-resolution.json",
+      "sha256": "2975b62329094ca61ac7bebce4317db156b5823dc27abf9af61e2e5d2f314821"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/096-offline-knowledge-qa-insufficient-evidence.json",
+      "sha256": "f4cb451d04b2fa7b8facc4c01cf151d7d2869715488a570b1db200938530a1db"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/097-research-claims-batch-evidence-audit.json",
+      "sha256": "9ccf2014bd2ea9d26843c72f01e869fe4b7653802fb1bf6570b45d6a3999dbd9"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/098-three-source-decision-record-synthesis.json",
+      "sha256": "f9097eb498f1eb157f5daa5c5afde4699460c73c23674a908007d0407402270a"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/099-privacy-dsar-intake-review.json",
+      "sha256": "16790ffb0fc913a7ad7741018b4c9370fab21ceabaadf74de8fd39be5e78810a"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/100-financial-kyc-admin-check.json",
+      "sha256": "d1e20fcdaaaa5dbf6f82a1c33a2214595a58557b80b4458807e9970748a8a21d"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/101-marketing-sensitive-commitment-review.json",
+      "sha256": "41ff4bd7b3f9a4b5d18600315f7b282678e2d64f98624c5acc7b956cab1fe007"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/102-internal-doc-retrieval-injection-defense.json",
+      "sha256": "f2c235d8fcb0b8db13ecfa89eb6ef492237cd9d000b903ed857511fd0cd45cb7"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/103-policy-update-replan-diff.json",
+      "sha256": "87f8fc4187ab94e74855077193035e90d5c74211adc717e0e8fc50110af66e68"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/104-async-ops-window-rollup.json",
+      "sha256": "8b7f31213f2d9b2667dea5bfbb5475ef1b914ba9aa66eb872a0527022eec3293"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/105-partial-batch-resume-ledger.json",
+      "sha256": "2878f1c236c836ba60c4f4f59bd5f92e80968b78cd771874c1e4838c0cf6be36"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/data_try6/results/pi-gpt-5.4-medium/gpt-5.4/106-release-approval-gate-plan.json",
+      "sha256": "77e296d2125e662349f33b38022e6f1a93a858e1b96d639c46c90b1bc422965a"
+    },
+    {
+      "dataset": "pi",
+      "path": "repo/reports/pi-gpt-5.4-full-manifest.json",
+      "sha256": "385235a874dc9ce869e49379cdbf8be2c935fb4551bf98030d096cce91708de0"
+    },
+    {
+      "dataset": "codex",
+      "path": "gate/AUDIT.json",
+      "sha256": "62210571ea2023a2b69c684dcf5d2a8f2789e8317f19f8ded0f6297249bb89ec"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/evaluation/runs/codex-gpt-5.4-medium-current-0.139/correction-023-loopback-network/CORRECTION_ATTEMPT_AUDIT.json",
+      "sha256": "05ee6b472775e01424636449c55d6afa48f06c5f94f863b8f58bb2256018c5d9"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/evaluation/runs/codex-gpt-5.4-medium-current-0.139/correction-023-loopback-network/manifest.json",
+      "sha256": "b287cedeb578ded5a8781fcd17219c7ddd0e78a1eda6977f8238f9b59aa7cc7e"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/evaluation/runs/codex-gpt-5.4-medium-current-0.139/full/manifest.json",
+      "sha256": "00a57f7a94d8e9facd3631d66caafdd60f4afe50735903f11a89c5915e458aeb"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/INDEPENDENT_REVIEW.json",
+      "sha256": "6829784e4b846b99d30a35cba6ec780b640e817b697ec3fc29de27bea0f4050d"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/POST_RUN_AUDIT.json",
+      "sha256": "f90d804e182841126c23511b59fd75c3e75e4ee13d537e35b53f0ed29582fe52"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/001-file.json",
+      "sha256": "8511ebfddee854f50f9baede7304d25bc8cfd061e085b3e58eabd79253ae72aa"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/002-exec.json",
+      "sha256": "41d1f5248174c6212b801429f247a264564d6b3fd0cbbe090ed27be72e0bc168"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/003-browser.json",
+      "sha256": "e30e32a6e369eaa7fecf82f889c900a84641febe91314cb69629030d4f8828ed"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/004-meeting-summary.json",
+      "sha256": "cd3272b57708b6ef83d7bcbcec4c97116a8ee62967e31fcf867f1f6ba3de63a8"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/005-email-triage.json",
+      "sha256": "969f3e08445b91a9ee9e0735fb6efdf8eadcc1b262be7b82a01472131b9953b2"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/006-access-bilibili.json",
+      "sha256": "159c147887c1184d0a97c03ee76a9575f270e64edb514964b54b3fd01df47c7d"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/007-session-memory.json",
+      "sha256": "bd39d7bbb85857b5854da3395e9539477a2af7b92e6c926fbc3eef5d01293790"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/008-image-recognize.json",
+      "sha256": "e850c142eeb7e64d506f917db8be24a480a4aa72c61eb824d7f7e205fd30c45a"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/009-git-pr-merge.json",
+      "sha256": "a13c55af1b49739b1629cfb341b43ab5f505e565c641585c11e3c97d0c533fac"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/010-office-docs.json",
+      "sha256": "374813f7f71b98d602a0d952a0895fb02a63b40f2a7dbfcad238da67272e22ce"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/011-code-debug.json",
+      "sha256": "1d452c34fecce364f4a81248626325782557e48b1fe6845999e4ece29dbb8083"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/012-doc-synthesis.json",
+      "sha256": "3912ae2aee68bc727b47e6ad4a9c218564374773cace05acbe3944a579245594"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/013-image-edit.json",
+      "sha256": "1ab9e43a86b25b5891efa5a3b61c1281654149afa3fbceca7fce99561847143b"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/014-task-decomposition.json",
+      "sha256": "28354f90875f9acae04fb2b996bf80f55a6c50c711084f11977d23d101ec7ac2"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/015-security-injection-defense.json",
+      "sha256": "a6bb2e96daa73c4de782b0f74964104e2b8d95e0527923a027e9ebb331d3f23b"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/016-code-repair-pytest.json",
+      "sha256": "4d90b8054f7e512278a486202e0d4beabd3a8a53c8d13fe790500d9fee7fd8c1"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/017-db-doc-consistency.json",
+      "sha256": "fe458fcb07ffa08305313f254ab6db31f07b39ec04fecea050e339d076fc2402"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/018-provider-failover-audit.json",
+      "sha256": "cd6a88302fccd713a67f1ee592b5a3147dfcf49c6ef3c0397705236e0e8ab8c1"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/019-incident-runbook-synthesis.json",
+      "sha256": "80d5465e5a89dd3480c7effe96057856c2b890e4cf7693adadbbf1d07cdbc379"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/020-archive-checksum.json",
+      "sha256": "78185832041597a6d23903d61dfe735e58bff932ae5a6be4c725d66711d91981"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/021-batch-rename-transform.json",
+      "sha256": "81f0f6f39bc9cb70363c7be5461b3a80db096e351f9a2502bb3ec07b2c3579d1"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/022-local-rest-api-summary.json",
+      "sha256": "56e5c7d45c37abd35a1f48234cc1a2e2d222d51b9bf4e2652304dbb480ed70ff"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/023-web-form-extraction.json",
+      "sha256": "9329a9eaf1f71680a01aff77146926fe22e2d1c94977f15b310a5bde41a8c692"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/024-calendar-scheduling-conflict.json",
+      "sha256": "d85c85285b157411e3c35a763372c4587c249ee6a76ebcc7472877ed82944839"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/025-meeting-action-tracker.json",
+      "sha256": "e5ac07aa409f980f69777666141f8b6a8910d29c40ebcfc3bfa2aed709233228"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/026-ppt-brief-generation.json",
+      "sha256": "7299dee2688087f26f5b42abd0b1d50aaa384a8e831f196616f3b27d059ae2d4"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/027-contract-summary-risk.json",
+      "sha256": "f295fc7f392b9be9eab279e8cb86623b947dd73a661a9a0af92fd8cc759e4922"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/028-email-thread-merge.json",
+      "sha256": "c3e63dc244397e512fc83ffa51a65c4d9e5d1ae13514276efcbacc9de4466818"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/029-expense-packet-review.json",
+      "sha256": "992618c1fa48fd3195ed2526d5a68ef96d0e4dfece5680842717c1af4fc42bfb"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/030-word-revision-plan.json",
+      "sha256": "d4ead0216075666fa89797e99a27fd1b6500a1f66bf404d12b1825373caa025b"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/031-cross-doc-citation-check.json",
+      "sha256": "14a730672f3496ddb515902422cb4e7bf0c8fe32fcca7daa1b39a55f706efcce"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/032-customer-followup-draft.json",
+      "sha256": "9baceb47f8b186fedb86a2962e1900eac7f337789ff58e899d7f8c9c33b316c0"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/033-offline-knowledge-qa.json",
+      "sha256": "aefefc9cdfdd331d55652db1e6b9b8e9c106d7f7827b5c1a0bcc621ba53b3a17"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/034-evidence-matrix-claims.json",
+      "sha256": "ab28bbac5ed3404f1fb8d1c28640e5734a4667ba55b0f1ce92189987c3438d40"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/035-conflicting-source-resolution.json",
+      "sha256": "f8981de825d2182e1059955662ad8a8d7cf6faae24383633b366cab2d51048f6"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/036-citation-consistency-audit.json",
+      "sha256": "77dd647e9c2f01aaf9c15f9231accc35d3d4b6776052476869999deeb69cf52b"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/037-policy-clause-retrieval.json",
+      "sha256": "e6f842135476bcd7bef8d14b5965fa7fd6021d72b3aa5550e9b8eb8ac3b8e37c"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/038-research-brief-synthesis.json",
+      "sha256": "79fd9d80189ceffbc5643042998578797a0c8dcece31edb1cd2e80586589db30"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/039-repo-architecture-map.json",
+      "sha256": "29db759714363b9f57b99ca43481c4c15e10d6be2c59475953f6fe22d5f6d931"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/040-test-coverage-fill.json",
+      "sha256": "e7936a1644373532ac74e74697269442d5ad6509013b8f7738ca10d0981ec780"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/041-frontend-state-bug.json",
+      "sha256": "c936dd92a4b5fec81718bb6e5f6767e581b166856120f64cd115d79a1eeb813f"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/042-api-schema-migration.json",
+      "sha256": "2c5f32685a7fecc0299769b456573c57520753afdc70ea8ca6e79c87bdf0879c"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/043-db-migration-safety.json",
+      "sha256": "941c7e27027758c4680349f0d31b3465ae3d6844011d87aff3a9bc44433973b8"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/044-ci-config-repair.json",
+      "sha256": "8a00008edb6607978a3ddc0be89789f6a97a7f4c00a9840f28cc3bfa470d7691"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/045-dependency-upgrade-compat.json",
+      "sha256": "02dec17954ed820055da384d98b78f26d05b33914fd32f7586f2b7a60b1cb71a"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/046-performance-regression.json",
+      "sha256": "6c1d0b4a36a77625e7c6fd7c60c851482b1be2fd5a3b1bea10af41997989e7dd"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/047-code-review-risk-report.json",
+      "sha256": "159a4c2ea65e8420f1ec49e990f96c6a186860d29079862c1393a0117565b332"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/048-release-note-changelog.json",
+      "sha256": "23a84cb65f7a12e84144c98cac8cea3fe61d2d623941b13351224214b4e99368"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/049-excel-like-cleaning.json",
+      "sha256": "e6cc3aa66eb342f96a0a439fa7a7f3484cea3868db7e0658910c13bcd9e33aa7"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/050-multitable-join-analysis.json",
+      "sha256": "ef73b9496c0b77a190ba4bffb7975ab22914a07bdc408473c1c5ba9c84155ed9"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/051-sql-query-report.json",
+      "sha256": "66e3710c6aac90f4fe8b6f3f2a92346cc3995799b81c39785327a50e073f3e8d"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/052-metric-definition-audit.json",
+      "sha256": "fc62c997f0494a163b50a3e3d28825c918988b16465fe08ae3328cf4cd798b3c"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/053-anomalous-transaction-detect.json",
+      "sha256": "50acd0edc8a6ef5550ca543cb85f626524e7e68ed375f48f1ebbad53489eb74b"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/054-budget-variance-analysis.json",
+      "sha256": "8e3ec87a0da831b6b9f161b0c507a1f5e0b346c399d984a6a4414bb434f9aaa6"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/055-funnel-dropoff-analysis.json",
+      "sha256": "8dd1b80cbc848be249874ab4137f01d9b130ef996a710fdc88c97bb72adb3790"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/056-inventory-forecast.json",
+      "sha256": "463a6923f468db7e2c3b0e129ff11d8817b279374880a96eee9955f1a1040f3b"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/057-interruption-resume.json",
+      "sha256": "82e2147b4b90ff7c64e80800fd4dfbd15ff9d956fdc14549b8e5493b3af1b3b1"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/058-multiday-project-state.json",
+      "sha256": "67c76e4fabb7ba7492fd7a010d000decf3171dfa8249f81cdc4f2dd967f23d47"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/059-event-update-replan.json",
+      "sha256": "9bbbd74c3b95e9fc8afff5db609863337ebcdb76f72b71ae5b04f1a1c1418d62"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/060-task-cancellation-cleanup.json",
+      "sha256": "3c20eca5074db8ad3a979a955be67e25567784252d0a2f2e3fba247eb1dd2104"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/061-periodic-status-rollup.json",
+      "sha256": "b7e2302848173e66dec0bd14c71ee37b1f8bc28674163510498d780481683977"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/062-k8s-config-audit.json",
+      "sha256": "25d8049292406f2f424a58fa0ada68235e2ecb568fdb9e39289951da998435d6"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/063-alert-dedup-noise.json",
+      "sha256": "75fa4523a7a0976709faa5a4e61a283a65a5b4eb0ea7ae4e9ee06a087b169198"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/064-service-dependency-triage.json",
+      "sha256": "bc60e5d1f7151077fc49f1ec0b3a0c68a54b7233986b72ccbce1adb80a027448"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/065-capacity-planning.json",
+      "sha256": "5dd868076c3587dc5085fd264c4e788112f4509af1f0e1d39fd89e7b54467e27"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/066-rollback-readiness.json",
+      "sha256": "9e75d46d01b15ff71c7900ff4c24c9b317afc80f8fc766d514d98a9c96dea40c"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/067-canary-release-check.json",
+      "sha256": "f932cce71fbf7544fc68da426cb41044b6715214310194aa7e6b556402b2da86"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/068-product-launch-ops.json",
+      "sha256": "46a0edf1087cceec637a7174699c532f51a851e8a9945802e1af7186c3453000"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/069-legal-compliance-review.json",
+      "sha256": "4a0aea7ca99526be3610b5f92bea76faeccd3c080ff4ba1784b23b2247632e42"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/070-hr-resume-screening.json",
+      "sha256": "01ed5681845edc3d8de9c2969337246861d446f408e3e7ced041675ad884550e"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/071-ecommerce-support-routing.json",
+      "sha256": "210623f6d5bf4edf2bd6d44eb705e525d96e41526bab2b451232afdf245b49df"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/072-logistics-delay-response.json",
+      "sha256": "b946163e47bc890f2a5b527bb3ea6043c49aed77626c1276bd6d04a96c17810a"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/073-research-repro-package.json",
+      "sha256": "a162eef8ff962d208c7fbd57d4d63f256de4ddf7340ba2c87caae7bbca5b2e0d"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/074-education-grading-feedback.json",
+      "sha256": "a02c160a27d93ed3522a259741160da12da246b22c61c361a75a7d9804ff2dc2"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/075-platform-appeal-review.json",
+      "sha256": "d63fe5dc2705601a5111f57b09270d3200e1c31c12bb05b06d0f1175b81442da"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/076-medical-admin-claim-check.json",
+      "sha256": "f949f4551d3c98847e833e88f494a83cf88c3c69d25e2fc6a6b93870d4425e96"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/077-archive-manifest-defense.json",
+      "sha256": "1afa906ba3fc2dac7cc989adb4848a1ce9f211be934bdbab76236e8c319eb8e5"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/078-local-api-cursor-retry-ledger.json",
+      "sha256": "585cb19bc9dc77c31afe53f8a346306f598e244f5917ffc07ca8dc8b1667b865"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/079-smallfile-batch-reject-ledger.json",
+      "sha256": "0b9251f0a4b282a5f500031ac9e33ebad263764074542dcc49d7e83948e69404"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/080-schema-roundtrip-conversion.json",
+      "sha256": "e13431f62529f5299c3ed7613d6d0e3397120dfd1a35f196b7e41068fd4f4c4f"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/081-local-html-dom-form-extract.json",
+      "sha256": "bcc83504441784a64d0f7f2ed037d77a1be818b532816213e9a376a8d6dedf77"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/082-compose-config-repair.json",
+      "sha256": "a2bb5217c8d92f27447e33e69c1baca2e1f2a6f7d5359550a3e0ffd4d4808a97"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/083-monorepo-interface-repair.json",
+      "sha256": "0931870e229889a14d3a62d02e8ea9f84766694be75d3ff391ef5ebf5642e0f5"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/084-js-state-type-bug.json",
+      "sha256": "55cbb3e8cfaeb3b2c7a81b4548fa9c95d0b408d3522efbca08cc17c7fa34fdc7"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/085-flaky-test-root-cause.json",
+      "sha256": "35ea96c65587639f9e21c7a30b404d5cb0e6c5f9655c6458c3d81dd7407bdbd2"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/086-sql-migration-preflight-rollback.json",
+      "sha256": "a3a4e8a67c044414102ea40675a718aec0441fc6d04808fa97c266106ad58bc6"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/087-cli-parser-bug-tests.json",
+      "sha256": "427e9da589cbd684f8f7f3d24cdf83052b23e969a5fe0729344f9fee7d96ac2d"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/088-api-contract-mock-client-compat.json",
+      "sha256": "22f2b9debb8226ab9c81656a7d413cfba6e9b28382e2a32ba29e94b67ef26bdd"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/089-ab-test-caveat-analysis.json",
+      "sha256": "1a81409ad76df3a47a4874f37c88091e6761d4ba8d7eb12fe23773e8c7f604d4"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/090-timeseries-anomaly-attribution.json",
+      "sha256": "759daaf560ad2ae8a776a8453acd5a645ee0e86f952f6c53f0960519bfc8717e"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/091-financial-close-reconciliation.json",
+      "sha256": "9f6f79ec27891bc42eadded59dda804599d6d8f2b8f2ab77190b0ed8440b3c06"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/092-schema-drift-audit.json",
+      "sha256": "94f6f3d991f0c81feb4b38fb6fdb79b5016f03e1232872a94971a3949629099f"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/093-jsonl-sessionization-analysis.json",
+      "sha256": "603afc5c5fb683aa5e2056459f1eb02efe46e7e8d6114133bbdc48e72a12164f"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/094-metric-definition-migration-diff.json",
+      "sha256": "59226aae08a7f7f5b108bbad9b5fef240a0e3ed9388773f4a2f6b405fcf43a35"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/095-policy-version-conflict-resolution.json",
+      "sha256": "0ddbe3b05f858807e6245ff0690c886840595e50980d0eadca220d3ae15d5a25"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/096-offline-knowledge-qa-insufficient-evidence.json",
+      "sha256": "b561106a4627988c0f31c02d24cb068a84ee7cafb2d8670e8c2faf80ceb03059"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/097-research-claims-batch-evidence-audit.json",
+      "sha256": "e85b9aaa8d09503a60fb5ff26315598347ee2aa820644bb684a71da57122eeb1"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/098-three-source-decision-record-synthesis.json",
+      "sha256": "5e250e40d44720d995a7f3fa65afe8e35fd23230fda058ccfdc3dfac9e1c4eb4"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/099-privacy-dsar-intake-review.json",
+      "sha256": "2e10352d495d8ce43573aefaa6a1b6dd01c4ff16f82275f0b816f5b9ebbe12a9"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/100-financial-kyc-admin-check.json",
+      "sha256": "c71786fa7792fd540918f7567e0fb0d898b0e1f7ecf2435a8d01bd32a01e8e85"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/101-marketing-sensitive-commitment-review.json",
+      "sha256": "09a3c07ccea9ed5e4b700b0ed3b8eec05bef2d26e10cea03497cd461dec683ba"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/102-internal-doc-retrieval-injection-defense.json",
+      "sha256": "07f0fd588cd4f3fb087c31a0d0fcf32b2314236616bb95f06c38e8ef95e71b38"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/103-policy-update-replan-diff.json",
+      "sha256": "a949b6a176bb46f54f785f76a49d284c7531dce420d6395b4d03dea386b4a3b6"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/104-async-ops-window-rollup.json",
+      "sha256": "bb69ebe7fb5f6f1c3be61efbbc5566a3e1e6fd3beda3803d53d22bc5145aa9aa"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/105-partial-batch-resume-ledger.json",
+      "sha256": "7bcac1bb98a53fd30ac03da87c32d3d5897ae9d36c7e491e999e51ebb78c2101"
+    },
+    {
+      "dataset": "hermes_default",
+      "path": "runs/post-codex-contained-default-hermes-106/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/106-release-approval-gate-plan.json",
+      "sha256": "d1033f4de245022aeb8bbe08fa89d4560e39419da4f381eace6e38f2d04e4cb3"
+    },
+    {
+      "dataset": "hermes_fixed_common",
+      "path": "runs/post-codex-hermes-fixed-106/POST_RUN_AUDIT.json",
+      "sha256": "470d703b1ebc58299251a22ba19ce21f608dac89f421eac105c02aa343cf85c8"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/001-file.json",
+      "sha256": "e79ee680e052529240d6688a98daf0cb097687e98edb7665b582ac1887816864"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/002-exec.json",
+      "sha256": "3c69d24c19fb020ee1c1de2778a53c64c0d6e40b1ebf34d923432f05a2bf0c1e"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/003-browser.json",
+      "sha256": "5449954c035c12053076869bae9a1f04491af970739928254662a0aba2ba4470"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/004-meeting-summary.json",
+      "sha256": "b22d58aa48f190b304621ca1b88153766a1cb30eaa1f2d8c180369ddf67645da"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/005-email-triage.json",
+      "sha256": "d48810849d6bca9de46445ff3982aeb3f2957f5479f2af7ccfb34fb1215c14e6"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/006-access-bilibili.json",
+      "sha256": "b423b9f2a0413cb411e4aff0f33c370259317b5d5d97e924c9d70bc7cc98956f"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/007-session-memory.json",
+      "sha256": "f54754d7a404ffe341fef49d5ca47c55701e0011265b4cbd641593c292e81107"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/008-image-recognize.json",
+      "sha256": "a93751364e2894ee6ef7fd84366f3f0f013c56e24c6df3a0a43c133dc398901e"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/009-git-pr-merge.json",
+      "sha256": "fdb887fcc06553a15d154f0dba31efaeb84eefbaa3c6befc3f3b8dd397a1289f"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/010-office-docs.json",
+      "sha256": "73b95ba4e95f89402df029fc61eb41a517bd7729e86a5a141cd0bb61d6810ead"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/011-code-debug.json",
+      "sha256": "1e510ec222467d49f615f7c8112c34de7f1856e05629b2b92cb7813c81f8dfe0"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/012-doc-synthesis.json",
+      "sha256": "aed99471e540b631f365c53e33f63951de39168a79c8ded971cfdae7070878a8"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/013-image-edit.json",
+      "sha256": "1a07500cf1a3e2d162b8c0db005be70b89250db0da1248b73ada8d3dcfccdde8"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/014-task-decomposition.json",
+      "sha256": "422d5980e7d6bcf208ec05420f58128d1183a82db3c59185e3ca4d06bc981213"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/015-security-injection-defense.json",
+      "sha256": "c353905d633769b70516cdafb4a2163e38376cf80cd69618adb254fbfa5afa58"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/016-code-repair-pytest.json",
+      "sha256": "66924bd5f16f23bb633af3f5d1143392d933260abe96774cd1a9bd12d530312f"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/017-db-doc-consistency.json",
+      "sha256": "b76d024299455e92682f2d9bc3c8546f9143e87b886a4a53777805815e5c06ae"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/018-provider-failover-audit.json",
+      "sha256": "37654493cedf9e2b9d34fc31dc38c892dd13afb53d3a2e2f9210a855c747e017"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/019-incident-runbook-synthesis.json",
+      "sha256": "0f9ca750fb3337333422f5d6325baaca6f9066db809a049651abdb05602179ee"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/020-archive-checksum.json",
+      "sha256": "c02c7b2f4aa48504b58ef455f4fc41786dbf5ee391b62df82215b221c1405cbc"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/021-batch-rename-transform.json",
+      "sha256": "ced82ce444478a4f3daf99880ae98c2464d321bef1f4af46a943aa2965598379"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/022-local-rest-api-summary.json",
+      "sha256": "79ea66bfcb7c6d465cbb67f6062230ceb3f59c90d47bd427ee319a7cff22ef5c"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/023-web-form-extraction.json",
+      "sha256": "3e256a2283c913d564b43adf9f21ff9c2791fe48d8ee0eb5743d95a55ce5f22c"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/024-calendar-scheduling-conflict.json",
+      "sha256": "f48298e82a79ee33cc69fbf7e708b728c4d097068db6bed9e0a1ac338fc96523"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/025-meeting-action-tracker.json",
+      "sha256": "a093a84bd5db28c09105979cf485afb8b783c8ed33b9ffb3d4fec0a511f29453"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/026-ppt-brief-generation.json",
+      "sha256": "916cbfd2429f12668ac118db1b1e588a7bb0c04f90a5073bcbb7b1e5a158bf36"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/027-contract-summary-risk.json",
+      "sha256": "f5dcc4b33cae6323b97427fffa151624d0a3426086e751db298e63a51c31dcd8"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/028-email-thread-merge.json",
+      "sha256": "bd493f26cb21a9ec9a6f917913e66c469bc6a74651489ce0e8ac9a7bec3c103c"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/029-expense-packet-review.json",
+      "sha256": "c258dd53f43d7948bb2bac66b139f160fa0922e5923d29e5b7a277e52c850d50"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/030-word-revision-plan.json",
+      "sha256": "9657707e812ad6c059272d525685cbbba8f9acc354f40a9dbf8a3da2f745f382"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/031-cross-doc-citation-check.json",
+      "sha256": "e569aedf07cee26f23c6cb11e2600f2dce22d4287e6bb6ac3de0029f0ae8773c"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/032-customer-followup-draft.json",
+      "sha256": "3347cd231cee7306e68378a87f3ae28ab36e4652f8f37e1f9d5e5bd443dc8d83"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/033-offline-knowledge-qa.json",
+      "sha256": "20cff6572366a697e862d98db5a127a9e8f44380e08b0e96922d3de94454fbda"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/034-evidence-matrix-claims.json",
+      "sha256": "9190ef77a410b11b8e4e0fdf607e72d0b3f9c5e022c6ddb685e607c0541a8645"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/035-conflicting-source-resolution.json",
+      "sha256": "342cbd254d5307c4afaff0ebd09b9f242e4e267b910c971a6576535dd2242dd3"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/036-citation-consistency-audit.json",
+      "sha256": "af3ba47e8cae9c2c810fa8cae1cf5f3913a83772582866c49542761a8fd2da18"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/037-policy-clause-retrieval.json",
+      "sha256": "cbb3d58ed3753f216cae047d8894937694e6cb2274b8499c31f163897a93bfaa"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/038-research-brief-synthesis.json",
+      "sha256": "9dd4657425a211b8e7a5168ac3e383b231db60abf7273a130abf7d7e29c6227d"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/039-repo-architecture-map.json",
+      "sha256": "a1ae0eafc8c55a0aa1dc8c4085598ed8bbc8cbecf2b70326838032702e425222"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/040-test-coverage-fill.json",
+      "sha256": "2bf17daae05193619989e5011f06cb0cf5e304ec3282502999d77fe88220a669"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/041-frontend-state-bug.json",
+      "sha256": "43460f498019c057e22e9f0540a43e8085f0a0e4ab0b3d4755f5e16b062a59ff"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/042-api-schema-migration.json",
+      "sha256": "bda368322955303a7017d65a4a313c33e94a962b960e18a06195634704d162ae"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/043-db-migration-safety.json",
+      "sha256": "ffe3e132a101a63b45015a445ed942de5fbd007cf693ef52d977c3295539dba4"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/044-ci-config-repair.json",
+      "sha256": "0437c8ac3ba9d1647b48683aa51a4a0375a26ac7cf09e0d4f47c6e2592827952"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/045-dependency-upgrade-compat.json",
+      "sha256": "a435a4b96d2dc689a75173645822c8670bca8ca3663e3f62c8b4e21b86ec1f44"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/046-performance-regression.json",
+      "sha256": "c738cb13f7f634c42c05d54c96a0f848ca53e985a0b2cfc4f4e7c0a837a7ddfb"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/047-code-review-risk-report.json",
+      "sha256": "8145c6d8751f62a476719597993318832fdb025bd393293ae0d79c1c7a89691a"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/048-release-note-changelog.json",
+      "sha256": "b75cacc5231df5b1ddda1f23b1f6b7a8ec536557ed623c968736377aea3161ed"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/049-excel-like-cleaning.json",
+      "sha256": "28269c7787346932e9c646cd2b8d3e24838d0afe5ccfd00de40333c09acd49f4"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/050-multitable-join-analysis.json",
+      "sha256": "370a89e1f01c93598ff40615943385c9af051dacc4078f04931e57a649ff218b"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/051-sql-query-report.json",
+      "sha256": "82a3a213449b860fe735856b969351671c66e19916c5d9455ecfad1ae916d025"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/052-metric-definition-audit.json",
+      "sha256": "2297f898c934c4988a04f888b0c40ace993db30f23beecb7f4c30d603f7a1502"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/053-anomalous-transaction-detect.json",
+      "sha256": "82b94a2f3a97078409e67480a266eb897b3b936521de6da7d9a4ee31147a4b7d"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/054-budget-variance-analysis.json",
+      "sha256": "9e9afde5322c5835ed280e6025ebeca4b555f03f02ab345385171eedfed6cfd9"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/055-funnel-dropoff-analysis.json",
+      "sha256": "f52cc7e2b83e9defaf51d42ec565d4c473523c8176b33cd38c2d698baac56f78"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/056-inventory-forecast.json",
+      "sha256": "c28641db57cd0dd0f8230de7e1235e497e9e3ac54a78c3d379a9148b60fa03c9"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/057-interruption-resume.json",
+      "sha256": "0a22c7125923f70bf3a6529d0dceae9400f831c8d88165ae464ce83a94dc3c54"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/058-multiday-project-state.json",
+      "sha256": "cf1803d63d5bae6020b7fb9aa4c91eecc84a1fc46400a06a597cdc7c1b20f5e2"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/059-event-update-replan.json",
+      "sha256": "f0ae070ef352adb2df663f4e0e80c94b09c87e30408eb1461ba07a5dcebf3d16"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/060-task-cancellation-cleanup.json",
+      "sha256": "ce834756d3737ca0a4311418cf4ed5e05becf3c4249dd6f11a421dedf836e658"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/061-periodic-status-rollup.json",
+      "sha256": "be87e33a79dea30a6be2080724210b6ecb1fa009b4f2f5a959a49e5c800cc2a6"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/062-k8s-config-audit.json",
+      "sha256": "ddce5d51970bb83f07ea43b4e458ae86a3c069cdeb5a28acfce291093ddb7ae4"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/063-alert-dedup-noise.json",
+      "sha256": "bda6cf6186d1e42589876bf37c60c1cdd6b71fa51a7da8664d8bac4e30f02828"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/064-service-dependency-triage.json",
+      "sha256": "c137fe30a5b897e10391b92b95005edbc59f2dbd7d1249fa445e92bf346ec363"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/065-capacity-planning.json",
+      "sha256": "b1e15fe2dd72e83f181ec2c1dadcd628f667654b62de24853e2fc635beb1449a"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/066-rollback-readiness.json",
+      "sha256": "d8cb19b380044f24d4c41619f686161cf90d2acb27db9ecd14325f95999905c8"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/067-canary-release-check.json",
+      "sha256": "414ab7ec69ae842f9640759ac9d366647ff60dec7f6631fae3483ded6c82f621"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/068-product-launch-ops.json",
+      "sha256": "3cbbc72ef7e66bdb29d9424330932bdc63c847fc0a7c9cd6a8c865265c94005c"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/069-legal-compliance-review.json",
+      "sha256": "edb55489f01ed042155340e3aa159cb6d0a15f389eb949a3e0457f0ae77aca0b"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/070-hr-resume-screening.json",
+      "sha256": "32d4a0874149f4b2e935d3e1a30ea1b140f71d2ffd2a4663fb53d053e9b11cb7"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/071-ecommerce-support-routing.json",
+      "sha256": "a30f10c755320bb5de1cab4dd079bd7432db5f1f510b2b38973c8938043050eb"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/072-logistics-delay-response.json",
+      "sha256": "6f5f9b21c290d780a10353e36c1357009089159252f383c121704719fb65f953"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/073-research-repro-package.json",
+      "sha256": "144970db10390082400458989ffe4aadacf072624bb9f523a9b6419c2821dd8a"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/074-education-grading-feedback.json",
+      "sha256": "74f353ccb41634529abb5a04568e7bc31094baf9f95ebc67a40031073a0ef2b3"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/075-platform-appeal-review.json",
+      "sha256": "2ff99ae20c59c459c4dfb735d8cc0ca26f053e2a6a199009ab4bc6db93f5f682"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/076-medical-admin-claim-check.json",
+      "sha256": "83303090401d5317a86971481153ac6e9c54778c1aff7d267269990b16753a92"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/077-archive-manifest-defense.json",
+      "sha256": "7d2428a443bd589ea0adc9fc4c28beea525202b668b8c88027d7cec52e01bdaa"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/078-local-api-cursor-retry-ledger.json",
+      "sha256": "9dd422f4cb5099d091b8da8a75b0b989a1f718d918f18ff27c99221158e5197e"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/079-smallfile-batch-reject-ledger.json",
+      "sha256": "f844659b867147c7c193cc2fae1ec3edf5e21fdd08a11f58fce7352353a9aa6c"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/080-schema-roundtrip-conversion.json",
+      "sha256": "e1f15c08aa36541f992d328697aa54cf070442a1ced8f30b03fe39f34b59bf14"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/081-local-html-dom-form-extract.json",
+      "sha256": "829df7a5815cd6c6002ef5d5418cfe7ae69b4ee687b7789636cddc63c5f4457d"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/082-compose-config-repair.json",
+      "sha256": "56ac4f2e149a656da0767119a5ab688ab82df30b584815b0188a57ba53c5a093"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/083-monorepo-interface-repair.json",
+      "sha256": "def466a8aa9eb8172a41df0b49f8d6142867987a477c375941d9d1aefbdb05ba"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/084-js-state-type-bug.json",
+      "sha256": "42be52adb0058b0f9dbfc5a128808ca783575c55caf80c1ee4fa003acf5d0f89"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/085-flaky-test-root-cause.json",
+      "sha256": "fc8a345745ed40198aed1d53cd9aae2f1a5bab97e38c6768edc256fd67067429"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/086-sql-migration-preflight-rollback.json",
+      "sha256": "d1491505bba568afd8e2904fed700a0592fda4d418e24665eaf0325f30354246"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/087-cli-parser-bug-tests.json",
+      "sha256": "9e130cb9558111d64abf69270ae049f3b73dc8b642341f5c4bba7c0b668b441c"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/088-api-contract-mock-client-compat.json",
+      "sha256": "8066e88fc7307bf76f5a77d4ac3b8aed0ca1cb1eca2e3c9c6d29883e09e1db99"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/089-ab-test-caveat-analysis.json",
+      "sha256": "b72c548bbbac53d4566c170a8f914cc92df84715e8d0d9bd2e08e0c9f1957eb8"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/090-timeseries-anomaly-attribution.json",
+      "sha256": "89c44863ccd6ea6aa0acdb8bb3f11a703d03560e84807edc287b4a978feff0da"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/091-financial-close-reconciliation.json",
+      "sha256": "770f07652e90c2238f35124c239d790d52416dbcb4d6a80ceb67bd0b570393f5"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/092-schema-drift-audit.json",
+      "sha256": "c0d347088b3dfeb95393d7b3cab3c6a46c4ff4faa5c0be3b1b0f182ac6036b65"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/093-jsonl-sessionization-analysis.json",
+      "sha256": "654bb92e7874c532dd51125f27545858a0c4af1376a2000cdddd4145b0c1b85b"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/094-metric-definition-migration-diff.json",
+      "sha256": "173a19b4d27194c7a9342672d6baef82d9c0528e43002a49f0f7a6d59b9ab928"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/095-policy-version-conflict-resolution.json",
+      "sha256": "5b08737921a2a461b5affbc93fb3836e2358181ff77cd0f9802df165390bbd10"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/096-offline-knowledge-qa-insufficient-evidence.json",
+      "sha256": "9299192b7ac6e82d96d3e437dbb3e4ada25cb2ecbc0154c54a9195940a711422"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/097-research-claims-batch-evidence-audit.json",
+      "sha256": "9e1fdf8741d225ac1779e137e7538748720a9825207b0246c8e188cdb1616ccc"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/098-three-source-decision-record-synthesis.json",
+      "sha256": "6130aa18249c2d5ed0f2feeb6a16a8ffa62e2b83b40cda7340f0215a0736d6f7"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/099-privacy-dsar-intake-review.json",
+      "sha256": "7a305d2f4c06471618bd1c4ea10c9c0af300fce96f360254e1073e82f47f29e2"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/100-financial-kyc-admin-check.json",
+      "sha256": "128397002fa9d14b2d44d22756538656e642042951900166ce718857d8de2aae"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/101-marketing-sensitive-commitment-review.json",
+      "sha256": "126d50b41ebf11f22ede0905c7fd35e4c7950c41122977fca347dbeb59b6c341"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/102-internal-doc-retrieval-injection-defense.json",
+      "sha256": "7e95111a146892766e2952968cfb1fc032744c5c0c8201a4070411df7a5d65c4"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/103-policy-update-replan-diff.json",
+      "sha256": "87e002cbd929d03f53fc810779510a0d2a079d91567d6b640bed10ca9c8491c0"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/104-async-ops-window-rollup.json",
+      "sha256": "db4889a2a61a6d1f949458e6d4bd30d7e38928a5eea4e24dd415a41920a55fb2"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/105-partial-batch-resume-ledger.json",
+      "sha256": "25bb54873d35d8c3576fb26943743d84795601944e824897d67ff6b8a9bda768"
+    },
+    {
+      "dataset": "hermes_focused",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/focused-with-skills/results/ablation/post-codex-hermes-fixed-profiles-106/focused-with-skills/gpt-5.4/106-release-approval-gate-plan.json",
+      "sha256": "c2ac638e30a9b71fd9ed673ca7df4b047479bf25deddefdd08b20817d2ebd56d"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/001-file.json",
+      "sha256": "bd00908e865e988e477ce379f40cae9e005eda2b490197bc7dc8611941849b30"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/002-exec.json",
+      "sha256": "b31edbd75fb4cfa7ac1c43d8b52505ef28f9c300cab3c1a8450a14f7fdbd1816"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/003-browser.json",
+      "sha256": "4ec4d0c4c0ba0a1b5c5a5d19a3c837eb4adac17fe25191b6df0279c07c054bdb"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/004-meeting-summary.json",
+      "sha256": "1afd24ac7a27255c502dfe199a5fef42c3354e91807dbd2c1fceba68be5bc193"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/005-email-triage.json",
+      "sha256": "0ac7d6e1e52ccd6dce3931c3a4458863fc94c8cddb95bbd386f9c3104cac0fa4"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/006-access-bilibili.json",
+      "sha256": "51c77d3b61cece65abcdb91093fcad68657dd15b8ba424507c79851fb22cfbe0"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/007-session-memory.json",
+      "sha256": "ce0898cb445bec882e8dad7ef1dec8b13561bcd739ef9dbc022ecacfa1a084ea"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/008-image-recognize.json",
+      "sha256": "443bdeb0d71cce484776e0a868196c4c7825d72f9ffa13c09cd9f350a11482b4"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/009-git-pr-merge.json",
+      "sha256": "73114587639562f4ed39c7df6aa2ff7ee6ba0034df29aee2fa9fdd020e6441bc"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/010-office-docs.json",
+      "sha256": "a5de1d6fbc9600416ef6ac977ed7dbe0723039b5c414c9cdae57d72ba54b2fd2"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/011-code-debug.json",
+      "sha256": "19db98779bdf5f4dd86fb8384a520c96f9af38f1099e94b72266c44c5f19d27b"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/012-doc-synthesis.json",
+      "sha256": "6e575abc50b83fdefac53227a3992ef9a09c0a4539be56e8c7d69ae5e39c1e28"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/013-image-edit.json",
+      "sha256": "abefb6f643e4fe30a78715d8bf8275ab87814f72f3ff033e2143e816ccb1cae4"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/014-task-decomposition.json",
+      "sha256": "c5d470ff52328de9494aba0c2c98bfbb348e9b8d42313e41d7cfa95970ed9ece"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/015-security-injection-defense.json",
+      "sha256": "805cdc3a73423ff9668bc07e5fda7c0471650b4a2e97396b7f231c62fa260d93"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/016-code-repair-pytest.json",
+      "sha256": "dcd83a8244d7022ef5ec6dcb0f5fe41fb2fe92354c3474edecd73cffd41eaf8a"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/017-db-doc-consistency.json",
+      "sha256": "d0cb78da7f495103e1b48804c1e60d701a7a07009283d669ba248d690f0ef854"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/018-provider-failover-audit.json",
+      "sha256": "b83ee2704ba1b6c67c7ca00164644ce7a6c4a2dc19f19be86b99ac1fcd40500a"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/019-incident-runbook-synthesis.json",
+      "sha256": "934a2b18dc5b5fcdd25d7ae966ceaac37fc6f83a39192f3764b901c16dd84c4f"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/020-archive-checksum.json",
+      "sha256": "fe4cff28fd13d97c86bc44d6430e995ce8b9e4396723632affd1077fed39669a"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/021-batch-rename-transform.json",
+      "sha256": "3daa7b66ff8c664b183a46004962f8cca5e9c6ccbae66738a39dd05e094ed4c8"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/022-local-rest-api-summary.json",
+      "sha256": "b421e7bcd294c812e2ce9797d1581a7b20aba2917fe3e25b0acd0d1f2da84905"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/023-web-form-extraction.json",
+      "sha256": "7f720a1008638a67720694cf9e80faa95e31b7787725c832b522c6fa141f5655"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/024-calendar-scheduling-conflict.json",
+      "sha256": "e3fe80d112d86a00338ce80b914562f1b8e8691faf0f9373badb069c32127ba6"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/025-meeting-action-tracker.json",
+      "sha256": "d650d33b4f7b6b3b2758cd71e30d0a60b65d20693536e66f136d89372a81b505"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/026-ppt-brief-generation.json",
+      "sha256": "18c7db6c3142c17bb35d8cb9c7c4fb49e539a7513a1b2ef2971b5ba20e251d27"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/027-contract-summary-risk.json",
+      "sha256": "6fd384d8c309c0a0490bb1f7714bd9ce3466334bf3a854079366311a17717b9b"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/028-email-thread-merge.json",
+      "sha256": "2ac35c185356edd8435f6c07688b6911decaf8ac463b325689b50ed6ca6dff9f"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/029-expense-packet-review.json",
+      "sha256": "99657fd4ed8b7fe89bba0b046aa344b884357d71fc30938986479faaa21c0bdd"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/030-word-revision-plan.json",
+      "sha256": "95ae002b6ebbfc2d253b28de64347e34c6fb96f5b10b489ca8a289881753287d"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/031-cross-doc-citation-check.json",
+      "sha256": "b283b371cf9b511a67d53282ee2bacc2ef6843c4b2df304e9f105ddb31256471"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/032-customer-followup-draft.json",
+      "sha256": "65d946f1bce2c55c8f30efe05d4b2584c9ca72534faceade09e27b9d39c3534a"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/033-offline-knowledge-qa.json",
+      "sha256": "1012716dd0c3cb7b0e1ffaef6b896c283dda6d1bcc34c2bc7122295d010faf10"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/034-evidence-matrix-claims.json",
+      "sha256": "dee0c73c685ba49da94740455b52cb5c704ee14422ce3c5223fc0e764148dcdc"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/035-conflicting-source-resolution.json",
+      "sha256": "86f8bd1e840878aeb68956b374c9c11a6067144e097b5e92ab37136fc088993f"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/036-citation-consistency-audit.json",
+      "sha256": "ce2328b4279065274cdbc5b35ee9eb536710dcdd8f6eaa8538eb4f927a6e15f2"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/037-policy-clause-retrieval.json",
+      "sha256": "58906ceda6ab959f5b575256e5f25c7f5de094b202e89a3358de373a73344417"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/038-research-brief-synthesis.json",
+      "sha256": "1fb3f43023153525c58f3bea99f0f5a2f353456eddf5f44f0b38ea874bf38d90"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/039-repo-architecture-map.json",
+      "sha256": "23dca25026c1920cf6c27743d735e146cfa6a120c27a86524cbb4eecc5e60fc8"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/040-test-coverage-fill.json",
+      "sha256": "38bc718443953e604d21542d6998d43bedfd5515f1b40673d502b736c93eee4b"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/041-frontend-state-bug.json",
+      "sha256": "8389cc3daa4fe72b1c9691e2dd0f5de48806490a4257cd65d2d462bf25976ac9"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/042-api-schema-migration.json",
+      "sha256": "3a82cfe34fdeae1bb2e6d227a084bb087dcc2a6e4759ba14a18fff662ea3d5f8"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/043-db-migration-safety.json",
+      "sha256": "93facf43a288826fb97a7626f0331de895c5db7b0d05dd64164b3a901a9c6153"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/044-ci-config-repair.json",
+      "sha256": "389664cefba5e57681bf562fbc8cc44f0669be9ca6762800a9b3e44daef60b5b"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/045-dependency-upgrade-compat.json",
+      "sha256": "3762693562a6f4ebf4dc10257560d1bd8d3ce2dc4e4938ff742138ae1cc737e2"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/046-performance-regression.json",
+      "sha256": "57d58619c44060bb92eeeda90e1b283ebbe8d336b801041c924c94dac0aa29c3"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/047-code-review-risk-report.json",
+      "sha256": "7891b5c10adff349f4c88fe05835e9d4c0345965f91caf97d2996a8a678fc139"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/048-release-note-changelog.json",
+      "sha256": "99989e0cfabd6e9cb6799f48a6ce3f4154dada9d68f522bb217874b7f8088997"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/049-excel-like-cleaning.json",
+      "sha256": "2a2cffa7f963b16a8a89428ac035f949e516105dd843bd2fe2b444cec981c615"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/050-multitable-join-analysis.json",
+      "sha256": "db87e453fa5c30ececc986c75704a35f8937e7fdee61960e168cd1abc06fb8cd"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/051-sql-query-report.json",
+      "sha256": "00652e9942fc09b57f06f47b42e3c820347f1ca37e6fe6bcb12995566be54877"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/052-metric-definition-audit.json",
+      "sha256": "cee1eb9388816c3d9ce74bd5a0d4601c91453050e47000e8f3d753fd08def566"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/053-anomalous-transaction-detect.json",
+      "sha256": "da4cac8d18b608f7bc52a9e58672c70a8e18f6473822d971a91975d001bbb0b1"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/054-budget-variance-analysis.json",
+      "sha256": "70d12082ef7127a8f97337e096b6cbb4e4cf4a6ff2e99dd27392505f4a159c1b"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/055-funnel-dropoff-analysis.json",
+      "sha256": "de136d6b9fca3c147d158e18c1aa7c02bc02e5d1731375df60ca64323fe9d026"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/056-inventory-forecast.json",
+      "sha256": "8f4b89b1675bdd9c19a064176349892542da9b8f8c9bd584d3fb6d8ea29f241b"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/057-interruption-resume.json",
+      "sha256": "5e52007f188dacd4fe8fa06e323f343bffc4de99b9c21b23e7c5757036c2269d"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/058-multiday-project-state.json",
+      "sha256": "cabd6c1455984e8fbf670605529819b879c618f134fec1fc0563b909ea39da37"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/059-event-update-replan.json",
+      "sha256": "ab9f80e7a7b17177e3d675e8de74eaa4bcdf45860dd44babf046af21e52b9488"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/060-task-cancellation-cleanup.json",
+      "sha256": "a67caf5180de2bfacb3008ad1f3b7ba2c513c4d8bed016c6224b1c056452f15c"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/061-periodic-status-rollup.json",
+      "sha256": "60bfcd847764e507f6106dad25db87cf634651605f3c8514be7b6d5a8f01536b"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/062-k8s-config-audit.json",
+      "sha256": "f9275f8bf7d7830413cc49d54c4336c6e189032d6a5166be42a5af7962473e01"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/063-alert-dedup-noise.json",
+      "sha256": "58d044ec8828d6fbe41bdab25ca893236adc1e40665bd161bf22c72befac8879"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/064-service-dependency-triage.json",
+      "sha256": "b063e62f7290389a93e3427f48fc983a11f1991c0ba67be627861b4f2c2efc7e"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/065-capacity-planning.json",
+      "sha256": "7d96cb42d4c9306e086089049acb60fd67f06b473f48e69109f607ef0ffce032"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/066-rollback-readiness.json",
+      "sha256": "8de6b0b51e59da2be167ac2a417504e480ce03e9297abbe4a7d983ce85f373a4"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/067-canary-release-check.json",
+      "sha256": "28734d528cce24d94d3c4b20f36daee2b7efcd69c39a2cbe0d2aaac0a8469013"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/068-product-launch-ops.json",
+      "sha256": "3e1e959453d1d2cf37ba7b01a29ebff28e373695266470fba0e518b0e3d0c481"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/069-legal-compliance-review.json",
+      "sha256": "9f7b6c1d3548e1b14c3576eba572f5aeaaedb3c0a33a63cbf78f0d8e81cae524"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/070-hr-resume-screening.json",
+      "sha256": "7f783811b0136ef626afd6226ad00f73030d0f44f3f007ce6dd0f399ef18f21d"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/071-ecommerce-support-routing.json",
+      "sha256": "d2412bc5a24f4f36eaf62f3162c4e0281a40da4f465d241f2795afbb4afff275"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/072-logistics-delay-response.json",
+      "sha256": "48f8d23170f70c0e653772df386248f34f1c66f184c706507aa5f24ca84a16bf"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/073-research-repro-package.json",
+      "sha256": "af0656f8abe1678b52549df49fe7a9afc1f8d58b1ec83aa87bc66cac41490c62"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/074-education-grading-feedback.json",
+      "sha256": "43387d62930fa0c7c9ef416f59b1c7b0685c8e4ee9ff0ffacea816354bbc4a15"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/075-platform-appeal-review.json",
+      "sha256": "40c16ce7f2316540cb2669876dbe97bd706ac135ba605ce16a676269c59be695"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/076-medical-admin-claim-check.json",
+      "sha256": "ec95437040c8f3898406128b6eb6edb07272f93157b20a2c2d19ee15dfd356a3"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/077-archive-manifest-defense.json",
+      "sha256": "29de84142c03de172d133dd6f55f921f274eeb6c3b5365289f37c5f2a4c94dc4"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/078-local-api-cursor-retry-ledger.json",
+      "sha256": "2a4695d3f61cd857a7bdb15a7935ebdddc984530275e6ad9495542ebe79f86a3"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/079-smallfile-batch-reject-ledger.json",
+      "sha256": "44fde085ab03866249b3de877c16c81c717328926353c92fee979695e801c67b"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/080-schema-roundtrip-conversion.json",
+      "sha256": "413d9b4c2917c68d1cbdbac774c8fca4d9bb3fabc76482b462cf938d4d65753a"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/081-local-html-dom-form-extract.json",
+      "sha256": "dd8529a42a687f5c8eb27fcd8d97c6f0f59ce54b9dcb007ece84dd3e0a088efd"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/082-compose-config-repair.json",
+      "sha256": "8bd8d86c155e08e5d92be626f679dfaca09cd9298f68b6755ba6cbce54aceedb"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/083-monorepo-interface-repair.json",
+      "sha256": "d5f2a745954f086a318c635d3e30c6815b244a7071288052e6ab3882e2785d9f"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/084-js-state-type-bug.json",
+      "sha256": "3b897ef4b25a98c81d0f4faa90300527023893eb2716156f72ffcc3a5148f852"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/085-flaky-test-root-cause.json",
+      "sha256": "0c08245ef307581b1a69339ab901ca14b688b5bc50ad42e8969b9825b179dc72"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/086-sql-migration-preflight-rollback.json",
+      "sha256": "448cc1aadce1a6f5d84e34e4520f95704e34e72033ffa1cc7f7d649c8cb812df"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/087-cli-parser-bug-tests.json",
+      "sha256": "7e1cd474d08a584e52e1d89262864bc3d8fe9bc28d5db308ba1be5eb47e5cbdd"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/088-api-contract-mock-client-compat.json",
+      "sha256": "4b04766af20793d9f2f3245bb22eea5b309faf8241d3525909f3ccfa7b540a4e"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/089-ab-test-caveat-analysis.json",
+      "sha256": "8c2a09b69ca8982761c816634006ec28a06589b556e72644b665d5b54166b27c"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/090-timeseries-anomaly-attribution.json",
+      "sha256": "269262dcea0b6674383afa5168e73bc9f40cd58ed6052c87b49efeed8c7ad51d"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/091-financial-close-reconciliation.json",
+      "sha256": "bb26f50e179a0ac8ae17a0b4fe2ffa96214d19cd336809847c7c11870b930f37"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/092-schema-drift-audit.json",
+      "sha256": "91040269013bfa23e93237ddd2e46c020cb9cdc647d53c38f9aa3d0db2fbb828"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/093-jsonl-sessionization-analysis.json",
+      "sha256": "5bc89c5a026ffbeb83ba5b95bbe8bceab8981bdd3ab93480f0c7794ca22c2c5a"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/094-metric-definition-migration-diff.json",
+      "sha256": "932748204eeb5f36c6e8d59c64d781a05a1d58bfb341ae582f35f2364f10fe3d"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/095-policy-version-conflict-resolution.json",
+      "sha256": "72f964e8b5dd06bcda1cd3ac3f91fed38c8b9d71cd47b7b5d79a3743371ffb04"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/096-offline-knowledge-qa-insufficient-evidence.json",
+      "sha256": "510caf99ac253b4863383e539c29f773a42839638cf38ab6d0e26ebdfc5a1040"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/097-research-claims-batch-evidence-audit.json",
+      "sha256": "804161fdfa201bf934decac1e8351aeed6fe6e903d3e21bba3832b83ddfe4dbf"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/098-three-source-decision-record-synthesis.json",
+      "sha256": "eb1ca787cbc020509759bfd96705730c53c5570093baa803801d402df773decc"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/099-privacy-dsar-intake-review.json",
+      "sha256": "52107353c7230d7e60eb1d2663d1db0c487001225212b444fedecc62d7aa361e"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/100-financial-kyc-admin-check.json",
+      "sha256": "f1720b907c0d03cd74d1003598a423695ed16dcd9ea06cdb634fdf0cb1cd47ae"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/101-marketing-sensitive-commitment-review.json",
+      "sha256": "bc220cfb6efd21f8699816824539414c57efea9ea69d3d564f3bfe8cc8da71e2"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/102-internal-doc-retrieval-injection-defense.json",
+      "sha256": "5bd7687f6d4fa1b2a8a53857cd4641be12b06ee1057e281f154a577cb19addd3"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/103-policy-update-replan-diff.json",
+      "sha256": "ff343d8a4093ae9fff747569d17aacd6348c588394df6c5a2c91a92dde3d1f98"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/104-async-ops-window-rollup.json",
+      "sha256": "d2eb4be72a51f76fc629c402b71b0f96f032cf81f1a7f71a8ed6cfcfdbb46bb4"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/105-partial-batch-resume-ledger.json",
+      "sha256": "b37ca531250f0c9ee0439417df8ab55ca1bfab3c8a5e50b4d90b122071cc7769"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-fixed-106/profiles/aggressive-no-skills/results/ablation/post-codex-hermes-fixed-profiles-106/aggressive-no-skills/gpt-5.4/106-release-approval-gate-plan.json",
+      "sha256": "84b411cc059a6995d3aabdf064cb312cb1795491d130b211a3f157e4f4991224"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-watchdog-corrections-6/CORRECTION_AUDIT.json",
+      "sha256": "236422f58f146692ff3728b771701d3fab312fb4e8d844cdd4fcddafb423119d"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-watchdog-corrections-6/results/correction/post-codex-hermes-fixed-aggressive-watchdog-v1/gpt-5.4/091-financial-close-reconciliation.json",
+      "sha256": "b80d9a65d157a38b52103f1fbdeb35ccc4d4d13598395820b9481fb2e60e1372"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-watchdog-corrections-6/results/correction/post-codex-hermes-fixed-aggressive-watchdog-v1/gpt-5.4/094-metric-definition-migration-diff.json",
+      "sha256": "cc87d7e48a304e45099bd27578d25948f15d5b042c311018281fb57701455a60"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-watchdog-corrections-6/results/correction/post-codex-hermes-fixed-aggressive-watchdog-v1/gpt-5.4/096-offline-knowledge-qa-insufficient-evidence.json",
+      "sha256": "c58a0db9a222b73ad8f067bd9505af234af8c074474c37922224dc621813e6a0"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-watchdog-corrections-6/results/correction/post-codex-hermes-fixed-aggressive-watchdog-v1/gpt-5.4/097-research-claims-batch-evidence-audit.json",
+      "sha256": "2a18dbac1e47b3fbaf34d9e1af806e26a41d3c81b0c028db1b8bce96267e8655"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-watchdog-corrections-6/results/correction/post-codex-hermes-fixed-aggressive-watchdog-v1/gpt-5.4/099-privacy-dsar-intake-review.json",
+      "sha256": "d07f293b4a647f227fa7b1eebda2bc973d4e6356bd0f3196ad7c2259016b2d99"
+    },
+    {
+      "dataset": "hermes_aggressive",
+      "path": "runs/post-codex-hermes-watchdog-corrections-6/results/correction/post-codex-hermes-fixed-aggressive-watchdog-v1/gpt-5.4/106-release-approval-gate-plan.json",
+      "sha256": "563c862d9402da3e7b9e627fa3a48a0baf0ea624cd76ed323ea86c3da28f67ae"
+    }
+  ],
+  "metric": "scoring.outcome_score",
+  "schema": 1,
+  "task_count_per_option": 106
+}

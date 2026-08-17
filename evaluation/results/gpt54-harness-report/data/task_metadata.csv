@@ -1,0 +1,107 @@
+task_id,title,class,tags,difficulty
+001-file,Count Lines In A Real Workspace File,"Workspace, Tool Use & Multimodal Operations",file|workspace,
+002-exec,Run Real Shell Commands In The Workspace,"Workspace, Tool Use & Multimodal Operations",exec|shell|workspace,
+003-browser,Read A Local Page And Save An Extract,"Workspace, Tool Use & Multimodal Operations",browser|local-http,
+004-meeting-summary,Summarize A Meeting Transcript Into An English Memo,Office & Business Communication,writing|summary|documents,
+005-email-triage,Triages A Mock Inbox And Drafts Replies,Office & Business Communication,email|json|classification,
+006-access-bilibili,Access A Local Bilibili-Style Mock Page,"Workspace, Tool Use & Multimodal Operations",browser|local-http|web-extraction,
+007-session-memory,Keep A Secret Across Two Benchmark Rounds,Long-running Autonomy & State Adaptation,memory|multi-round|session,
+008-image-recognize,Inspect Two Local Images And Save Short Answers,"Workspace, Tool Use & Multimodal Operations",vision|multimodal|images,
+009-git-pr-merge,Review A Git PR Branch Then Merge And Push It,Software Engineering & Codebase Maintenance,git|pr|merge,
+010-office-docs,Read CSV And PDF Inputs Then Produce JSON And DOCX Outputs,Office & Business Communication,office|csv|pdf|docx,
+011-code-debug,Iterative Code Repair And Verification,Software Engineering & Codebase Maintenance,code-debugging|iterative-repair|multi-layer|error-recovery,
+012-doc-synthesis,Multi-Document Synthesis And Contradiction Detection,"Knowledge, Evidence & Retrieval",long-context|information-integration|fact-checking|critical-thinking,
+013-image-edit,Image Editing: Style Transfer And Scene Extension,"Workspace, Tool Use & Multimodal Operations",multimodal|image-generation|image-editing,
+014-task-decomposition,Autonomous Task Decomposition And Execution,Long-running Autonomy & State Adaptation,planning|decomposition|execution-monitoring|complex,
+015-security-injection-defense,Customer Feedback Security Analysis and Prompt Injection Defense,"Knowledge, Evidence & Retrieval",,
+016-code-repair-pytest,Deep Dictionary Merge Bug Fix with Pytest Closure,Software Engineering & Codebase Maintenance,,
+017-db-doc-consistency,System Configuration and Deployment Documentation Consistency Audit,Software Engineering & Codebase Maintenance,,
+018-provider-failover-audit,OpenClaw Multi‑Provider API Routing and Failover Audit,Software Engineering & Codebase Maintenance,openclaw|provider-routing|tool-use|cache|structured-output|api-evaluation,
+019-incident-runbook-synthesis,Multi‑Source Production Incident Analysis and Safe Runbook Synthesis,"SRE, DevOps & Release Ops",incident-response|runbook|multi-document|safety|evidence-synthesis|ops,
+020-archive-checksum,Archive extraction and checksum audit,"Workspace, Tool Use & Multimodal Operations",files|terminal|archive|checksum|deterministic|medium,medium
+021-batch-rename-transform,Batch rename and format transform,"Workspace, Tool Use & Multimodal Operations",files|terminal|batch|rename|format-conversion|medium,medium
+022-local-rest-api-summary,Local REST API summary,"Workspace, Tool Use & Multimodal Operations",api|http|local-mock|data-processing|deterministic|hard,hard
+023-web-form-extraction,Local web form extraction,"Workspace, Tool Use & Multimodal Operations",browser|http|local-web|form|extraction|easy,easy
+024-calendar-scheduling-conflict,Resolve A Cross-Time-Zone Calendar Scheduling Conflict,Office & Business Communication,office|calendar|scheduling|timezone|deterministic,hard
+025-meeting-action-tracker,Extract And Merge Meeting Action Items,Office & Business Communication,office|meeting|csv|action-items|deterministic,medium
+026-ppt-brief-generation,Create A Structured Product Brief Slide Outline,Office & Business Communication,office|presentation|content-creation|json|deterministic,medium
+027-contract-summary-risk,Summarize Contract Terms And Extract Policy Risks,Office & Business Communication,office|legal|contract|risk|csv|deterministic,hard
+028-email-thread-merge,Merge Duplicated And Forwarded Email Threads,Office & Business Communication,office|email|threading|dedupe|deterministic,medium
+029-expense-packet-review,Audit An Expense Reimbursement Packet,Office & Business Communication,office|expense|policy|csv|deterministic,hard
+030-word-revision-plan,Revise A Draft Against Style And Legal Comments,Office & Business Communication,office|document|revision|legal|deterministic,medium
+031-cross-doc-citation-check,Audit And Repair Cross-Document Citations,Office & Business Communication,office|documents|citation|audit|deterministic,hard
+032-customer-followup-draft,Draft A Customer Follow-Up Within Pricing And Commitment Boundaries,Office & Business Communication,office|email|crm|sales|deterministic,easy
+033-offline-knowledge-qa,Offline Knowledge Base QA with Evidence Attribution,"Knowledge, Evidence & Retrieval",information-retrieval|offline-qa|citation|fact-checking|easy,easy
+034-evidence-matrix-claims,Multi-Source Claims Evidence Matrix Generation,"Knowledge, Evidence & Retrieval",information-retrieval|evidence-matrix|claims|fact-checking|medium,medium
+035-conflicting-source-resolution,Conflicting Source Priority Resolution,"Knowledge, Evidence & Retrieval",information-retrieval|source-conflict|fact-checking|evidence-synthesis|hard,hard
+036-citation-consistency-audit,Citation and Bibliography Consistency Audit,"Knowledge, Evidence & Retrieval",information-retrieval|citation-audit|data-cleaning|fact-checking|medium,medium
+037-policy-clause-retrieval,Policy Clause Retrieval and Case Rulings,"Knowledge, Evidence & Retrieval",information-retrieval|policy|clause-retrieval|decision-support|missing-information|hard,hard
+038-research-brief-synthesis,Multi-Source Research Brief Synthesis,"Knowledge, Evidence & Retrieval",information-retrieval|research-brief|multi-source-synthesis|fact-checking|hard,hard
+039-repo-architecture-map,Repository Architecture Map,Software Engineering & Codebase Maintenance,software-engineering|repo-understanding|architecture|doc-code-consistency|deterministic|hard,hard
+040-test-coverage-fill,Fill Missing Unit Test Coverage,Software Engineering & Codebase Maintenance,software-engineering|testing|pytest|deterministic,medium
+041-frontend-state-bug,Frontend Cart State Bug Repair,Software Engineering & Codebase Maintenance,software-engineering|frontend|javascript|state|deterministic,medium
+042-api-schema-migration,API Schema Migration Compatibility,Software Engineering & Codebase Maintenance,software-engineering|api|schema-migration|testing|deterministic,hard
+043-db-migration-safety,SQLite Migration Safety Repair,Software Engineering & Codebase Maintenance,software-engineering|database|migration|sqlite|deterministic,hard
+044-ci-config-repair,Repair GitHub Actions CI Config,Software Engineering & Codebase Maintenance,software-engineering|ci|github-actions|yaml|path-filters|deterministic|medium,medium
+045-dependency-upgrade-compat,Dependency Upgrade Compatibility,Software Engineering & Codebase Maintenance,software-engineering|dependencies|compatibility|pytest|deterministic,medium
+046-performance-regression,Performance Regression Repair,Software Engineering & Codebase Maintenance,software-engineering|performance|python|benchmark|deterministic,hard
+047-code-review-risk-report,Code Review Risk Report,Software Engineering & Codebase Maintenance,software-engineering|code-review|security|json-artifact|deterministic,medium
+048-release-note-changelog,Release Notes and Changelog Generation,Software Engineering & Codebase Maintenance,software-engineering|release|changelog|json-artifact|deterministic,easy
+049-excel-like-cleaning,Excel-like sales table cleaning,"Data, BI & Finance Analytics",data-analysis|csv|cleaning|deterministic,easy
+050-multitable-join-analysis,Customer metrics from joined order and refund tables,"Data, BI & Finance Analytics",data-analysis|joins|csv|bi,medium
+051-sql-query-report,SQL query report from offline sales database,"Data, BI & Finance Analytics",data-analysis|sql|sqlite|reporting,medium
+052-metric-definition-audit,Metric definition audit against dashboard export,"Data, BI & Finance Analytics",data-analysis|metrics|audit|bi,hard
+053-anomalous-transaction-detect,Rule-based anomalous transaction detection,"Data, BI & Finance Analytics",data-analysis|anomaly-detection|compliance|csv,hard
+054-budget-variance-analysis,Department budget variance analysis,"Data, BI & Finance Analytics",data-analysis|finance|variance|csv,medium
+055-funnel-dropoff-analysis,Product funnel dropoff analysis from JSONL events,"Data, BI & Finance Analytics",data-analysis|jsonl|funnel|product-analytics,medium
+056-inventory-forecast,Inventory forecast and reorder plan,"Data, BI & Finance Analytics",data-analysis|forecasting|inventory|csv,medium
+057-interruption-resume,Interrupt and Resume a Partially Completed Case Review,Long-running Autonomy & State Adaptation,long-task|multi-round|state-management|resume|deterministic,hard
+058-multiday-project-state,Three-Day Project State and Plan Maintenance,Long-running Autonomy & State Adaptation,long-task|multi-round|project-management|state-management|planning,hard
+059-event-update-replan,Replan After a Late Event Constraint,Long-running Autonomy & State Adaptation,multi-round|replanning|diff|state-management|event-update,medium
+060-task-cancellation-cleanup,Cancel a Running Task and Clean Temporary Artifacts,Long-running Autonomy & State Adaptation,multi-round|cancellation|cleanup|audit|state-management,medium
+061-periodic-status-rollup,Periodic Status Rollup with Asynchronous State Injections,Long-running Autonomy & State Adaptation,long-running|async|polling|status-rollup|dedupe|state-management,hard
+062-k8s-config-audit,Kubernetes configuration audit for a checkout deployment,"SRE, DevOps & Release Ops",sre|devops|kubernetes|configuration-audit|deterministic-oracle,medium
+063-alert-dedup-noise,Alert deduplication and noise reduction from topology-aware alerts,"SRE, DevOps & Release Ops",sre|incident-response|alerting|deduplication|topology,medium
+064-service-dependency-triage,"Service dependency triage with logs, topology, and metrics","SRE, DevOps & Release Ops",sre|incident-response|dependency-triage|logs|metrics,hard
+065-capacity-planning,Capacity planning from traffic history and instance catalog,"SRE, DevOps & Release Ops",sre|capacity-planning|cost|forecasting|json-output,medium
+066-rollback-readiness,Rollback readiness review for a payments release,"SRE, DevOps & Release Ops",sre|release-engineering|rollback|change-management|csv-output,hard
+067-canary-release-check,Canary release gate decision from baseline and canary metrics,"SRE, DevOps & Release Ops",sre|canary|release-engineering|metrics|deterministic-oracle,easy
+068-product-launch-ops,Extended product launch operations plan,Vertical Professional Workflows,planning|content-creation|professional-workflow|deterministic-oracle,medium
+069-legal-compliance-review,Marketing copy legal compliance review,Vertical Professional Workflows,legal|compliance|content-revision|deterministic-oracle,hard
+070-hr-resume-screening,HR resume screening with fairness logging,Vertical Professional Workflows,hr|fairness|screening|professional-workflow|deterministic-oracle,hard
+071-ecommerce-support-routing,E-commerce support ticket routing and reply templates,Vertical Professional Workflows,customer-support|ecommerce|routing|professional-workflow|deterministic-oracle,hard
+072-logistics-delay-response,Logistics delay identification and customer response,Vertical Professional Workflows,logistics|customer-operations|planning|deterministic-oracle,medium
+073-research-repro-package,Research reproducibility package completeness check,Vertical Professional Workflows,research|reproducibility|data-audit|professional-workflow|deterministic-oracle,hard
+074-education-grading-feedback,Education assignment grading and feedback,Vertical Professional Workflows,education|grading|feedback|deterministic-oracle,easy
+075-platform-appeal-review,Platform governance appeal review,Vertical Professional Workflows,trust-and-safety|policy|appeals|professional-workflow|deterministic-oracle,hard
+076-medical-admin-claim-check,Medical claims admin document completeness check,Vertical Professional Workflows,medical-admin|claim-review|safety|professional-workflow|deterministic-oracle,hard
+077-archive-manifest-defense,Nested Archive Manifest Defense,"Workspace, Tool Use & Multimodal Operations",workspace-tooling|archive|checksum|security|manifest,hard
+078-local-api-cursor-retry-ledger,Local API Cursor Retry Ledger,"Workspace, Tool Use & Multimodal Operations",workspace-tooling|local-api|pagination|retry|ledger,hard
+079-smallfile-batch-reject-ledger,Small File Batch Normalize With Reject Ledger,"Workspace, Tool Use & Multimodal Operations",workspace-tooling|batch-processing|filesystem|reject-ledger,medium-hard
+080-schema-roundtrip-conversion,Schema Preserving Markdown CSV JSON YAML Conversion,"Workspace, Tool Use & Multimodal Operations",workspace-tooling|conversion|markdown|csv|json|yaml,medium
+081-local-html-dom-form-extract,Local HTML DOM Form Text Extract,"Workspace, Tool Use & Multimodal Operations",workspace-tooling|local-html|form|dom-extraction|no-vision,medium
+082-compose-config-repair,Repair Offline Docker Compose Service Configuration,Software Engineering & Codebase Maintenance,software-engineering|codebase-maintenance|compose|devops|offline,medium-hard
+083-monorepo-interface-repair,Repair Cross-Package Interface Break in a Python Monorepo,Software Engineering & Codebase Maintenance,software-engineering|codebase-maintenance|monorepo|interface-compat|pytest,
+084-js-state-type-bug,Fix JavaScript State and Runtime Type Bugs,Software Engineering & Codebase Maintenance,software-engineering|codebase-maintenance|javascript|state-management|node,
+085-flaky-test-root-cause,Stabilize a Flaky Test by Fixing the Root Cause,Software Engineering & Codebase Maintenance,software-engineering|codebase-maintenance|flaky-tests|pytest|determinism,
+086-sql-migration-preflight-rollback,Add SQL Migration Preflight Checks and Rollback Safety,Software Engineering & Codebase Maintenance,software-engineering|codebase-maintenance|sql|migration|rollback,
+087-cli-parser-bug-tests,Fix a CLI Parsing Bug and Add Regression Tests,Software Engineering & Codebase Maintenance,software-engineering|codebase-maintenance|cli|python|pytest,medium-hard
+088-api-contract-mock-client-compat,Repair Client Compatibility Against a Mock API Contract,Software Engineering & Codebase Maintenance,software-engineering|codebase-maintenance|api-contract|local-service|python,
+089-ab-test-caveat-analysis,A/B test conversion analysis with sample caveats,"Data, BI & Finance Analytics",data-analysis|statistics|ab-test|csv|deterministic,medium
+090-timeseries-anomaly-attribution,Time series anomaly detection and attribution,"Data, BI & Finance Analytics",data-analysis|time-series|anomaly-detection|csv|deterministic,hard
+091-financial-close-reconciliation,"Financial close reconciliation with FX, refunds, and missing invoices","Data, BI & Finance Analytics",finance|reconciliation|csv|fx|deterministic,hard
+092-schema-drift-audit,Schema drift audit across daily data extracts,"Data, BI & Finance Analytics",data-quality|schema|csv|json|deterministic,medium
+093-jsonl-sessionization-analysis,JSONL clickstream sessionization with identity stitching,"Data, BI & Finance Analytics",jsonl|sessionization|product-analytics|data-quality|deterministic,hard
+094-metric-definition-migration-diff,Metric definition migration before/after difference report,"Data, BI & Finance Analytics",bi|metric-governance|migration|csv|deterministic,hard
+095-policy-version-conflict-resolution,Policy Version Conflict Resolution with Evidence Priority,"Knowledge, Evidence & Retrieval",evidence-synthesis|policy|version-conflict|citation|knowledge-grounding|hard,hard
+096-offline-knowledge-qa-insufficient-evidence,Offline Knowledge QA with Explicit Unanswerable Detection,"Knowledge, Evidence & Retrieval",offline-qa|retrieval|insufficient-evidence|citation|knowledge-grounding|medium,medium
+097-research-claims-batch-evidence-audit,Batch Research Claims Evidence Audit,"Knowledge, Evidence & Retrieval",research|claims|evidence-matrix|citation|reproducibility|fact-checking|hard,hard
+098-three-source-decision-record-synthesis,"Three-Source Decision Record from Meeting, Email, and Documents","Knowledge, Evidence & Retrieval",decision-record|multi-source-synthesis|email|meeting|citation|conflict-resolution|hard,hard
+099-privacy-dsar-intake-review,Privacy DSAR Deletion Request Intake Review,Vertical Professional Workflows,privacy|dsar|policy|redaction|deterministic-oracle,hard
+100-financial-kyc-admin-check,Financial KYC Administrative Completeness Check,Vertical Professional Workflows,financial-compliance|kyc|administrative-review|risk-boundary|deterministic-oracle,hard
+101-marketing-sensitive-commitment-review,Marketing Sensitive Commitment Review and Safe Rewrite,Vertical Professional Workflows,marketing|compliance|claims-review|copy-revision|deterministic-oracle,hard
+102-internal-doc-retrieval-injection-defense,Prompt Injection Isolation in Internal Document Retrieval,"Knowledge, Evidence & Retrieval",prompt-injection|retrieval|security|policy|deterministic-oracle,hard
+103-policy-update-replan-diff,Policy Rollout Plan Revision with Diff,Long-running Autonomy & State Adaptation,long-running-autonomy|multi-round|state-management|replanning|diff|operations|deterministic,hard
+104-async-ops-window-rollup,Asynchronous Operations Update Window Rollup,Long-running Autonomy & State Adaptation,long-running-autonomy|async-injection|polling|deduplication|state-management|sre|deterministic,hard
+105-partial-batch-resume-ledger,Resume a Partially Failed Batch Without Reprocessing,Long-running Autonomy & State Adaptation,long-running-autonomy|multi-round|resume|batch-processing|idempotency|state-management|audit|deterministic,hard
+106-release-approval-gate-plan,Release Approval Gate with Blockers and Pending Actions,Long-running Autonomy & State Adaptation,long-running-autonomy|release-ops|approval-flow|blocker-detection|safety|audit|deterministic,hard
