@@ -276,58 +276,69 @@ def setup_style():
         "axes.edgecolor": INK, "axes.labelcolor": INK, "text.color": INK,
         "xtick.color": MUTED, "ytick.color": INK, "axes.titleweight": "bold",
         "axes.spines.top": False, "axes.spines.right": False,
-        "svg.fonttype": "none", "figure.dpi": 180,
+        "svg.fonttype": "none", "svg.hashsalt": "harnessbench-gpt54-report", "figure.dpi": 180,
     })
 
 
 def save(fig, base: Path):
     fig.savefig(base.with_suffix(".png"), dpi=220, bbox_inches="tight")
-    fig.savefig(base.with_suffix(".svg"), bbox_inches="tight")
+    fig.savefig(base.with_suffix(".svg"), bbox_inches="tight", metadata={"Date": None})
     plt.close(fig)
 
 
 def plot_overall(agg: list[dict], out: Path):
-    lookup = {x["harness_id"]: x for x in agg}
-    ordered = sorted((x for x in agg if x["harness_id"] in MAIN_ORDER), key=lambda x: x["score"])
-    fig, ax = plt.subplots(figsize=(10.8, 6.5))
-    y = np.arange(len(ordered))
-    vals = np.array([x["score"] * 100 for x in ordered])
-    xerr = np.array([[x["score"]-x["score_ci_low"] for x in ordered], [x["score_ci_high"]-x["score"] for x in ordered]]) * 100
-    ax.barh(y, vals, color=[COLORS[x["harness_id"]] for x in ordered], height=.64,
-            edgecolor=INK, linewidth=.7, xerr=xerr, error_kw={"ecolor": INK, "capsize": 3, "lw": 1})
-    ax.set_yticks(y, [x["harness"] for x in ordered])
-    ax.set_xlim(0, 100); ax.set_xlabel("Mean raw outcome score (%)")
-    ax.xaxis.grid(True, color=GRID, lw=.7); ax.set_axisbelow(True)
-    for yi, val in zip(y, vals): ax.text(val + 1.0, yi, f"{val:.1f}", va="center", weight="bold")
+    ordered = [next(x for x in agg if x["harness_id"] == h) for h in MAIN_ORDER]
+    fig, ax = plt.subplots(figsize=(10.8, 6.8))
+    x = np.arange(len(ordered))
+    vals = np.array([row["score"] * 100 for row in ordered])
+    xerr = np.array([[row["score"]-row["score_ci_low"] for row in ordered],
+                     [row["score_ci_high"]-row["score"] for row in ordered]]) * 100
+    ax.bar(x, vals, color=[COLORS[row["harness_id"]] for row in ordered], width=.66,
+           edgecolor=INK, linewidth=.7, yerr=xerr,
+           error_kw={"ecolor": INK, "capsize": 4, "lw": 1})
+    ax.set_xticks(x, [row["harness"] for row in ordered])
+    ax.set_ylim(50, 100); ax.set_ylabel("Mean raw outcome score (%)")
+    ax.yaxis.grid(True, color=GRID, lw=.7); ax.set_axisbelow(True)
+    for xi, val in zip(x, vals):
+        ax.text(xi, val + 1.25, f"{val:.1f}", ha="center", va="bottom", weight="bold")
     ax.set_title("Harness-Bench quality", loc="left", fontsize=22, pad=18)
     ax.text(0, 1.015, "106 real-workspace tasks · GPT-5.4 medium · higher is better", transform=ax.transAxes, color=MUTED)
-    ax.text(0, -0.16, "Whiskers: 95% task-bootstrap interval (task-sampling uncertainty, not run-to-run variance).",
+    ax.text(.995, .965, "FOCUSED AXIS · STARTS AT 50", transform=ax.transAxes, ha="right",
+            fontsize=8, color="#8A3F3A", family="monospace", weight="bold")
+    ax.text(0, -0.17, "Whiskers: 95% task-bootstrap interval (task-sampling uncertainty, not run-to-run variance).",
             transform=ax.transAxes, fontsize=9, color=MUTED, va="top")
-    ax.text(0, -.225, "NOT RANKED  ·  Original Hermes: oracle leakage  ·  Claude pilot: stopped after systemic tool failures",
+    ax.text(0, -.235, "NOT RANKED  ·  Original Hermes: oracle leakage  ·  Claude pilot: stopped after systemic tool failures",
             transform=ax.transAxes, fontsize=9, color="#8A3F3A", va="top", weight="bold")
-    ax.text(.995, -.275, "PRIME-INSPIRED / INDEPENDENT ANALYSIS", transform=ax.transAxes, ha="right", va="top",
+    ax.text(.995, -.285, "PRIME-INSPIRED / INDEPENDENT ANALYSIS", transform=ax.transAxes, ha="right", va="top",
             fontsize=8, color=MUTED, family="monospace")
     save(fig, out / "overall_quality")
 
 
 def plot_topics(topic_rows: list[dict], out: Path):
-    lookup = {(x["harness_id"], x["topic"]): x for x in topic_rows}
-    topics = sorted({x["topic"] for x in topic_rows}, key=lambda t: -sum(x["tasks"] for x in topic_rows if x["topic"] == t))
-    fig, axes = plt.subplots(4, 2, figsize=(15, 15), sharex=True)
+    lookup = {(row["harness_id"], row["topic"]): row for row in topic_rows}
+    topics = sorted({row["topic"] for row in topic_rows},
+                    key=lambda topic: (-sum(row["tasks"] for row in topic_rows if row["topic"] == topic), topic))
+    fig, axes = plt.subplots(4, 2, figsize=(15, 15), sharey=True)
+    short_labels = ["Prime", "Pi", "Hermes\ndefault", "Codex"]
     for ax, topic in zip(axes.flat, topics):
-        rs = [lookup[(h, topic)] for h in reversed(MAIN_ORDER)]
-        y = np.arange(len(rs)); vals = [x["score"]*100 for x in rs]
-        err = np.array([[x["score"]-x["score_ci_low"] for x in rs], [x["score_ci_high"]-x["score"] for x in rs]])*100
-        ax.barh(y, vals, color=[COLORS[x["harness_id"]] for x in rs], edgecolor=INK, linewidth=.4, height=.62,
-                xerr=err, error_kw={"ecolor": INK, "capsize": 2, "lw": .7})
-        ax.set_yticks(y, [META[x["harness_id"]][0] for x in rs], fontsize=9)
-        ax.set_xlim(0,100); ax.xaxis.grid(True,color=GRID,lw=.6); ax.set_axisbelow(True)
-        n=rs[0]["tasks"]; ax.set_title(f"{topic}\n$n={n}$", loc="left", fontsize=12, pad=8)
-    for ax in axes[-1]: ax.set_xlabel("Mean raw outcome score (%)")
+        rows = [lookup[(h, topic)] for h in MAIN_ORDER]
+        x = np.arange(len(rows)); vals = np.array([row["score"]*100 for row in rows])
+        err = np.array([[row["score"]-row["score_ci_low"] for row in rows],
+                        [row["score_ci_high"]-row["score"] for row in rows]]) * 100
+        ax.bar(x, vals, color=[COLORS[row["harness_id"]] for row in rows], edgecolor=INK,
+               linewidth=.4, width=.67, yerr=err, error_kw={"ecolor": INK, "capsize": 2, "lw": .7})
+        ax.set_xticks(x, short_labels, fontsize=8.5)
+        ax.set_ylim(45, 100); ax.yaxis.grid(True,color=GRID,lw=.6); ax.set_axisbelow(True)
+        for xi, val in zip(x, vals):
+            ypos = max(val + 1.0, 46.2)
+            ax.text(xi, ypos, f"{val:.0f}", ha="center", va="bottom", fontsize=8, weight="bold")
+        n=rows[0]["tasks"]; ax.set_title(f"{topic}\n$n={n}$", loc="left", fontsize=12, pad=8)
+    for ax in axes[:,0]: ax.set_ylabel("Mean outcome score (%)")
     fig.suptitle("Quality by task topic", x=.055, ha="left", fontsize=22, fontweight="bold", y=.995)
     fig.text(.055,.952,"Faceted using each task’s declared class · whiskers are 95% task-bootstrap intervals",color=MUTED)
+    fig.text(.945,.952,"FOCUSED AXIS · STARTS AT 45",ha="right",fontsize=8,color="#8A3F3A",family="monospace",weight="bold")
     fig.text(.055,.005,"Headline comparison includes only the contained benchmark-default Hermes profile.",fontsize=9,color=MUTED)
-    fig.subplots_adjust(hspace=.58,wspace=.42,top=.90,bottom=.05)
+    fig.subplots_adjust(hspace=.58,wspace=.28,top=.90,bottom=.06)
     save(fig,out/"topic_quality_facets")
 
 

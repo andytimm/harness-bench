@@ -49,6 +49,7 @@ Six aggressive cells—091, 094, 096, 097, 099, and 106—use separately preserv
 - **The Claude Code Opus 4.6 pilot is not a valid baseline.** Nine completed tasks averaged 9.3%, but every retained trace reported systemic write-policy and/or E2BIG tool failures. This measures a broken integration rather than Claude capability, so collection was stopped and none of its scores appear in comparisons.
 - Headline scores are raw outcomes. Prime and Pi have full-trace-v2 process grades, but those are not mixed here because equivalent grades are not yet available for Codex and contained Hermes.
 - Tasks 008 and 013 retain the benchmark's documented oracle-quality-LLM comparability caveat.
+- Headline bar charts use explicitly labeled focused axes (50 overall; 45 by topic because one topic score is 48.3) to make modest differences legible; bar area should not be interpreted as a ratio from zero.
 - Bootstrap intervals quantify sensitivity to the sampled task set, **not** run-to-run model variance.
 - Task-level regression lines are descriptive OLS fits on log resource use. They are not causal: task difficulty affects both score and resource use.
 
