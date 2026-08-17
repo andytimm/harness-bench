@@ -122,12 +122,25 @@ def build_provenance(repo: Path, runs: Path) -> dict:
             "input_count": len(entries), "inputs": entries,
             "composition": {"codex": "105 full-manifest entries plus correction-023-loopback-network task 023", "hermes_aggressive": "100 fixed-root results plus six watchdog-correction results (091,094,096,097,099,106)"},
             "exclusions": {"original_hermes": {"tasks": list(leak_tasks), "finding": "retained result records contain ground_truth and benchmark task-root access markers"},
-                           "claude_pilot": {"tasks": list(claude_first + claude_second), "mean_score": 0.09333333333333332, "finding": "all nine retained results contain systemic tool-failure markers; not a model-quality baseline"}}}
+                           "claude_pilot": {"tasks": list(claude_first + claude_second), "mean_score": 0.09333333333333332, "finding": "all 51 Bash calls failed before shell startup with E2BIG; all 30 Write and 8 Edit calls were policy-denied; no mutation channel, so not a model-quality baseline"}}}
 
 
 def result_row(task_id: str, result: dict, harness: str, topic: str, provenance: str) -> dict:
     usage = result["usage_summary"]
     scoring = result["scoring"]
+    # Standardize input across APIs. Some providers report cache reads inside
+    # input_tokens (Codex), while others report them separately. In the public
+    # table, Input means non-cache-read input and the components satisfy:
+    # total = input + cache read + output. Cache creation, if present, is fresh
+    # input rather than a cache read.
+    reported_input = int(usage.get("input_tokens", 0))
+    cache_read = int(usage.get("cache_read_tokens", 0))
+    cache_write = int(usage.get("cache_write_tokens", 0))
+    output = int(usage.get("output_tokens", 0))
+    total = int(usage["total_tokens"])
+    standardized_input = total - cache_read - output
+    if standardized_input < 0 or standardized_input + cache_read + output != total:
+        raise RuntimeError(f"invalid standardized token identity for {harness}/{task_id}: {usage}")
     # Use the score recorded by the common scoring pipeline for every harness.
     score = scoring["outcome_score"]
     return {
@@ -139,12 +152,13 @@ def result_row(task_id: str, result: dict, harness: str, topic: str, provenance:
         "score": float(score),
         "elapsed_seconds": float(result["elapsed_sec"]),
         "calls": int(usage["request_count"]),
-        "input_tokens": int(usage.get("input_tokens", 0)),
-        "cache_read_tokens": int(usage.get("cache_read_tokens", 0)),
-        "cache_write_tokens": int(usage.get("cache_write_tokens", 0)),
-        "output_tokens": int(usage.get("output_tokens", 0)),
+        "input_tokens": standardized_input,
+        "reported_input_tokens": reported_input,
+        "cache_read_tokens": cache_read,
+        "cache_write_tokens": cache_write,
+        "output_tokens": output,
         "reasoning_tokens": int(usage.get("reasoning_tokens", 0)),
-        "total_tokens": int(usage["total_tokens"]),
+        "total_tokens": total,
         "provenance": provenance,
     }
 
@@ -248,6 +262,7 @@ def aggregate(rows: list[dict]) -> tuple[list[dict], list[dict]]:
             "elapsed_seconds": sum(r["elapsed_seconds"] for r in rs),
             "calls": sum(r["calls"] for r in rs),
             "input_tokens": sum(r["input_tokens"] for r in rs),
+            "reported_input_tokens": sum(r["reported_input_tokens"] for r in rs),
             "cache_read_tokens": sum(r["cache_read_tokens"] for r in rs),
             "cache_write_tokens": sum(r["cache_write_tokens"] for r in rs),
             "output_tokens": sum(r["output_tokens"] for r in rs),
@@ -404,8 +419,8 @@ def plot_task_facets(rows, out, metric, filename, xlabel):
 
 
 def comparison_markdown(agg):
-    lines=["# Harness-Bench comparison table","", "Raw outcome score; 106 tasks per option. Token fields follow each native source; components may overlap, so use Total for cross-harness comparison.","",
-           "| Option | Score | Reported input | Reported cache read | Output | Total tokens | Calls | Runtime |",
+    lines=["# Harness-Bench comparison table","", "Raw outcome score; 106 tasks per option. Input is standardized as Total − Cache read − Output, so the three displayed token components are non-overlapping and sum to Total.","",
+           "| Option | Score | Input tokens | Cache read tokens | Output tokens | Total tokens | Calls | Runtime |",
            "|---|---:|---:|---:|---:|---:|---:|---:|"]
     for x in sorted((r for r in agg if r["harness_id"] in MAIN_ORDER),key=lambda r:-r["score"]):
         lines.append(f"| {x['harness']} | {x['score']*100:.2f}% | {x['input_tokens']:,} | {x['cache_read_tokens']:,} | {x['output_tokens']:,} | {x['total_tokens']:,} | {x['calls']:,} | {x['elapsed_seconds']/3600:.2f} h |")
@@ -432,13 +447,13 @@ def render_html(agg):
     :root{{--ink:#111;--paper:#fafaf8;--muted:#6f716d;--accent:#85ed75;--line:#d9dad5}}*{{box-sizing:border-box}}body{{margin:0;background:var(--paper);color:var(--ink);font-family:"Avenir Next",Inter,system-ui,sans-serif}}main{{max-width:1200px;margin:auto;padding:54px 28px 90px}}.eyebrow{{font:12px ui-monospace,monospace;letter-spacing:.12em}}h1{{font-size:54px;line-height:.98;max-width:850px;margin:18px 0}}.lede{{font-size:20px;color:var(--muted);max-width:840px}}.rule{{height:8px;background:var(--accent);width:128px;margin:28px 0 60px}}section{{margin:70px 0}}h2{{font-size:30px;margin-bottom:8px}}p.note{{color:var(--muted);max-width:900px}}img{{width:100%;display:block;border:1px solid var(--line);background:var(--paper)}}table{{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}}th,td{{padding:13px 10px;border-bottom:1px solid var(--line);text-align:right}}th:first-child,td:first-child{{text-align:left}}th{{font-size:12px;text-transform:uppercase;letter-spacing:.06em}}.callout{{border-left:8px solid var(--accent);padding:5px 20px}}code{{font-family:ui-monospace,monospace}}@media(max-width:700px){{h1{{font-size:38px}}.wide{{overflow-x:auto}}}}
     </style></head><body><main><div class="eyebrow">HARNESS-BENCH / INTERIM AUDITED COMPARISON</div><h1>Quality and efficiency across agent harnesses</h1><p class="lede">A like-for-like comparison on 106 real-workspace tasks using GPT-5.4 medium. This interim edition includes only complete, audited datasets.</p><div class="rule"></div>
     <section><h2>Overall quality</h2><p class="note">Raw outcome score is used because full-trace process grading is not yet available for every option.</p><img src="figures/overall_quality.svg" alt="Overall quality bar chart"></section>
-    <section><h2>Score, tokens, and runtime</h2><div class="wide"><table><thead><tr><th>Option</th><th>Score</th><th>Reported input</th><th>Reported cache read</th><th>Output</th><th>Total tokens</th><th>Calls</th><th>Runtime</th></tr></thead><tbody>{''.join(table)}</tbody></table></div><p class="note">Token fields follow each native source and components may overlap (notably Codex reported input and cache read); use Total for cross-harness comparison. Reasoning tokens are not added again. Runtime is summed task elapsed time.</p></section>
+    <section><h2>Score, tokens, and runtime</h2><div class="wide"><table><thead><tr><th>Option</th><th>Score</th><th>Input tokens</th><th>Cache read tokens</th><th>Output tokens</th><th>Total tokens</th><th>Calls</th><th>Runtime</th></tr></thead><tbody>{''.join(table)}</tbody></table></div><p class="note">Input is standardized as Total − Cache read − Output, so Input, Cache read, and Output are non-overlapping and sum to Total. This corrects Codex’s native convention, where reported input includes cache reads. Reasoning tokens are already contained in output and are not added again. Runtime is summed task elapsed time.</p></section>
     <section class="callout"><h2>Audited composition</h2><p><strong>Codex:</strong> 105 entries from the initial full manifest plus the second, valid operational correction for task 023. The initial task and failed first correction remain preserved and excluded.</p></section>
     <section><h2>Quality by topic</h2><img src="figures/topic_quality_facets.svg" alt="Quality by task topic"></section>
     <section><h2>Quality–efficiency frontier</h2><img src="figures/quality_efficiency_frontier.svg" alt="Quality efficiency frontier"></section>
     <section><h2>Task-level detail</h2><p class="note">The regression lines are descriptive only; task difficulty affects both score and resource use.</p><img src="figures/task_tokens_facets.svg" alt="Task score versus tokens"><br><img src="figures/task_runtime_facets.svg" alt="Task score versus runtime"></section>
     <section><h2>Hermes profile note</h2><p class="note">Only contained benchmark-default Hermes appears in the headline charts. The other profiles came from a separate counterbalanced post-hoc ablation.</p><div class="wide"><table><thead><tr><th>Hermes profile</th><th>Role</th><th>Score</th><th>Total tokens</th><th>Calls</th><th>Runtime</th></tr></thead><tbody>{''.join(hermes_table)}</tbody></table></div><p>No statistically detectable quality difference was observed between focused and aggressive in this single-run paired comparison: aggressive minus focused was <strong>+0.21 points</strong> (wins/ties/losses 15/67/24; paired t-test p=0.861; task-bootstrap 95% CI ≈ [-2.12, +2.59] points). Aggressive used about <strong>40% fewer tokens</strong>, 9.9% fewer calls, and 4.9% less runtime.</p><p class="note">Six aggressive cells (091, 094, 096, 097, 099, 106) use separately preserved corrections after a terminal audit classified their originals as watchdog-truncated infrastructure failures.</p></section>
-    <section class="callout"><h2>Scope and exclusions</h2><p><strong>Original Hermes is excluded</strong> after confirmed access to oracle/ground-truth material. The contained benchmark-default rerun is the Hermes headline result.</p><p><strong>The Claude Code pilot is not a baseline.</strong> Nine completed tasks averaged 9.3%, but every trace reported systemic write-policy and/or E2BIG tool failures. The run was stopped; these scores measure a broken integration, not Claude capability. Tasks 008 and 013 also carry the benchmark’s documented oracle-quality-LLM comparability caveat.</p></section>
+    <section class="callout"><h2>Scope and exclusions</h2><p><strong>Original Hermes is excluded</strong> after confirmed access to oracle/ground-truth material. The contained benchmark-default rerun is the Hermes headline result.</p><p><strong>The Claude Code pilot is not a baseline.</strong> Nine completed tasks averaged 9.3%, but all 51 Bash calls failed before shell startup with <code>E2BIG</code>, and all 30 Write plus 8 Edit calls were policy-denied. With no mutation channel, the tasks were technically impossible to complete. The 2.08M standardized model-context tokens were retry-contaminated and only 11% above default Hermes on the same nine tasks, so they do not establish normal Claude inefficiency. Any future attempt must first pass an exact production Write/Edit/Bash containment canary and a single-task smoke. Tasks 008 and 013 also carry the benchmark’s documented oracle-quality-LLM comparability caveat.</p></section>
     <section><p class="eyebrow">GENERATED FROM AUDITED PER-TASK ARTIFACTS · SNAPSHOT DATA INCLUDED</p></section></main></body></html>'''
 
 
@@ -461,15 +476,16 @@ def main():
         score,tokens,elapsed,calls,input_tokens,cache_read,output_tokens=expected[x["harness_id"]]
         if not (abs(x["score"]-score)<5e-10 and x["total_tokens"]==tokens and
                 abs(x["elapsed_seconds"]-elapsed)<.02 and x["calls"]==calls and
-                x["input_tokens"]==input_tokens and x["cache_read_tokens"]==cache_read and
-                x["output_tokens"]==output_tokens and x["cache_write_tokens"]==0):
+                x["reported_input_tokens"]==input_tokens and x["cache_read_tokens"]==cache_read and
+                x["output_tokens"]==output_tokens and x["cache_write_tokens"]==0 and
+                x["input_tokens"] + x["cache_read_tokens"] + x["output_tokens"] == x["total_tokens"]):
             raise RuntimeError(f"published aggregate drift for {x['harness_id']}: {x}")
     write_csv(data/"task_metadata.csv", task_metadata_rows(args.repo))
     write_csv(data/"authoritative_task_metrics.csv",rows);write_csv(data/"aggregate_metrics.csv",agg);write_csv(data/"topic_metrics.csv",topics)
     (data / "provenance.json").write_text(json.dumps(build_provenance(args.repo, args.runs), indent=2, sort_keys=True) + "\n")
     write_csv(data/"exclusions.csv",[
         {"option":"Original Hermes GPT-5.4 medium","status":"excluded","reason":"confirmed oracle/ground-truth leakage on tasks 037, 046, 055, and 079"},
-        {"option":"Claude Code Opus 4.6 medium","status":"invalid_pilot","reason":"nine completed tasks all showed systemic write-policy and/or E2BIG tool failures; stopped and not interpretable as model quality"},
+        {"option":"Claude Code Opus 4.6 medium","status":"invalid_pilot","reason":"nine completed tasks had no mutation channel: 51/51 Bash calls failed E2BIG, 30/30 Write and 8/8 Edit were policy-denied; not interpretable as model quality"},
     ])
     setup_style();plot_overall(agg,figures);plot_topics(topics,figures);plot_frontier(agg,figures)
     plot_task_facets(rows,figures,"total_tokens","task_tokens_facets","Model-context tokens per task")

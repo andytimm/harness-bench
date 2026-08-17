@@ -8,14 +8,14 @@ A shareable comparison of four complete GPT-5.4-medium harness configurations ac
 
 The main charts include **Prime Agent**, **Pi**, **Codex CLI 0.139**, and **contained benchmark-default Hermes**. Fixed Hermes variants are intentionally reserved for the separate ablation note below.
 
-Raw outcome score is the common `scoring.outcome_score`. Token fields follow each native usage source and may overlap; **Total tokens** is the cross-harness comparison field.
+Raw outcome score is the common `scoring.outcome_score`. **Input tokens** are standardized as `Total − Cache read − Output`; the three displayed components are therefore non-overlapping and sum to Total. This corrects Codex’s native convention, where reported input includes cache reads. The untouched provider value remains available as `reported_input_tokens` in the CSV snapshots for auditability.
 
-| Option | Score | Reported input | Reported cache read | Output | Total tokens | Calls | Runtime |
+| Option | Score | Input tokens | Cache read tokens | Output tokens | Total tokens | Calls | Runtime |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | Prime Agent | 86.65% | 1,387,583 | 3,663,872 | 314,356 | 5,365,811 | 670 | 1.87 h |
 | Pi | 86.12% | 853,187 | 1,489,152 | 308,079 | 2,650,418 | 558 | 1.95 h |
 | Hermes — default | 84.51% | 2,292,231 | 18,115,968 | 567,375 | 20,975,574 | 966 | 3.40 h |
-| Codex CLI 0.139 | 80.26% | 15,304,660 | 13,760,384 | 505,527 | 15,810,187 | 649 | 2.92 h |
+| Codex CLI 0.139 | 80.26% | 1,544,276 | 13,760,384 | 505,527 | 15,810,187 | 649 | 2.92 h |
 
 Runtime is summed task elapsed time, not end-to-end wall-clock.
 
@@ -46,7 +46,8 @@ Six aggressive cells—091, 094, 096, 097, 099, and 106—use separately preserv
 ## Scope and exclusions
 
 - **Original Hermes is excluded.** Four tasks (037, 046, 055, and 079) accessed oracle or ground-truth material. Only the separately contained rerun appears in the headline charts.
-- **The Claude Code Opus 4.6 pilot is not a valid baseline.** Nine completed tasks averaged 9.3%, but every retained trace reported systemic write-policy and/or E2BIG tool failures. This measures a broken integration rather than Claude capability, so collection was stopped and none of its scores appear in comparisons.
+- **The Claude Code Opus 4.6 pilot is not a valid baseline.** Nine completed tasks averaged 9.3%, but post-stop trace diagnosis found that all **51/51 Bash calls** failed before shell startup with `E2BIG`, while all **30/30 Write** and **8/8 Edit** calls were denied by the noninteractive permission policy. With no mutation channel, the tasks were technically impossible to complete. Several traces nevertheless identified the expected content or fix before failing to persist it.
+- Claude processed an estimated **2,083,848 standardized model-context tokens** on those nine tasks (238,287 fresh/cache-creation input + 1,781,029 cache reads + 64,532 output). That is high—especially the retry-inflated output—but only 11% above default Hermes and 29% above Codex on the same tasks; it is not interpretable as normal Claude efficiency. A future attempt should first fix the permission contract and oversized native sandbox profile, then pass an exact production Write/Edit/Bash containment canary and a single-task smoke. No Claude scores appear in the comparison.
 - Headline scores are raw outcomes. Prime and Pi have full-trace-v2 process grades, but those are not mixed here because equivalent grades are not yet available for Codex and contained Hermes.
 - Tasks 008 and 013 retain the benchmark's documented oracle-quality-LLM comparability caveat.
 - Headline bar charts use explicitly labeled focused axes (50 overall; 45 by topic because one topic score is 48.3) to make modest differences legible; bar area should not be interpreted as a ratio from zero.

@@ -5,7 +5,7 @@
   },
   "exclusions": {
     "claude_pilot": {
-      "finding": "all nine retained results contain systemic tool-failure markers; not a model-quality baseline",
+      "finding": "all 51 Bash calls failed before shell startup with E2BIG; all 30 Write and 8 Edit calls were policy-denied; no mutation channel, so not a model-quality baseline",
       "mean_score": 0.09333333333333332,
       "tasks": [
         "001-file",
