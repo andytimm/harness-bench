@@ -1,0 +1,253 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:53:35.156207+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "043-db-migration-safety",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/043-db-migration-safety.json",
+  "source_result_sha256": "293989fa44ff095a52e38397aeb54823ffde64f939005d8ed61e22652e72f087",
+  "proxy_trace_sha256": "994e43c1c598562aac4260cafefaf20095d81daae4452bfccc24130d0e80718a",
+  "workspace_sha256": "3ba6d9e5acccf53106d6f51adecff6c2f4a4dc5627878b4ac4da87a657ca4d92",
+  "process_request": {
+    "request_sha256": "3c4c5eb3b4545c02342c3cc87c1bae6e77ab7249e8680682833e2d330b8b3215",
+    "trace_payload_chars": 37745,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/043-db-migration-safety/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "043-db-migration-safety",
+    "outcome_score": 0.995,
+    "level": "excellent",
+    "checks": [
+      {
+        "id": "migration_executes",
+        "pass": true,
+        "weight": 0.22,
+        "detail": null
+      },
+      {
+        "id": "data_preserved",
+        "pass": true,
+        "weight": 0.3,
+        "detail": [
+          [
+            "u1",
+            "ada@example.com",
+            "Ada",
+            "2024-01-02T10:00:00Z",
+            "active"
+          ],
+          [
+            "u2",
+            "lin@example.com",
+            "Lin",
+            "2024-02-03T11:30:00Z",
+            "active"
+          ],
+          [
+            "u3",
+            "grace@example.com",
+            "Grace",
+            "2024-03-04T09:15:00Z",
+            "active"
+          ],
+          [
+            "u4",
+            "ada+u4@example.com",
+            "Ada Legacy",
+            "2023-12-01T08:00:00Z",
+            "active"
+          ],
+          [
+            "u5",
+            "missing+u5@example.invalid",
+            "Null Email Legacy",
+            "2023-11-05T12:00:00Z",
+            "active"
+          ],
+          [
+            "u6",
+            "missing+u6@example.invalid",
+            "Blank Email Legacy",
+            "2023-10-06T07:45:00Z",
+            "active"
+          ]
+        ]
+      },
+      {
+        "id": "orders_preserved",
+        "pass": true,
+        "weight": 0.08,
+        "detail": [
+          [
+            "o1",
+            "u1",
+            1299,
+            "2024-04-01T09:00:00Z"
+          ],
+          [
+            "o2",
+            "u4",
+            4599,
+            "2024-04-02T10:30:00Z"
+          ],
+          [
+            "o3",
+            "u5",
+            799,
+            "2024-04-03T11:45:00Z"
+          ],
+          [
+            "o4",
+            "u6",
+            1599,
+            "2024-04-04T12:10:00Z"
+          ]
+        ]
+      },
+      {
+        "id": "constraints",
+        "pass": true,
+        "weight": 0.22,
+        "detail": {
+          "status_not_null": true,
+          "email_not_null": true,
+          "duplicate_rejected": true,
+          "null_rejected": true,
+          "blank_rejected": true
+        }
+      },
+      {
+        "id": "idempotent",
+        "pass": true,
+        "weight": 0.08,
+        "detail": "migration must be safe to run twice"
+      },
+      {
+        "id": "sql_quality",
+        "pass": true,
+        "weight": 0.12,
+        "detail": {
+          "term_hits": 9,
+          "forbidden": []
+        }
+      },
+      {
+        "id": "preflight_report",
+        "pass": true,
+        "weight": 0.08,
+        "detail": "preflight must mention duplicate/null/blank u4/u5/u6 issues and dependent orders"
+      },
+      {
+        "id": "rollback_sql",
+        "pass": true,
+        "weight": 0.06,
+        "detail": "rollback should restore old schema shape"
+      },
+      {
+        "id": "postcheck_sql",
+        "pass": true,
+        "weight": 0.06,
+        "detail": {
+          "score": 1.0,
+          "term_hits": 9,
+          "executes": true
+        }
+      },
+      {
+        "id": "migration_report",
+        "pass": true,
+        "weight": 0.04,
+        "detail": {
+          "score": 0.875,
+          "hits": 7
+        }
+      },
+      {
+        "id": "fixture_integrity",
+        "pass": true,
+        "weight": 0.05,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/043-db-migration-safety/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.95,
+        "consistency": 0.95,
+        "robustness": 0.92
+      },
+      "total": 0.94,
+      "notes": "Agent reads policy and schema first, writes migration, validates with actual SQLite execution (first run, second run idempotency, postcheck, rollback), all checks pass with correct deterministic email values; minor gap is git diff/status returning empty (files may have been written outside git tracking) but execution evidence is solid.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.95, \"consistency\": 0.95, \"robustness\": 0.92}, \"security_gate\": 1, \"notes\": \"Agent reads policy and schema first, writes migration, validates with actual SQLite execution (first run, second run idempotency, postcheck, rollback), all checks pass with correct deterministic email values; minor gap is git diff/status returning empty (files may have been written outside git tracking) but execution evidence is solid.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.95,
+          "consistency": 0.95,
+          "robustness": 0.92
+        },
+        "security_gate": 1,
+        "notes": "Agent reads policy and schema first, writes migration, validates with actual SQLite execution (first run, second run idempotency, postcheck, rollback), all checks pass with correct deterministic email values; minor gap is git diff/status returning empty (files may have been written outside git tracking) but execution evidence is solid."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072010-sAJP64A1I8qpz50fln2R",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 14041,
+        "completion_tokens": 117,
+        "total_tokens": 14158,
+        "cost": 0.04343922,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.043878,
+          "upstream_inference_prompt_cost": 0.042123,
+          "upstream_inference_completions_cost": 0.001755
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.94,
+    "process_effective": 0.94,
+    "security_score": 1.0,
+    "outcome_score": 0.995,
+    "oracle_outcome_score": 0.995,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.9353,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.995 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.04343922,
+  "cost_source": "openrouter_usage_cost"
+}

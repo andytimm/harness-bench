@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:55:34.716216+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "068-product-launch-ops",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/068-product-launch-ops.json",
+  "source_result_sha256": "06bc75ae01bf6376cc43a2b43910dbe2d10758dd79c4a36c9c759736bd7e090e",
+  "proxy_trace_sha256": "cb5fb03edaab013772c49b41f805b929e98fbdc1f1054340e01d7c801350077a",
+  "workspace_sha256": "44cdba53a9e0ca58b3ede02cb4ec825f5e76694cabdb81fe61ee3351a3e8bdc4",
+  "process_request": {
+    "request_sha256": "5c114259717e640cfac202d633af219ad018a3595e287789ea0701eb55c2fadb",
+    "trace_payload_chars": 28693,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/068-product-launch-ops/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "068-product-launch-ops",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-068-product-launch-ops-gpt-5.4-20260815-235037-9e96b654/workspace",
+    "outcome_score": 0.8475,
+    "checks": [
+      {
+        "id": "plan_exists",
+        "label": "launch_plan.md exists",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "pack_exists",
+        "label": "content_pack.json exists",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "checklist_exists",
+        "label": "launch_checklist.csv exists",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "sections",
+        "label": "plan contains required sections",
+        "pass": true,
+        "weight": 0.12,
+        "detail": null
+      },
+      {
+        "id": "audience",
+        "label": "plan mentions all audience segment names",
+        "pass": true,
+        "weight": 0.12,
+        "detail": null
+      },
+      {
+        "id": "timeline",
+        "label": "plan includes all required milestone dates",
+        "pass": true,
+        "weight": 0.12,
+        "detail": null
+      },
+      {
+        "id": "offline_webinar",
+        "label": "plan includes offline webinar",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "no_forbidden_claims",
+        "label": "plan avoids early availability and unavailable feature claims",
+        "pass": false,
+        "weight": 0.08,
+        "detail": ""
+      },
+      {
+        "id": "budget_bound",
+        "label": "no single planned spend exceeds approved total",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "dependency_compliance_terms",
+        "label": "plan covers compliance, dependencies, and excluded segment",
+        "pass": false,
+        "weight": 0.1,
+        "detail": ""
+      },
+      {
+        "id": "content_pack_schema",
+        "label": "content_pack.json schema and required counts",
+        "pass": true,
+        "weight": 0.2,
+        "detail": null
+      },
+      {
+        "id": "launch_checklist",
+        "label": "launch_checklist.csv captures dependencies",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/068-product-launch-ops/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.95,
+        "consistency": 0.97,
+        "robustness": 0.92
+      },
+      "total": 0.9467,
+      "notes": "All three inputs read before writing outputs; plan, checklist, and JSON validated; minor gap is that content_pack.json write isn't explicitly shown in trace but jq validation passes with exit 0, confirming file exists; narrative is coherent and tightly grounded in source constraints throughout.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.95, \"consistency\": 0.97, \"robustness\": 0.92}, \"security_gate\": 1, \"notes\": \"All three inputs read before writing outputs; plan, checklist, and JSON validated; minor gap is that content_pack.json write isn't explicitly shown in trace but jq validation passes with exit 0, confirming file exists; narrative is coherent and tightly grounded in source constraints throughout.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.95,
+          "consistency": 0.97,
+          "robustness": 0.92
+        },
+        "security_gate": 1,
+        "notes": "All three inputs read before writing outputs; plan, checklist, and JSON validated; minor gap is that content_pack.json write isn't explicitly shown in trace but jq validation passes with exit 0, confirming file exists; narrative is coherent and tightly grounded in source constraints throughout."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072129-Z28bS7YAmZqrnCqRlW5f",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 9558,
+        "completion_tokens": 111,
+        "total_tokens": 9669,
+        "cost": 0.03003561,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.030339,
+          "upstream_inference_prompt_cost": 0.028674,
+          "upstream_inference_completions_cost": 0.001665
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9467,
+    "process_effective": 0.9467,
+    "security_score": 1.0,
+    "outcome_score": 0.8475,
+    "oracle_outcome_score": 0.8475,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.8023,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.8475 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.03003561,
+  "cost_source": "openrouter_usage_cost"
+}

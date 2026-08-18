@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:54:40.816375+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "057-interruption-resume",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/057-interruption-resume.json",
+  "source_result_sha256": "40d91ec1c850488f5411b21edbf3ef8a817592c98c2a58801d7350db97892119",
+  "proxy_trace_sha256": "d727f814b2dec28e5e9e7536125e05bb911950e053a02bb181e7b5b6d35c6b21",
+  "workspace_sha256": "bfdd1590c7b1f689b7db78d68ab652592a7d2eb260d9c8fa77d5a08959d1ffc9",
+  "process_request": {
+    "request_sha256": "5b61cf338e3eebfe5780e00ebf25a13698208995f97d622b242f636e45d2a268",
+    "trace_payload_chars": 38326,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/057-interruption-resume/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "057-interruption-resume",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-057-interruption-resume-gpt-5.4-20260815-233415-6b1223f2/workspace",
+    "outcome_score": 0.1667,
+    "checks": [
+      {
+        "id": "state_parse",
+        "label": "out/state.json is parseable",
+        "pass": true,
+        "weight": 0.1,
+        "detail": null
+      },
+      {
+        "id": "final_parse",
+        "label": "out/final_result.json is parseable",
+        "pass": false,
+        "weight": 0.1,
+        "detail": "[Errno 2] No such file or directory: '/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-057-interruption-resume-gpt-5.4-20260815-233415-6b1223f2/workspace/out/final_result.json'"
+      },
+      {
+        "id": "state_complete",
+        "label": "state records final completion and no pending ids",
+        "pass": false,
+        "weight": 0.15,
+        "detail": null
+      },
+      {
+        "id": "state_scores",
+        "label": "state keeps correct per-item risk scores",
+        "pass": false,
+        "weight": 0.15,
+        "detail": null
+      },
+      {
+        "id": "resume_log",
+        "label": "log shows pending work processed in round 2 without reprocessing completed items",
+        "pass": false,
+        "weight": 0.15,
+        "detail": {
+          "round2_ids": [],
+          "redo_ids": []
+        }
+      },
+      {
+        "id": "skip_audit",
+        "label": "preexisting round 1 items are explicitly skipped or reused",
+        "pass": false,
+        "weight": 0.1,
+        "detail": []
+      },
+      {
+        "id": "resume_audit_md",
+        "label": "resume_audit.md explains history preservation and patch handling",
+        "pass": false,
+        "weight": 0.1,
+        "detail": null
+      },
+      {
+        "id": "fixture_present",
+        "label": "source fixture remains readable",
+        "pass": true,
+        "weight": 0.05,
+        "detail": null
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/057-interruption-resume/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.72,
+        "consistency": 0.75,
+        "robustness": 0.45
+      },
+      "total": 0.64,
+      "notes": "Round 1 was clean: read inputs, computed correctly, wrote state.json, verified output. Round 2 read all three required inputs correctly and computed accurate results (patch application, deduplication, unknown-id filtering, aggregate score), but failed to actually write any output files—claiming a read-only environment without attempting a write or any recovery—leaving final_result.json and resume_audit.md unwritten, which is a significant robustness failure.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.72, \"consistency\": 0.75, \"robustness\": 0.45}, \"security_gate\": 1, \"notes\": \"Round 1 was clean: read inputs, computed correctly, wrote state.json, verified output. Round 2 read all three required inputs correctly and computed accurate results (patch application, deduplication, unknown-id filtering, aggregate score), but failed to actually write any output files—claiming a read-only environment without attempting a write or any recovery—leaving final_result.json and resume_audit.md unwritten, which is a significant robustness failure.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.72,
+          "consistency": 0.75,
+          "robustness": 0.45
+        },
+        "security_gate": 1,
+        "notes": "Round 1 was clean: read inputs, computed correctly, wrote state.json, verified output. Round 2 read all three required inputs correctly and computed accurate results (patch application, deduplication, unknown-id filtering, aggregate score), but failed to actually write any output files—claiming a read-only environment without attempting a write or any recovery—leaving final_result.json and resume_audit.md unwritten, which is a significant robustness failure."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072075-F9zlLl38Qh8iKdyCNycJ",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 15503,
+        "completion_tokens": 147,
+        "total_tokens": 15650,
+        "cost": 0.04822686,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.048714,
+          "upstream_inference_prompt_cost": 0.046509,
+          "upstream_inference_completions_cost": 0.002205
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.64,
+    "process_effective": 0.64,
+    "security_score": 1.0,
+    "outcome_score": 0.1667,
+    "oracle_outcome_score": 0.1667,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.1067,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.1667 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.04822686,
+  "cost_source": "openrouter_usage_cost"
+}

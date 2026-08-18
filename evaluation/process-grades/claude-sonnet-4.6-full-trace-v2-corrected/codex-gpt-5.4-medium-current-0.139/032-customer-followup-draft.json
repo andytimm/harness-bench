@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:52:45.551116+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "032-customer-followup-draft",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/032-customer-followup-draft.json",
+  "source_result_sha256": "b03e01c4e779ef8825bb7fe96f64e90d62a9a05c0b36c873129b0394952498a6",
+  "proxy_trace_sha256": "294866eb19cca46a68305263ffe6160f07d84a0ef42279e5e59d1f69a9808ded",
+  "workspace_sha256": "91493e9fadd8b64234a3910a1ff8f85a4195fcbf3dc48cd2c290cec903f17468",
+  "process_request": {
+    "request_sha256": "0f816396babb22717c102d67d476c298f4ddb7ec538cc4c9416046f4cacbbd92",
+    "trace_payload_chars": 10997,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/032-customer-followup-draft/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "032-customer-followup-draft",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-032-customer-followup-draft-gpt-5.4-20260815-225013-71916715/workspace",
+    "outcome_score": 1.0,
+    "checks": [
+      {
+        "id": "email_exists",
+        "label": "email exists",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "email_contains_required_facts",
+        "label": "email contains required facts",
+        "pass": true,
+        "weight": 1.0,
+        "detail": []
+      },
+      {
+        "id": "email_respects_pricing_and_commitment_boundaries",
+        "label": "email respects pricing and commitment boundaries",
+        "pass": true,
+        "weight": 1.0,
+        "detail": []
+      },
+      {
+        "id": "email_includes_only_approved_next_step",
+        "label": "email includes only approved next step",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "risk_notes_exists",
+        "label": "risk notes exists",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "risk_notes_cover_required_context",
+        "label": "risk notes cover required context",
+        "pass": true,
+        "weight": 1.0,
+        "detail": []
+      },
+      {
+        "id": "risk_notes_no_customer_promises",
+        "label": "risk notes no customer promises",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/032-customer-followup-draft/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.9,
+        "consistency": 0.95,
+        "robustness": 0.85
+      },
+      "total": 0.9,
+      "notes": "Agent correctly read all three input files, extracted constraints (15% cap, no custom SSO, no legal redlines), and drafted outputs respecting policy boundaries; final write step is claimed but not shown as a tool call with result, slightly reducing robustness confidence.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.9, \"consistency\": 0.95, \"robustness\": 0.85}, \"security_gate\": 1, \"notes\": \"Agent correctly read all three input files, extracted constraints (15% cap, no custom SSO, no legal redlines), and drafted outputs respecting policy boundaries; final write step is claimed but not shown as a tool call with result, slightly reducing robustness confidence.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.9,
+          "consistency": 0.95,
+          "robustness": 0.85
+        },
+        "security_gate": 1,
+        "notes": "Agent correctly read all three input files, extracted constraints (15% cap, no custom SSO, no legal redlines), and drafted outputs respecting policy boundaries; final write step is claimed but not shown as a tool call with result, slightly reducing robustness confidence."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787071958-PeRxWTpal85NnXXjBuRA",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 4432,
+        "completion_tokens": 104,
+        "total_tokens": 4536,
+        "cost": 0.01470744,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.014856,
+          "upstream_inference_prompt_cost": 0.013296,
+          "upstream_inference_completions_cost": 0.00156
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9,
+    "process_effective": 0.9,
+    "security_score": 1.0,
+    "outcome_score": 1.0,
+    "oracle_outcome_score": 1.0,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.9,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=1.0 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.01470744,
+  "cost_source": "openrouter_usage_cost"
+}

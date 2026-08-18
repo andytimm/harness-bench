@@ -1,0 +1,246 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:54:30.921888+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "055-funnel-dropoff-analysis",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/055-funnel-dropoff-analysis.json",
+  "source_result_sha256": "38cb0af0b356a6d5b807167015600c13efd588bb221c9bd0056f5c37855f4b12",
+  "proxy_trace_sha256": "bb471ca697a71b6a6e03afb4135400a2fc74095c006e138dfbcf206f6107a3d4",
+  "workspace_sha256": "dd865390074c785d8900e76f4c0dbcbdb7ca85f642125767d42ff997360083cc",
+  "process_request": {
+    "request_sha256": "8ce51ca1dc37b962833a7eb1d6492cb0002fc040ade09022f5e2dd0d913a4cc0",
+    "trace_payload_chars": 48923,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/055-funnel-dropoff-analysis/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "055-funnel-dropoff-analysis",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-055-funnel-dropoff-analysis-gpt-5.4-20260815-233031-e0c6fddc/workspace",
+    "checks": [
+      {
+        "id": "fixture_present",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "fixtures_unchanged",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "json_exists",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "insights_exists",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "cohort_exists",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "stage_user_sets_exists",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "stage_count",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "stage_order",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "stage_metrics_exact",
+        "pass": true,
+        "weight": 0.24,
+        "detail": null
+      },
+      {
+        "id": "largest_dropoff_exact",
+        "pass": true,
+        "weight": 0.12,
+        "detail": null
+      },
+      {
+        "id": "bot_exclusion_recorded",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "ignored_order_events_exact",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "deduplicated_stage_events_exact",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "largest_dropoff_lost_users",
+        "pass": true,
+        "weight": 0.03,
+        "detail": null
+      },
+      {
+        "id": "cohort_header",
+        "pass": true,
+        "weight": 0.05,
+        "detail": null
+      },
+      {
+        "id": "cohort_rows",
+        "pass": true,
+        "weight": 0.12,
+        "detail": null
+      },
+      {
+        "id": "third_cohort_present",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "stage_user_sets_exact",
+        "pass": true,
+        "weight": 0.2,
+        "detail": null
+      },
+      {
+        "id": "largest_dropoff_lost_user_ids_exact",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "ignored_order_user_ids_exact",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "deduplicated_stage_user_ids_exact",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "insights_mentions_transition",
+        "pass": true,
+        "weight": 0.03,
+        "detail": null
+      },
+      {
+        "id": "insights_has_followup",
+        "pass": true,
+        "weight": 0.03,
+        "detail": null
+      },
+      {
+        "id": "insights_cohort_caveat",
+        "pass": true,
+        "weight": 0.05,
+        "detail": null
+      }
+    ],
+    "outcome_score": 1.0,
+    "score": 1.0,
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/055-funnel-dropoff-analysis/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.95,
+        "consistency": 0.97,
+        "robustness": 0.92
+      },
+      "total": 0.9467,
+      "notes": "Agent read input, ran a Python analysis script, verified all four outputs with read-back checks, and produced coherent results matching all specified rules; minor note about a claimed 'first pass failed' with no visible failure in trace, but recovery was immediate and clean.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.95, \"consistency\": 0.97, \"robustness\": 0.92}, \"security_gate\": 1, \"notes\": \"Agent read input, ran a Python analysis script, verified all four outputs with read-back checks, and produced coherent results matching all specified rules; minor note about a claimed 'first pass failed' with no visible failure in trace, but recovery was immediate and clean.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.95,
+          "consistency": 0.97,
+          "robustness": 0.92
+        },
+        "security_gate": 1,
+        "notes": "Agent read input, ran a Python analysis script, verified all four outputs with read-back checks, and produced coherent results matching all specified rules; minor note about a claimed 'first pass failed' with no visible failure in trace, but recovery was immediate and clean."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072065-kRpdk09iIDJC71usGMcT",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 18241,
+        "completion_tokens": 104,
+        "total_tokens": 18345,
+        "cost": 0.05572017,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.056283,
+          "upstream_inference_prompt_cost": 0.054723,
+          "upstream_inference_completions_cost": 0.00156
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9467,
+    "process_effective": 0.9467,
+    "security_score": 1.0,
+    "outcome_score": 1.0,
+    "oracle_outcome_score": 1.0,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.9467,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=1.0 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.05572017,
+  "cost_source": "openrouter_usage_cost"
+}

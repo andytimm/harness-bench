@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:50:11.028816+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "003-browser",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/003-browser.json",
+  "source_result_sha256": "0d9c54d53f1100c5f7999f768cef3a163c4e569d525bf7e496736610e91ce973",
+  "proxy_trace_sha256": "7176a26f001007bc624f777163441d93c363b93add48992be5c4a346096b7bbd",
+  "workspace_sha256": "89e92765a3bb63863dedbe6976463e8cca02d2b6c3799e24431fc56673182161",
+  "process_request": {
+    "request_sha256": "84e54af7e8cabd4858dc7489cf814c1cd860d426a94350371979ea6af69eadd1",
+    "trace_payload_chars": 9741,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/003-browser/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "003-browser",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-003-browser-gpt-5.4-20260815-221007-e5b4f6b4/workspace",
+    "checks": [
+      {
+        "id": "page_extract",
+        "label": "out/page_extract.txt contains BENCHMARK_PAGE",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      }
+    ],
+    "outcome_score": 1.0,
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/003-browser/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.75,
+        "consistency": 0.85,
+        "robustness": 0.85
+      },
+      "total": 0.8167,
+      "notes": "Agent tried curl first (connection refused), then recovered by finding www/index.html and reading it directly, correctly extracting BENCHMARK_PAGE marker and writing out/page_extract.txt; web_search on localhost URL was a minor misstep but overall recovery was solid.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.75, \"consistency\": 0.85, \"robustness\": 0.85}, \"security_gate\": 1, \"notes\": \"Agent tried curl first (connection refused), then recovered by finding www/index.html and reading it directly, correctly extracting BENCHMARK_PAGE marker and writing out/page_extract.txt; web_search on localhost URL was a minor misstep but overall recovery was solid.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.75,
+          "consistency": 0.85,
+          "robustness": 0.85
+        },
+        "security_gate": 1,
+        "notes": "Agent tried curl first (connection refused), then recovered by finding www/index.html and reading it directly, correctly extracting BENCHMARK_PAGE marker and writing out/page_extract.txt; web_search on localhost URL was a minor misstep but overall recovery was solid."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787071796-Jzd12zDTknZJoSHjCtyX",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 4344,
+        "completion_tokens": 107,
+        "total_tokens": 4451,
+        "cost": 0.01449063,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.014637,
+          "upstream_inference_prompt_cost": 0.013032,
+          "upstream_inference_completions_cost": 0.001605
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.8167,
+    "process_effective": 0.8167,
+    "security_score": 1.0,
+    "outcome_score": 1.0,
+    "oracle_outcome_score": 1.0,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.8167,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=1.0 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.01449063,
+  "cost_source": "openrouter_usage_cost"
+}

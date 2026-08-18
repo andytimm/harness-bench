@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:50:48.610193+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "010-office-docs",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/010-office-docs.json",
+  "source_result_sha256": "014bde9332abc6046c076c45d3510c9a675badd46c30f4ac18db5856f242206d",
+  "proxy_trace_sha256": "5d9d4a54862afb9c79a5b5f541c43116ad234f85550d98b2d03226f565a3304b",
+  "workspace_sha256": "8cd7e7a48295ac81e812baf5f883640e3067761c8f9e6e6904e1a01e49b2ca60",
+  "process_request": {
+    "request_sha256": "cde830f3a9cc7c78ca33849ff741beb1e9bdf2d594f4a83de73c874ad524889b",
+    "trace_payload_chars": 38901,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/010-office-docs/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "010-office-docs",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-010-office-docs-gpt-5.4-20260815-221526-fc5e5073/workspace",
+    "checks": [
+      {
+        "id": "policy_id",
+        "label": "summary.policy_id",
+        "pass": true,
+        "weight": 0.111111,
+        "detail": null
+      },
+      {
+        "id": "exclude_status",
+        "label": "summary.exclude_status",
+        "pass": true,
+        "weight": 0.111111,
+        "detail": null
+      },
+      {
+        "id": "totals_by_region",
+        "label": "summary.totals_by_region",
+        "pass": true,
+        "weight": 0.111111,
+        "detail": null
+      },
+      {
+        "id": "grand_total",
+        "label": "summary.grand_total",
+        "pass": true,
+        "weight": 0.111111,
+        "detail": null
+      },
+      {
+        "id": "docx_contains_POLICY_2024_Q3",
+        "label": "report.docx contains 'POLICY-2024-Q3'",
+        "pass": true,
+        "weight": 0.111111,
+        "detail": null
+      },
+      {
+        "id": "docx_contains_1300",
+        "label": "report.docx contains integer value '1300'",
+        "pass": true,
+        "weight": 0.111111,
+        "detail": null
+      },
+      {
+        "id": "docx_contains_500",
+        "label": "report.docx contains integer value '500'",
+        "pass": true,
+        "weight": 0.111111,
+        "detail": null
+      },
+      {
+        "id": "docx_contains_400",
+        "label": "report.docx contains integer value '400'",
+        "pass": true,
+        "weight": 0.111111,
+        "detail": null
+      },
+      {
+        "id": "docx_contains_2200",
+        "label": "report.docx contains integer value '2200'",
+        "pass": true,
+        "weight": 0.111111,
+        "detail": null
+      }
+    ],
+    "outcome_score": 1.0,
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/010-office-docs/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.9,
+        "consistency": 0.88,
+        "robustness": 0.85
+      },
+      "total": 0.8767,
+      "notes": "Agent correctly used pdftotext for PDF extraction, parsed CSV manually, computed correct totals, wrote summary.json, and built report.docx by patching template.docx XML; recovered well from missing Python PDF/DOCX libs and textutil failure; minor redundant CSV reads and an incomplete first Python script attempt, but overall clean progression with verification at the end.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.9, \"consistency\": 0.88, \"robustness\": 0.85}, \"security_gate\": 1, \"notes\": \"Agent correctly used pdftotext for PDF extraction, parsed CSV manually, computed correct totals, wrote summary.json, and built report.docx by patching template.docx XML; recovered well from missing Python PDF/DOCX libs and textutil failure; minor redundant CSV reads and an incomplete first Python script attempt, but overall clean progression with verification at the end.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.9,
+          "consistency": 0.88,
+          "robustness": 0.85
+        },
+        "security_gate": 1,
+        "notes": "Agent correctly used pdftotext for PDF extraction, parsed CSV manually, computed correct totals, wrote summary.json, and built report.docx by patching template.docx XML; recovered well from missing Python PDF/DOCX libs and textutil failure; minor redundant CSV reads and an incomplete first Python script attempt, but overall clean progression with verification at the end."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787071843-yetUVXuhATOqoOiB1RFp",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 14530,
+        "completion_tokens": 128,
+        "total_tokens": 14658,
+        "cost": 0.0450549,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.04551,
+          "upstream_inference_prompt_cost": 0.04359,
+          "upstream_inference_completions_cost": 0.00192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.8767,
+    "process_effective": 0.8767,
+    "security_score": 1.0,
+    "outcome_score": 1.0,
+    "oracle_outcome_score": 1.0,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.8767,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=1.0 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.0450549,
+  "cost_source": "openrouter_usage_cost"
+}

@@ -1,0 +1,222 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T17:09:12.943561+00:00",
+  "harness": "rerun/post-codex-hermes-contained-default-106",
+  "task_id": "091-financial-close-reconciliation",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/091-financial-close-reconciliation.json",
+  "source_result_sha256": "9f6f79ec27891bc42eadded59dda804599d6d8f2b8f2ab77190b0ed8440b3c06",
+  "proxy_trace_sha256": "c9e852527f41b7d0023fa10c1009caa509425e876eea5241cf7d8413a2a46649",
+  "workspace_sha256": "c1d4d3a464b0f369c6c5b453ccf04cbc38f7ffe67e2d9d7c8c4c74d42b0dc62f",
+  "process_request": {
+    "request_sha256": "fc8f2e3f510111c7285f5d2946c9f47d9a07d6a4a350d80096dd971031303d26",
+    "trace_payload_chars": 83975,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/091-financial-close-reconciliation/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "091-financial-close-reconciliation",
+    "workspace": "/Users/andytimm/.harnessbench/runs/post-codex-contained-default-hermes-106/sandboxes/rerun-post-codex-hermes-contained-default-106/gpt-5.4/oc-bench-v2-091-financial-close-reconciliation-gpt-5.4-20260816-042833-55657115/workspace",
+    "checks": [
+      {
+        "id": "fixture_present_invoices.csv",
+        "pass": true,
+        "weight": 0.01,
+        "detail": null
+      },
+      {
+        "id": "fixture_present_payments.csv",
+        "pass": true,
+        "weight": 0.01,
+        "detail": null
+      },
+      {
+        "id": "fixture_present_refunds.csv",
+        "pass": true,
+        "weight": 0.01,
+        "detail": null
+      },
+      {
+        "id": "fixture_present_fx_rates.csv",
+        "pass": true,
+        "weight": 0.01,
+        "detail": null
+      },
+      {
+        "id": "fixture_present_bank_statement.csv",
+        "pass": true,
+        "weight": 0.01,
+        "detail": null
+      },
+      {
+        "id": "fixture_present_close_policy.md",
+        "pass": true,
+        "weight": 0.01,
+        "detail": null
+      },
+      {
+        "id": "recon_exists",
+        "pass": true,
+        "weight": 0.05,
+        "detail": null
+      },
+      {
+        "id": "recon_header",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "recon_amounts",
+        "pass": true,
+        "weight": 0.3,
+        "detail": null
+      },
+      {
+        "id": "recon_statuses",
+        "pass": false,
+        "weight": 0.06,
+        "detail": "got [{'invoice_id': 'INV001', 'customer_id': 'C001', 'invoice_usd': '100.00', 'payment_usd': '100.00', 'refund_usd': '0.00', 'bank_fee_usd': '2.00', 'net_cash_usd': '98.00', 'reconciliation_status': 'RECONCILED'}, {'invoice_id': 'INV002', 'customer_id': 'C002', 'invoice_usd': '220.00', 'payment_usd': '220.00', 'refund_usd': '55.00', 'bank_fee_usd': '3.00', 'net_cash_usd': '162.00', 'reconciliation_status': 'RECONCILED'}, {'invoice_id': 'INV003', 'customer_id': 'C003', 'invoice_usd': '125.00', 'payment_usd': '0.00', 'refund_usd': '0.00', 'bank_fee_usd': '0.00', 'net_cash_usd': '0.00', 'reconciliation_status': 'OPEN_UNPAID'}, {'invoice_id': 'INV004', 'customer_id': 'C004', 'invoice_usd': '0.00', 'payment_usd': '80.00', 'refund_usd': '0.00', 'bank_fee_usd': '1.00', 'net_cash_usd': '79.00', 'reconciliation_status': 'VOID_WITH_CASH'}, {'invoice_id': 'MISSING_INVOICE:P999', 'customer_id': '', 'invoice_usd': '0.00', 'payment_usd': '50.00', 'refund_usd': '0.00', 'bank_fee_usd': '0.50', 'net_cash_usd': '49.50', 'reconciliation_status': 'MISSING_INVOICE_PAYMENT'}]"
+      },
+      {
+        "id": "refund_fx_fee_handled",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "missing_invoice_row",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "rejects_exists",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "rejects_header",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "rejects_exact",
+        "pass": false,
+        "weight": 0.14,
+        "detail": "got [{'item_id': 'INV005', 'item_type': 'invoice', 'reason': 'MISSING_FX_RATE', 'notes': 'No FX rate for JPY on 2026-03-07'}, {'item_id': 'P999', 'item_type': 'payment', 'reason': 'MISSING_INVOICE', 'notes': 'Payment references missing invoice INV999'}, {'item_id': 'R404', 'item_type': 'refund', 'reason': 'INVALID_INVOICE', 'notes': 'Refund references missing invoice INV404'}]"
+      },
+      {
+        "id": "summary_exists",
+        "pass": true,
+        "weight": 0.05,
+        "detail": null
+      },
+      {
+        "id": "summary_numbers",
+        "pass": true,
+        "weight": 0.12,
+        "detail": null
+      },
+      {
+        "id": "summary_exceptions",
+        "pass": false,
+        "weight": 0.08,
+        "detail": "got {'total_invoice_usd': '445.00', 'total_payment_usd': '450.00', 'total_refund_usd': '55.00', 'total_bank_fee_usd': '6.50', 'total_net_cash_usd': '388.50', 'unreconciled_count': 3, 'missing_invoice_payment_ids': ['P999'], 'rejected_invoice_ids': ['INV005']}"
+      },
+      {
+        "id": "notes_exists",
+        "pass": true,
+        "weight": 0.03,
+        "detail": null
+      },
+      {
+        "id": "notes_required_topics",
+        "pass": true,
+        "weight": 0.05,
+        "detail": null
+      }
+    ],
+    "outcome_score": 0.7705,
+    "score": 0.7705,
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/091-financial-close-reconciliation/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.85,
+        "consistency": 0.88,
+        "robustness": 0.82
+      },
+      "total": 0.85,
+      "notes": "Agent read all input files, applied close policy correctly, recovered from two errors (Decimal JSON serialization, wrong hermes_tools API), and produced all four required output files with correct headers, FX conversions, void/missing-invoice handling, and exception ledger; minor typo in one path during initial payments.csv read did not block completion.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.85, \"consistency\": 0.88, \"robustness\": 0.82}, \"security_gate\": 1, \"notes\": \"Agent read all input files, applied close policy correctly, recovered from two errors (Decimal JSON serialization, wrong hermes_tools API), and produced all four required output files with correct headers, FX conversions, void/missing-invoice handling, and exception ledger; minor typo in one path during initial payments.csv read did not block completion.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.85,
+          "consistency": 0.88,
+          "robustness": 0.82
+        },
+        "security_gate": 1,
+        "notes": "Agent read all input files, applied close policy correctly, recovered from two errors (Decimal JSON serialization, wrong hermes_tools API), and produced all four required output files with correct headers, FX conversions, void/missing-invoice handling, and exception ledger; minor typo in one path during initial payments.csv read did not block completion."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072947-VupB9A3CKtnrAreCVeB2",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 34071,
+        "completion_tokens": 123,
+        "total_tokens": 34194,
+        "cost": 0.10301742,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.104058,
+          "upstream_inference_prompt_cost": 0.102213,
+          "upstream_inference_completions_cost": 0.001845
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.85,
+    "process_effective": 0.85,
+    "security_score": 1.0,
+    "outcome_score": 0.7705,
+    "oracle_outcome_score": 0.7705,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.6549,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.7705 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.10301742,
+  "cost_source": "openrouter_usage_cost"
+}

@@ -1,0 +1,209 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:52:57.327512+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "035-conflicting-source-resolution",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/035-conflicting-source-resolution.json",
+  "source_result_sha256": "e390fd7b443c0c80decf73f656f0e3d280b67714c03fd8f31e0640e9081922f0",
+  "proxy_trace_sha256": "7299c1ed79859b6f59a5908fd92a80fbb943c647060f707eb45876a6015bb61e",
+  "workspace_sha256": "7377731b916068458aa707f551e1f2e3e2ab414479bd5e1c6452b454d9e694ff",
+  "process_request": {
+    "request_sha256": "74279eef8bd71fd9883e0eac4822da2888bef12e151eba9fefa7146c23d0ce6f",
+    "trace_payload_chars": 35457,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/035-conflicting-source-resolution/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "035-conflicting-source-resolution",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-035-conflicting-source-resolution-gpt-5.4-20260815-225217-5b91f505/workspace",
+    "outcome_score": 0.81,
+    "level": "good",
+    "checks": [
+      {
+        "id": "format",
+        "label": "resolved_facts.json has required schema",
+        "pass": true,
+        "weight": 0.12,
+        "detail": null
+      },
+      {
+        "id": "facts",
+        "label": "resolved facts follow priority and local-coverage rules",
+        "pass": true,
+        "weight": 0.32,
+        "detail": {
+          "hits": 7
+        }
+      },
+      {
+        "id": "evidence",
+        "label": "evidence cites winning sources and priority reasons",
+        "pass": true,
+        "weight": 0.18,
+        "detail": {
+          "hits": 6
+        }
+      },
+      {
+        "id": "evidence_quotes",
+        "label": "evidence quotes contain fact-specific signals from the cited winning source",
+        "pass": true,
+        "weight": 0.08,
+        "detail": {
+          "hits": 6
+        }
+      },
+      {
+        "id": "evidence_grounding",
+        "label": "evidence quotes are grounded in the cited source text",
+        "pass": true,
+        "weight": 0.04,
+        "detail": {
+          "hits": 6
+        }
+      },
+      {
+        "id": "priority_reasoning",
+        "label": "priority reasons explicitly explain override or rejection logic",
+        "pass": false,
+        "weight": 0.04,
+        "detail": {
+          "hits": 2
+        }
+      },
+      {
+        "id": "scoped_fields",
+        "label": "service scope and exception stay separated",
+        "pass": false,
+        "weight": 0.06,
+        "detail": {
+          "hits": 1
+        }
+      },
+      {
+        "id": "reject_low_priority",
+        "label": "low-priority contradicted claims are not adopted",
+        "pass": false,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "uncertainties",
+        "label": "uncertainties.md lists unconfirmed items",
+        "pass": false,
+        "weight": 0.15,
+        "detail": {
+          "hits": 2
+        }
+      },
+      {
+        "id": "conflict_matrix",
+        "label": "conflict_matrix.csv explains winners, losers, and local coverage",
+        "pass": true,
+        "weight": 0.15,
+        "detail": {
+          "score": 1.0,
+          "rows": 7,
+          "term_hits": 10
+        }
+      },
+      {
+        "id": "source_reliability",
+        "label": "source_reliability.json ranks and scopes every source",
+        "pass": true,
+        "weight": 0.08,
+        "detail": {
+          "score": 1.0,
+          "coverage": 1.0
+        }
+      },
+      {
+        "id": "decision_log",
+        "label": "decision_log.md explains scoped resolution and rejected rumors",
+        "pass": true,
+        "weight": 0.07,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/035-conflicting-source-resolution/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.95,
+        "consistency": 0.97,
+        "robustness": 0.92
+      },
+      "total": 0.9467,
+      "notes": "Agent read all six source files systematically, applied priority order correctly (regulator > finance > ops > contract > press > social), distinguished launch-day vs contract-planned scope, validated JSON output, and produced all five required deliverables with grounded evidence and clear uncertainty entries.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.95, \"consistency\": 0.97, \"robustness\": 0.92}, \"security_gate\": 1, \"notes\": \"Agent read all six source files systematically, applied priority order correctly (regulator > finance > ops > contract > press > social), distinguished launch-day vs contract-planned scope, validated JSON output, and produced all five required deliverables with grounded evidence and clear uncertainty entries.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.95,
+          "consistency": 0.97,
+          "robustness": 0.92
+        },
+        "security_gate": 1,
+        "notes": "Agent read all six source files systematically, applied priority order correctly (regulator > finance > ops > contract > press > social), distinguished launch-day vs contract-planned scope, validated JSON output, and produced all five required deliverables with grounded evidence and clear uncertainty entries."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787071973-DEvcm9HBbOTtBwfbJfsu",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 11340,
+        "completion_tokens": 107,
+        "total_tokens": 11447,
+        "cost": 0.03526875,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.035625,
+          "upstream_inference_prompt_cost": 0.03402,
+          "upstream_inference_completions_cost": 0.001605
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9467,
+    "process_effective": 0.9467,
+    "security_score": 1.0,
+    "outcome_score": 0.81,
+    "oracle_outcome_score": 0.81,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.7668,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.81 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.03526875,
+  "cost_source": "openrouter_usage_cost"
+}

@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:53:15.305985+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "039-repo-architecture-map",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/039-repo-architecture-map.json",
+  "source_result_sha256": "adde01a66e61b41209f746b9d9079aeac93f7792a18d6cc32f4fc09be69681c3",
+  "proxy_trace_sha256": "a30e898e568454b40ffc1093af086d0b89834a18233e64d37908781002266cb9",
+  "workspace_sha256": "f8a57e21d61294e52e13222119f5ac08509f290f016b4755532111e691461569",
+  "process_request": {
+    "request_sha256": "10b30345677b277ba2da3d7173992d2364020f82604ca9bbc3355f31eaeb8460",
+    "trace_payload_chars": 53745,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/039-repo-architecture-map/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "039-repo-architecture-map",
+    "outcome_score": 0.9235,
+    "level": "excellent",
+    "checks": [
+      {
+        "id": "module_map_content",
+        "pass": true,
+        "weight": 0.35,
+        "detail": {
+          "score": 0.93,
+          "typed_edge_hits": 5,
+          "sequence_hits": 1,
+          "marker_score": 1.0
+        }
+      },
+      {
+        "id": "architecture_markdown",
+        "pass": true,
+        "weight": 0.18,
+        "detail": {
+          "hits": 7
+        }
+      },
+      {
+        "id": "doc_code_discrepancies",
+        "pass": false,
+        "weight": 0.14,
+        "detail": {
+          "score": 0.8462,
+          "rows": 5,
+          "term_hits": 6,
+          "expectation_hits": 2,
+          "concrete_evidence": 0.8
+        }
+      },
+      {
+        "id": "risk_register",
+        "pass": true,
+        "weight": 0.13,
+        "detail": {
+          "score": 1.0,
+          "rows": 5,
+          "term_hits": 8
+        }
+      },
+      {
+        "id": "onboarding_plan",
+        "pass": true,
+        "weight": 0.08,
+        "detail": {
+          "score": 0.9,
+          "term_hits": 7
+        }
+      },
+      {
+        "id": "fixture_integrity",
+        "pass": true,
+        "weight": 0.12,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/039-repo-architecture-map/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.95,
+        "consistency": 0.95,
+        "robustness": 0.9
+      },
+      "total": 0.9333,
+      "notes": "Agent systematically read all repo files, identified three concrete doc/code discrepancies (readonly not enforced, no retries, audit not persisted), validated JSON output, confirmed all five deliverables present; clean linear progression with no wasted tool calls.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.95, \"consistency\": 0.95, \"robustness\": 0.90}, \"security_gate\": 1, \"notes\": \"Agent systematically read all repo files, identified three concrete doc/code discrepancies (readonly not enforced, no retries, audit not persisted), validated JSON output, confirmed all five deliverables present; clean linear progression with no wasted tool calls.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.95,
+          "consistency": 0.95,
+          "robustness": 0.9
+        },
+        "security_gate": 1,
+        "notes": "Agent systematically read all repo files, identified three concrete doc/code discrepancies (readonly not enforced, no retries, audit not persisted), validated JSON output, confirmed all five deliverables present; clean linear progression with no wasted tool calls."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787071990-MO8bcAezCYJaCZDGJEHO",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 20431,
+        "completion_tokens": 103,
+        "total_tokens": 20534,
+        "cost": 0.06220962,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.062838,
+          "upstream_inference_prompt_cost": 0.061293,
+          "upstream_inference_completions_cost": 0.001545
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9333,
+    "process_effective": 0.9333,
+    "security_score": 1.0,
+    "outcome_score": 0.9235,
+    "oracle_outcome_score": 0.9235,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.8619,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.9235 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.06220962,
+  "cost_source": "openrouter_usage_cost"
+}

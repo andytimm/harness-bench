@@ -1,0 +1,162 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T17:02:37.630894+00:00",
+  "harness": "rerun/post-codex-hermes-contained-default-106",
+  "task_id": "030-word-revision-plan",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/030-word-revision-plan.json",
+  "source_result_sha256": "d4ead0216075666fa89797e99a27fd1b6500a1f66bf404d12b1825373caa025b",
+  "proxy_trace_sha256": "9a513666c594ba32eff25240ddfc57affcbcd7939251621a59d4bfdbc8c75569",
+  "workspace_sha256": "1436fa6fd85cd3d3fefd48d69f4eed74e18213d857e56cbe2cf55820ff20eb16",
+  "process_request": {
+    "request_sha256": "30ec179d78d4ffd09c939bd8bf3f04e255bc8084a79b00c6dc0efa3675498cb1",
+    "trace_payload_chars": 28108,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/030-word-revision-plan/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "030-word-revision-plan",
+    "workspace": "/Users/andytimm/.harnessbench/runs/post-codex-contained-default-hermes-106/sandboxes/rerun-post-codex-hermes-contained-default-106/gpt-5.4/oc-bench-v2-030-word-revision-plan-gpt-5.4-20260816-022535-01f2adf8/workspace",
+    "outcome_score": 1.0,
+    "checks": [
+      {
+        "id": "revised_draft_exists",
+        "label": "revised draft exists",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "required_text_preserved_or_added",
+        "label": "required text preserved or added",
+        "pass": true,
+        "weight": 1.0,
+        "detail": []
+      },
+      {
+        "id": "banned_hype_removed",
+        "label": "banned hype removed",
+        "pass": true,
+        "weight": 1.0,
+        "detail": []
+      },
+      {
+        "id": "markdown_headings_preserved",
+        "label": "markdown headings preserved",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "change_log_parseable",
+        "label": "change log parseable",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "change_log_header_exact",
+        "label": "change log header exact",
+        "pass": true,
+        "weight": 1.0,
+        "detail": [
+          "section",
+          "change_type",
+          "source_comment",
+          "summary"
+        ]
+      },
+      {
+        "id": "change_log_has_required_sources",
+        "label": "change log has required sources",
+        "pass": true,
+        "weight": 1.0,
+        "detail": "[{\"section\": \"overview\", \"change_type\": \"edit\", \"source_comment\": \"legal_comments lc-1\", \"summary\": \"removed guarantee of compliance and rewrote overview as a factual platform description.\"}, {\"section\": \"overview\", \"change_type\": \"edit\", \"source_comment\": \"style_guide\", \"summary\": \"replaced banned hype language (\\\"revolutionary\", \"null\": [\" guarantees\", \" effortless\\\") with specific factual wording.\"]}, {\"section\": \"pilot scope\", \"change_type\": \"addition\", \"source_comment\": \"legal_comments lc-2\", \"summary\": \"added required disclaimer: \\\"pilot results are informational and do not constitute compliance certification.\\\"\"}, {\"section\": \"call to action\", \"change_type\": \"edit\", \"source_comment\": \"style_guide\", \"summary\": \"replaced banned hype language (\\\"transform\\\") with factual call to begin pilot planning and implementation.\"}, {\"section\": \"data processing addendum\", \"change_type\": \"preserve\", \"source_comment\": \"legal_comments lc-3\", \"summary\": \"preserved section unchanged as required.\"}, {\"section\": \"no warranty expansion\", \"change_type\": \"preserve\", \"source_comment\": \"legal_comments lc-4\", \"summary\": \"preserved clause unchanged as required.\"}, {\"section\": \"headings\", \"change_type\": \"preserve\", \"source_comment\": \"style_guide\", \"summary\": \"kept markdown section headings intact.\"}]"
+      },
+      {
+        "id": "change_log_maps_legal_comments",
+        "label": "change log maps legal comments",
+        "pass": true,
+        "weight": 1.0,
+        "detail": "[{\"section\": \"overview\", \"change_type\": \"edit\", \"source_comment\": \"legal_comments lc-1\", \"summary\": \"removed guarantee of compliance and rewrote overview as a factual platform description.\"}, {\"section\": \"overview\", \"change_type\": \"edit\", \"source_comment\": \"style_guide\", \"summary\": \"replaced banned hype language (\\\"revolutionary\", \"null\": [\" guarantees\", \" effortless\\\") with specific factual wording.\"]}, {\"section\": \"pilot scope\", \"change_type\": \"addition\", \"source_comment\": \"legal_comments lc-2\", \"summary\": \"added required disclaimer: \\\"pilot results are informational and do not constitute compliance certification.\\\"\"}, {\"section\": \"call to action\", \"change_type\": \"edit\", \"source_comment\": \"style_guide\", \"summary\": \"replaced banned hype language (\\\"transform\\\") with factual call to begin pilot planning and implementation.\"}, {\"section\": \"data processing addendum\", \"change_type\": \"preserve\", \"source_comment\": \"legal_comments lc-3\", \"summary\": \"preserved section unchanged as required.\"}, {\"section\": \"no warranty expansion\", \"change_type\": \"preserve\", \"source_comment\": \"legal_comments lc-4\", \"summary\": \"preserved clause unchanged as required.\"}, {\"section\": \"headings\", \"change_type\": \"preserve\", \"source_comment\": \"style_guide\", \"summary\": \"kept markdown section headings intact.\"}]"
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/030-word-revision-plan/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.93,
+        "consistency": 0.95,
+        "robustness": 0.88
+      },
+      "total": 0.92,
+      "notes": "Clean read→revise→write→verify flow; one benign path typo caused a file-not-found on verification read but the execute_code check confirmed all requirements passed; no security issues.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.93, \"consistency\": 0.95, \"robustness\": 0.88}, \"security_gate\": 1, \"notes\": \"Clean read→revise→write→verify flow; one benign path typo caused a file-not-found on verification read but the execute_code check confirmed all requirements passed; no security issues.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.93,
+          "consistency": 0.95,
+          "robustness": 0.88
+        },
+        "security_gate": 1,
+        "notes": "Clean read→revise→write→verify flow; one benign path typo caused a file-not-found on verification read but the execute_code check confirmed all requirements passed; no security issues."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072550-cP9v2JtoOVtg1QEBD0mP",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 10683,
+        "completion_tokens": 91,
+        "total_tokens": 10774,
+        "cost": 0.03307986,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.033414,
+          "upstream_inference_prompt_cost": 0.032049,
+          "upstream_inference_completions_cost": 0.001365
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.92,
+    "process_effective": 0.92,
+    "security_score": 1.0,
+    "outcome_score": 1.0,
+    "oracle_outcome_score": 1.0,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.92,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=1.0 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.03307986,
+  "cost_source": "openrouter_usage_cost"
+}

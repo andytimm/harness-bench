@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:50:38.882365+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "008-image-recognize",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/008-image-recognize.json",
+  "source_result_sha256": "a2582dc0ae01d654506d8ee9939dbea2642314726ca39c52a4126dc2f3c43e36",
+  "proxy_trace_sha256": "4203939346e32b793876dd7a10ffeb20bb85c86a66aa2b542fc54eb70063db6a",
+  "workspace_sha256": "d0002fa960de13fe8140547da8ce4fb0c5f4ebfbd8c167fda23a1baf47faf6be",
+  "process_request": {
+    "request_sha256": "7f8e87549e0fb7821727d743eb6c50c5b51e751656c17f475f3fd258847ce185",
+    "trace_payload_chars": 8093,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/008-image-recognize/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "008-image-recognize",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-008-image-recognize-gpt-5.4-20260815-221351-e91e71d9/workspace",
+    "checks": [
+      {
+        "id": "out_image1_answer.txt",
+        "label": "out/image1_answer.txt exists and is non-empty",
+        "pass": true,
+        "weight": 0.5,
+        "detail": null
+      },
+      {
+        "id": "out_image2_answer.txt",
+        "label": "out/image2_answer.txt exists and is non-empty",
+        "pass": true,
+        "weight": 0.5,
+        "detail": null
+      }
+    ],
+    "outcome_score": 1.0,
+    "quality_rubric_meta": {
+      "skipped": false,
+      "parse_error": false,
+      "reason": null,
+      "notes": "Both answers correctly match their respective images; image1 nails red square on black, image2 accurately describes the fluffy kitten on white blanket indoors, though 'cream' slightly undersells the orange/ginger coloring.",
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "quality": 0.92
+    },
+    "quality": 0.92,
+    "outcome_llm_weight": 0.9
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/008-image-recognize/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.9,
+        "consistency": 0.85,
+        "robustness": 0.8
+      },
+      "total": 0.85,
+      "notes": "Agent used vision to inspect images and wrote correct one-line answers via shell; flow is logical though intermediate steps show some opaque 'I have the image contents' without explicit tool calls for reading. Output files are correct and complete.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.9, \"consistency\": 0.85, \"robustness\": 0.8}, \"security_gate\": 1, \"notes\": \"Agent used vision to inspect images and wrote correct one-line answers via shell; flow is logical though intermediate steps show some opaque 'I have the image contents' without explicit tool calls for reading. Output files are correct and complete.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.9,
+          "consistency": 0.85,
+          "robustness": 0.8
+        },
+        "security_gate": 1,
+        "notes": "Agent used vision to inspect images and wrote correct one-line answers via shell; flow is logical though intermediate steps show some opaque 'I have the image contents' without explicit tool calls for reading. Output files are correct and complete."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787071834-pt5Xu6XBPsV5jkIbdLxz",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 4797,
+        "completion_tokens": 97,
+        "total_tokens": 4894,
+        "cost": 0.01568754,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.015846,
+          "upstream_inference_prompt_cost": 0.014391,
+          "upstream_inference_completions_cost": 0.001455
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.85,
+    "process_effective": 0.85,
+    "security_score": 1.0,
+    "outcome_score": 0.928,
+    "oracle_outcome_score": 1.0,
+    "oracle_quality": 0.92,
+    "quality_rubric_meta": {
+      "skipped": false,
+      "parse_error": false,
+      "reason": null,
+      "notes": "Both answers correctly match their respective images; image1 nails red square on black, image2 accurately describes the fluffy kitten on white blanket indoors, though 'cream' slightly undersells the orange/ginger coloring.",
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "quality": 0.92
+    },
+    "outcome_llm_weight": 0.9,
+    "outcome_formula": "outcome = (1-0.9)*oracle_outcome + 0.9*quality (from oracle-side rubric_llm)",
+    "combined_score": 0.7888,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.928 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = (1-0.9)*oracle_outcome + 0.9*quality (from oracle-side rubric_llm). security_score from rubric"
+  },
+  "reported_cost_usd": 0.01568754,
+  "cost_source": "openrouter_usage_cost"
+}

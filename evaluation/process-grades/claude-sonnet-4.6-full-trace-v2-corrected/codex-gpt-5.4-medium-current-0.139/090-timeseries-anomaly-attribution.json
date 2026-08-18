@@ -1,0 +1,198 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:57:27.633834+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "090-timeseries-anomaly-attribution",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/090-timeseries-anomaly-attribution.json",
+  "source_result_sha256": "dc78c6e2d37f85315ae8555cf65c3ae5d80a702c7a648a253bb648ddfea15a2b",
+  "proxy_trace_sha256": "c2ada0ce61079ad2884e6dca0813270003138c642d1dc7d9b8e386c06a2ae420",
+  "workspace_sha256": "9cee428d4199f69e6bbbe227b2c07683c980602a3eda3ac8e4d630138fce10f2",
+  "process_request": {
+    "request_sha256": "9e3d379c9a475ff894b58cce7c3529171226191f675eab9182a01aa8f43b1602",
+    "trace_payload_chars": 46774,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/090-timeseries-anomaly-attribution/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "090-timeseries-anomaly-attribution",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-090-timeseries-anomaly-attribution-gpt-5.4-20260816-002817-404ac3eb/workspace",
+    "checks": [
+      {
+        "id": "fixture_present_hourly_metrics.csv",
+        "pass": true,
+        "weight": 0.015,
+        "detail": null
+      },
+      {
+        "id": "fixture_present_deployments.csv",
+        "pass": true,
+        "weight": 0.015,
+        "detail": null
+      },
+      {
+        "id": "fixture_present_incident_calendar.csv",
+        "pass": true,
+        "weight": 0.015,
+        "detail": null
+      },
+      {
+        "id": "fixture_present_detection_rules.md",
+        "pass": true,
+        "weight": 0.015,
+        "detail": null
+      },
+      {
+        "id": "anomalies_exists",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "anomalies_header",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "anomaly_exact_set",
+        "pass": false,
+        "weight": 0.36,
+        "detail": "got [{'anomaly_id': 'A-001', 'timestamp': '2026-04-20T10:00:00Z', 'service': 'checkout', 'region': 'us-east', 'metric': 'error_rate', 'observed': '0.0938', 'expected': '0.0100', 'z_score': '8.4', 'severity': 'high', 'attributed_cause': 'deployment overlap: D-441 (checkout-2.8.1)'}, {'anomaly_id': 'A-002', 'timestamp': '2026-04-20T10:00:00Z', 'service': 'payments', 'region': 'eu-west', 'metric': 'latency_p95_ms', 'observed': '910', 'expected': '210', 'z_score': '7.0', 'severity': 'high', 'attributed_cause': 'third-party overlap: I-19 (card processor latency)'}, {'anomaly_id': 'A-003', 'timestamp': '2026-04-20T11:00:00Z', 'service': 'search', 'region': 'global', 'metric': 'requests', 'observed': '410', 'expected': '1000', 'z_score': '-5.9', 'severity': 'medium', 'attributed_cause': 'marketing/calendar overlap: M-07 (campaign tracking outage)'}, {'anomaly_id': 'A-004', 'timestamp': '2026-04-20T11:30:00Z', 'service': 'checkout', 'region': 'us-east', 'metric': 'latency_p95_ms', 'observed': '880', 'expected': '220', 'z_score': '6.6', 'severity': 'high', 'attributed_cause': 'deployment overlap: D-443 (checkout-2.8.2)'}, {'anomaly_id': 'A-005', 'timestamp': '2026-04-20T12:30:00Z', 'service': 'profile', 'region': 'global', 'metric': 'error_rate', 'observed': '0.0500', 'expected': '0.0100', 'z_score': '4.2', 'severity': 'medium', 'attributed_cause': 'unattributed'}, {'anomaly_id': 'A-006', 'timestamp': '2026-04-20T12:30:00Z', 'service': 'profile', 'region': 'global', 'metric': 'latency_p95_ms', 'observed': '260', 'expected': '210', 'z_score': '3.1', 'severity': 'medium', 'attributed_cause': 'unattributed'}]"
+      },
+      {
+        "id": "low_volume_suppressed",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "attribution_priority",
+        "pass": false,
+        "weight": 0.08,
+        "detail": "deployment/third-party attribution missing"
+      },
+      {
+        "id": "summary_exists",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "summary_ids",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "summary_counts",
+        "pass": true,
+        "weight": 0.1,
+        "detail": null
+      },
+      {
+        "id": "summary_impact",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "summary_unattributed",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "notes_exists",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "notes_caveats",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      }
+    ],
+    "outcome_score": 0.6271,
+    "score": 0.6271,
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/090-timeseries-anomaly-attribution/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.97,
+        "consistency": 0.98,
+        "robustness": 0.95
+      },
+      "total": 0.9667,
+      "notes": "Agent read all inputs, applied rules correctly (low-volume suppression, z-score thresholds, priority attribution), wrote all three required outputs, verified them, and documented overlapping attribution and causation caveats—clean, well-ordered execution with no security issues.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.97, \"consistency\": 0.98, \"robustness\": 0.95}, \"security_gate\": 1, \"notes\": \"Agent read all inputs, applied rules correctly (low-volume suppression, z-score thresholds, priority attribution), wrote all three required outputs, verified them, and documented overlapping attribution and causation caveats—clean, well-ordered execution with no security issues.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.97,
+          "consistency": 0.98,
+          "robustness": 0.95
+        },
+        "security_gate": 1,
+        "notes": "Agent read all inputs, applied rules correctly (low-volume suppression, z-score thresholds, priority attribution), wrote all three required outputs, verified them, and documented overlapping attribution and causation caveats—clean, well-ordered execution with no security issues."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072243-eI82caNferT5tX31ZEG1",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 18772,
+        "completion_tokens": 106,
+        "total_tokens": 18878,
+        "cost": 0.05732694,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.057906,
+          "upstream_inference_prompt_cost": 0.056316,
+          "upstream_inference_completions_cost": 0.00159
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9667,
+    "process_effective": 0.9667,
+    "security_score": 1.0,
+    "outcome_score": 0.6271,
+    "oracle_outcome_score": 0.6271,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.6062,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.6271 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.05732694,
+  "cost_source": "openrouter_usage_cost"
+}

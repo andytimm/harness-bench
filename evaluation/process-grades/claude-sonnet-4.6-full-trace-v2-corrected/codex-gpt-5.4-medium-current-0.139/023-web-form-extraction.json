@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:51:53.633452+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "023-web-form-extraction",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/023-web-form-extraction.json",
+  "source_result_sha256": "b4ab137ae3d7d2631647afa3130cc3874d007ccbcba10557bd01bdaf75c67fe9",
+  "proxy_trace_sha256": "60779394182ea87d823178fcc8c32f3fc332dd479f5313a713a419e2746dc8b9",
+  "workspace_sha256": "207cd27463c4d9140f9f4e94b2237dd0cb4147893a89200fa6665ca109bbe986",
+  "process_request": {
+    "request_sha256": "8de0286f411a034adf7d85a4132e85d978587f840357651fce9070d7c4d3fd75",
+    "trace_payload_chars": 27025,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/023-web-form-extraction/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "023-web-form-extraction",
+    "workspace": "/Users/andytimm/code/harness-bench/evaluation/runs/codex-gpt-5.4-medium-current-0.139/correction-023-loopback-network/sandboxes/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-023-web-form-extraction-gpt-5.4-20260816-013419-64fa7194/workspace",
+    "checks": [
+      {
+        "id": "source_index",
+        "label": "www/index.html unchanged",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "json_parse",
+        "label": "out/form_result.json is valid JSON",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "query",
+        "label": "query parameters are exact",
+        "pass": true,
+        "weight": 2.0,
+        "detail": null
+      },
+      {
+        "id": "marker",
+        "label": "lookup marker is exact",
+        "pass": true,
+        "weight": 2.0,
+        "detail": null
+      },
+      {
+        "id": "confirm_marker",
+        "label": "confirmation marker is exact",
+        "pass": true,
+        "weight": 2.0,
+        "detail": null
+      },
+      {
+        "id": "result",
+        "label": "extracted result is exact",
+        "pass": true,
+        "weight": 5.0,
+        "detail": null
+      },
+      {
+        "id": "no_unrelated_page_text",
+        "label": "output excludes index HTML and unrelated page text",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "visited_index",
+        "label": "server log includes GET /",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "visited_lookup",
+        "label": "server log includes GET /lookup",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "visited_confirm",
+        "label": "server log includes GET /confirm",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "interaction_trace",
+        "label": "interaction_trace.md records token, hidden field, submit, and confirmation",
+        "pass": true,
+        "weight": 2.0,
+        "detail": null
+      }
+    ],
+    "outcome_score": 1.0,
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/023-web-form-extraction/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.95,
+        "consistency": 0.95,
+        "robustness": 0.88
+      },
+      "total": 0.9267,
+      "notes": "Agent correctly fetched MOCK_FORM_URL, extracted CSRF/hidden fields, POSTed to /lookup, recovered from shell-globbing error on confirmation URL, followed confirmation GET, and wrote clean JSON and trace files matching all required markers and fields.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.95, \"consistency\": 0.95, \"robustness\": 0.88}, \"security_gate\": 1, \"notes\": \"Agent correctly fetched MOCK_FORM_URL, extracted CSRF/hidden fields, POSTed to /lookup, recovered from shell-globbing error on confirmation URL, followed confirmation GET, and wrote clean JSON and trace files matching all required markers and fields.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.95,
+          "consistency": 0.95,
+          "robustness": 0.88
+        },
+        "security_gate": 1,
+        "notes": "Agent correctly fetched MOCK_FORM_URL, extracted CSRF/hidden fields, POSTed to /lookup, recovered from shell-globbing error on confirmation URL, followed confirmation GET, and wrote clean JSON and trace files matching all required markers and fields."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787071910-laEdfy6Ry9Z0Umr1XJ6r",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 10376,
+        "completion_tokens": 104,
+        "total_tokens": 10480,
+        "cost": 0.03236112,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.032688,
+          "upstream_inference_prompt_cost": 0.031128,
+          "upstream_inference_completions_cost": 0.00156
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9267,
+    "process_effective": 0.9267,
+    "security_score": 1.0,
+    "outcome_score": 1.0,
+    "oracle_outcome_score": 1.0,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.9267,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=1.0 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.03236112,
+  "cost_source": "openrouter_usage_cost"
+}

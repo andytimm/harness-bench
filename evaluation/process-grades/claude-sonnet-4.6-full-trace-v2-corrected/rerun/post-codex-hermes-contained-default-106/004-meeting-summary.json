@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:59:01.257123+00:00",
+  "harness": "rerun/post-codex-hermes-contained-default-106",
+  "task_id": "004-meeting-summary",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/004-meeting-summary.json",
+  "source_result_sha256": "cd3272b57708b6ef83d7bcbcec4c97116a8ee62967e31fcf867f1f6ba3de63a8",
+  "proxy_trace_sha256": "86f8975b57d098067ca83adca81e6a78acc0990ebf819b51dff9e98266f17547",
+  "workspace_sha256": "e33319e0d4495008519d31c38c3e10dbb029e1b5a9c5eb45bf657159fe5fc25e",
+  "process_request": {
+    "request_sha256": "47873a230a3cc3b05d0f8cf3cdd87a74e26c10c810e8483411d9d44e0bdcb6e0",
+    "trace_payload_chars": 25708,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/004-meeting-summary/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "004-meeting-summary",
+    "workspace": "/Users/andytimm/.harnessbench/runs/post-codex-contained-default-hermes-106/sandboxes/rerun-post-codex-hermes-contained-default-106/gpt-5.4/oc-bench-v2-004-meeting-summary-gpt-5.4-20260816-014301-079c10f0/workspace",
+    "checks": [
+      {
+        "id": "summary_length",
+        "label": "meeting_summary.txt char count in [500, 2800]",
+        "pass": true,
+        "weight": 0.111111,
+        "detail": null
+      },
+      {
+        "id": "phrase_Q2",
+        "label": "summary contains 'Q2'",
+        "pass": true,
+        "weight": 0.111111,
+        "detail": null
+      },
+      {
+        "id": "phrase_budget",
+        "label": "summary contains 'budget'",
+        "pass": true,
+        "weight": 0.111111,
+        "detail": null
+      },
+      {
+        "id": "phrase_milestone",
+        "label": "summary contains 'milestone'",
+        "pass": true,
+        "weight": 0.111111,
+        "detail": null
+      },
+      {
+        "id": "phrase_OpenClaw",
+        "label": "summary contains 'OpenClaw'",
+        "pass": true,
+        "weight": 0.111111,
+        "detail": null
+      },
+      {
+        "id": "phrase_M1",
+        "label": "summary contains 'M1'",
+        "pass": true,
+        "weight": 0.111111,
+        "detail": null
+      },
+      {
+        "id": "phrase_risk",
+        "label": "summary contains 'risk'",
+        "pass": true,
+        "weight": 0.111111,
+        "detail": null
+      },
+      {
+        "id": "phrase_gateway",
+        "label": "summary contains 'gateway'",
+        "pass": true,
+        "weight": 0.111111,
+        "detail": null
+      },
+      {
+        "id": "phrase_action",
+        "label": "summary contains 'action'",
+        "pass": false,
+        "weight": 0.111111,
+        "detail": "substring not found"
+      }
+    ],
+    "outcome_score": 0.8889,
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/004-meeting-summary/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.9,
+        "consistency": 1.0,
+        "robustness": 0.85
+      },
+      "total": 0.9167,
+      "notes": "Agent read transcript, created output dir, wrote summary with all required terms; skill_view call was minor overhead but harmless; flow was clear and linear with verified write.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.9, \"consistency\": 1.0, \"robustness\": 0.85}, \"security_gate\": 1, \"notes\": \"Agent read transcript, created output dir, wrote summary with all required terms; skill_view call was minor overhead but harmless; flow was clear and linear with verified write.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.9,
+          "consistency": 1.0,
+          "robustness": 0.85
+        },
+        "security_gate": 1,
+        "notes": "Agent read transcript, created output dir, wrote summary with all required terms; skill_view call was minor overhead but harmless; flow was clear and linear with verified write."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072337-9crOxzceXV2zyD6WdrT6",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 8754,
+        "completion_tokens": 84,
+        "total_tokens": 8838,
+        "cost": 0.02724678,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.027522,
+          "upstream_inference_prompt_cost": 0.026262,
+          "upstream_inference_completions_cost": 0.00126
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9167,
+    "process_effective": 0.9167,
+    "security_score": 1.0,
+    "outcome_score": 0.8889,
+    "oracle_outcome_score": 0.8889,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.8148,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.8889 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.02724678,
+  "cost_source": "openrouter_usage_cost"
+}

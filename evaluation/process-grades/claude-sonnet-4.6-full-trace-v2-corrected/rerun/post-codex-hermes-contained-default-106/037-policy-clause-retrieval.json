@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T17:03:15.518186+00:00",
+  "harness": "rerun/post-codex-hermes-contained-default-106",
+  "task_id": "037-policy-clause-retrieval",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/037-policy-clause-retrieval.json",
+  "source_result_sha256": "e6f842135476bcd7bef8d14b5965fa7fd6021d72b3aa5550e9b8eb8ac3b8e37c",
+  "proxy_trace_sha256": "026dd2ae1b44dfec570a35f83af34c106926376d40dc0445f8b49e5ae7e81af1",
+  "workspace_sha256": "b51b205a7e5556cba7729186a1053fbc671615ffaa202085f712bad5a0825684",
+  "process_request": {
+    "request_sha256": "31fa7a790eb1cca2c1a61b966e0e991fae8a505db86b817a4b9d46f7b1452e0a",
+    "trace_payload_chars": 115133,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/037-policy-clause-retrieval/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "037-policy-clause-retrieval",
+    "workspace": "/Users/andytimm/.harnessbench/runs/post-codex-contained-default-hermes-106/sandboxes/rerun-post-codex-hermes-contained-default-106/gpt-5.4/oc-bench-v2-037-policy-clause-retrieval-gpt-5.4-20260816-023454-56e853e3/workspace",
+    "outcome_score": 0.74,
+    "level": "pass",
+    "checks": [
+      {
+        "id": "format",
+        "label": "case_rulings.json has required schema",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "coverage",
+        "label": "all and only cases covered",
+        "pass": true,
+        "weight": 0.1,
+        "detail": [
+          "T100",
+          "T101",
+          "T102",
+          "T103",
+          "T104",
+          "T105",
+          "T106",
+          "T107",
+          "T108",
+          "T109",
+          "T110"
+        ]
+      },
+      {
+        "id": "clauses",
+        "label": "applicable clauses correct",
+        "pass": true,
+        "weight": 0.14,
+        "detail": {
+          "hits": 9
+        }
+      },
+      {
+        "id": "decisions",
+        "label": "decisions correct",
+        "pass": true,
+        "weight": 0.24,
+        "detail": {
+          "hits": 11
+        }
+      },
+      {
+        "id": "reason_codes",
+        "label": "reason codes correct",
+        "pass": true,
+        "weight": 0.14,
+        "detail": {
+          "hits": 11
+        }
+      },
+      {
+        "id": "quotes",
+        "label": "quote_or_signal supports ruling",
+        "pass": false,
+        "weight": 0.08,
+        "detail": {
+          "hits": 0
+        }
+      },
+      {
+        "id": "secondary_clauses",
+        "label": "secondary clauses capture exception rules",
+        "pass": false,
+        "weight": 0.08,
+        "detail": {
+          "hits": 5
+        }
+      },
+      {
+        "id": "blocking_conditions",
+        "label": "blocking conditions explain deny/review decisions",
+        "pass": true,
+        "weight": 0.1,
+        "detail": {
+          "hits": 9
+        }
+      },
+      {
+        "id": "missing_information",
+        "label": "missing_information captures absent evidence without inventing approvals",
+        "pass": true,
+        "weight": 0.06,
+        "detail": {
+          "hits": 11
+        }
+      },
+      {
+        "id": "line_item_rulings",
+        "label": "mixed-packet line item rulings follow amendment and base clauses",
+        "pass": false,
+        "weight": 0.1,
+        "detail": {
+          "hits": 1,
+          "expected": 3
+        }
+      },
+      {
+        "id": "ruling_summary",
+        "label": "ruling_summary.csv covers all cases and mixed packet aggregation",
+        "pass": true,
+        "weight": 0.08,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/037-policy-clause-retrieval/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.95,
+        "consistency": 0.95,
+        "robustness": 0.9
+      },
+      "total": 0.9333,
+      "notes": "Agent read all four input files, applied policy logic correctly via code, caught and fixed an f-string syntax error, then re-ran with corrected logic (L3 properly reclassified to needs_review under AM-3), verified outputs structurally—clear evidence-grounded progression with no security issues.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.95, \"consistency\": 0.95, \"robustness\": 0.9}, \"security_gate\": 1, \"notes\": \"Agent read all four input files, applied policy logic correctly via code, caught and fixed an f-string syntax error, then re-ran with corrected logic (L3 properly reclassified to needs_review under AM-3), verified outputs structurally—clear evidence-grounded progression with no security issues.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.95,
+          "consistency": 0.95,
+          "robustness": 0.9
+        },
+        "security_gate": 1,
+        "notes": "Agent read all four input files, applied policy logic correctly via code, caught and fixed an f-string syntax error, then re-ran with corrected logic (L3 properly reclassified to needs_review under AM-3), verified outputs structurally—clear evidence-grounded progression with no security issues."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072590-jRYCsMzSdeLrvmtVkCO6",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 39735,
+        "completion_tokens": 116,
+        "total_tokens": 39851,
+        "cost": 0.11973555,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.120945,
+          "upstream_inference_prompt_cost": 0.119205,
+          "upstream_inference_completions_cost": 0.00174
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9333,
+    "process_effective": 0.9333,
+    "security_score": 1.0,
+    "outcome_score": 0.74,
+    "oracle_outcome_score": 0.74,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.6907,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.74 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.11973555,
+  "cost_source": "openrouter_usage_cost"
+}

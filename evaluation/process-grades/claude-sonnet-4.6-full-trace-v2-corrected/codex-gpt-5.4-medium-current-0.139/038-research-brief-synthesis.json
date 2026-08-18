@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:53:10.229375+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "038-research-brief-synthesis",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/038-research-brief-synthesis.json",
+  "source_result_sha256": "5f85b049b47a3140c9a4d9faa82eaca962d40b05e574501bf8d0b31fc948a5f7",
+  "proxy_trace_sha256": "2c6344582d9fdb952e4be38da3c6d41ad31cdfb9914b8ac4b64959c4f9c8bcf6",
+  "workspace_sha256": "5503a59753be382d3d2240794535fcb2a343259f7fa3d48960eac9ff7a43e666",
+  "process_request": {
+    "request_sha256": "7c61f0e47475a9b05900e5f997e9d36e63d1d0716091ad89e476fbecc5e08653",
+    "trace_payload_chars": 46551,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/038-research-brief-synthesis/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "038-research-brief-synthesis",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-038-research-brief-synthesis-gpt-5.4-20260815-225833-96ec775c/workspace",
+    "outcome_score": 0.8907,
+    "level": "good",
+    "checks": [
+      {
+        "id": "brief_structure",
+        "label": "research_brief.md has required sections",
+        "pass": true,
+        "weight": 0.2,
+        "detail": {
+          "hits": 5
+        }
+      },
+      {
+        "id": "brief_metrics",
+        "label": "brief includes required metrics and caveats",
+        "pass": true,
+        "weight": 0.4,
+        "detail": {
+          "hits": 16,
+          "total": 16
+        }
+      },
+      {
+        "id": "no_external_fabrication",
+        "label": "brief does not claim external/current data",
+        "pass": true,
+        "weight": 0.15,
+        "detail": null
+      },
+      {
+        "id": "source_notes",
+        "label": "source_notes.csv covers all offline sources with source-specific signals",
+        "pass": false,
+        "weight": 0.25,
+        "detail": {
+          "sources": [
+            "in/reports/finance.md",
+            "in/reports/maintenance.md",
+            "in/reports/operations.md",
+            "in/reports/press_note.md",
+            "in/reports/survey.md",
+            "in/stats.csv"
+          ],
+          "signal_hits": 0
+        }
+      },
+      {
+        "id": "evidence_matrix",
+        "label": "evidence_matrix.csv aligns claims with types, sources, rows, and calculations",
+        "pass": true,
+        "weight": 0.2,
+        "detail": {
+          "score": 0.9333,
+          "claim_hits": 7
+        }
+      },
+      {
+        "id": "assumptions",
+        "label": "assumptions.json ties risks to concrete evidence-matrix claims",
+        "pass": true,
+        "weight": 0.1,
+        "detail": {
+          "score": 1.0,
+          "linked": 5
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/038-research-brief-synthesis/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.95,
+        "consistency": 0.97,
+        "robustness": 0.92
+      },
+      "total": 0.9467,
+      "notes": "Agent read all source files, computed metrics accurately (10.2% ridership, -31% complaint rate, 7pp on-time), preserved the press-note conflict, produced all four required outputs with correct headers and claim IDs, and validated outputs before finishing—clean, well-grounded progression with no security issues.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.95, \"consistency\": 0.97, \"robustness\": 0.92}, \"security_gate\": 1, \"notes\": \"Agent read all source files, computed metrics accurately (10.2% ridership, -31% complaint rate, 7pp on-time), preserved the press-note conflict, produced all four required outputs with correct headers and claim IDs, and validated outputs before finishing—clean, well-grounded progression with no security issues.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.95,
+          "consistency": 0.97,
+          "robustness": 0.92
+        },
+        "security_gate": 1,
+        "notes": "Agent read all source files, computed metrics accurately (10.2% ridership, -31% complaint rate, 7pp on-time), preserved the press-note conflict, produced all four required outputs with correct headers and claim IDs, and validated outputs before finishing—clean, well-grounded progression with no security issues."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787071985-OjAsoVDOijLg4bSnOPYh",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 14539,
+        "completion_tokens": 117,
+        "total_tokens": 14656,
+        "cost": 0.04491828,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.045372,
+          "upstream_inference_prompt_cost": 0.043617,
+          "upstream_inference_completions_cost": 0.001755
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9467,
+    "process_effective": 0.9467,
+    "security_score": 1.0,
+    "outcome_score": 0.8907,
+    "oracle_outcome_score": 0.8907,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.8432,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.8907 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.04491828,
+  "cost_source": "openrouter_usage_cost"
+}

@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T17:03:00.149848+00:00",
+  "harness": "rerun/post-codex-hermes-contained-default-106",
+  "task_id": "034-evidence-matrix-claims",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/034-evidence-matrix-claims.json",
+  "source_result_sha256": "ab28bbac5ed3404f1fb8d1c28640e5734a4667ba55b0f1ce92189987c3438d40",
+  "proxy_trace_sha256": "8198ed3f2de965be8861b7f8aa655e528f5be906dcf15f1fe9d5d7f997fece6e",
+  "workspace_sha256": "aa497bb1260daa7b7e754605fda1a8a872a7fdfb3cf1803b2336ca464d9f0131",
+  "process_request": {
+    "request_sha256": "17f3d3b3986d0a2197a28eec212480b8d7ef4b1db28a6039d9c962c210bb0f17",
+    "trace_payload_chars": 49463,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/034-evidence-matrix-claims/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "034-evidence-matrix-claims",
+    "workspace": "/Users/andytimm/.harnessbench/runs/post-codex-contained-default-hermes-106/sandboxes/rerun-post-codex-hermes-contained-default-106/gpt-5.4/oc-bench-v2-034-evidence-matrix-claims-gpt-5.4-20260816-022930-d7f9c3c4/workspace",
+    "outcome_score": 0.96,
+    "level": "excellent",
+    "checks": [
+      {
+        "id": "format",
+        "label": "CSV has required columns",
+        "pass": true,
+        "weight": 0.15,
+        "detail": [
+          "claim_id",
+          "claim",
+          "classification",
+          "source_file",
+          "evidence_phrase"
+        ]
+      },
+      {
+        "id": "coverage",
+        "label": "all and only expected claims covered",
+        "pass": true,
+        "weight": 0.2,
+        "detail": {
+          "ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C5"
+          ]
+        }
+      },
+      {
+        "id": "classification",
+        "label": "support/contradict/unclear labels are correct",
+        "pass": true,
+        "weight": 0.25,
+        "detail": {
+          "hits": 5,
+          "total": 5
+        }
+      },
+      {
+        "id": "sources",
+        "label": "source_file points to correct source",
+        "pass": true,
+        "weight": 0.2,
+        "detail": {
+          "hits": 5,
+          "total": 5
+        }
+      },
+      {
+        "id": "evidence",
+        "label": "evidence_phrase includes decisive text signals",
+        "pass": true,
+        "weight": 0.2,
+        "detail": {
+          "hits": 4,
+          "total": 5
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/034-evidence-matrix-claims/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.95,
+        "consistency": 0.97,
+        "robustness": 0.93
+      },
+      "total": 0.95,
+      "notes": "Agent systematically read all source files, correctly matched each claim to its source, applied accurate support/contradict classifications grounded in source text, and verified the output CSV programmatically; no invented sources or unsupported certainty detected.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.95, \"consistency\": 0.97, \"robustness\": 0.93}, \"security_gate\": 1, \"notes\": \"Agent systematically read all source files, correctly matched each claim to its source, applied accurate support/contradict classifications grounded in source text, and verified the output CSV programmatically; no invented sources or unsupported certainty detected.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.95,
+          "consistency": 0.97,
+          "robustness": 0.93
+        },
+        "security_gate": 1,
+        "notes": "Agent systematically read all source files, correctly matched each claim to its source, applied accurate support/contradict classifications grounded in source text, and verified the output CSV programmatically; no invented sources or unsupported certainty detected."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072576-EMZsaf5C0E1nVGf913DI",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 17277,
+        "completion_tokens": 98,
+        "total_tokens": 17375,
+        "cost": 0.05276799,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.053301,
+          "upstream_inference_prompt_cost": 0.051831,
+          "upstream_inference_completions_cost": 0.00147
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.95,
+    "process_effective": 0.95,
+    "security_score": 1.0,
+    "outcome_score": 0.96,
+    "oracle_outcome_score": 0.96,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.912,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.96 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.05276799,
+  "cost_source": "openrouter_usage_cost"
+}

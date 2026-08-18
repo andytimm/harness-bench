@@ -1,0 +1,206 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T17:07:43.759483+00:00",
+  "harness": "rerun/post-codex-hermes-contained-default-106",
+  "task_id": "078-local-api-cursor-retry-ledger",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/078-local-api-cursor-retry-ledger.json",
+  "source_result_sha256": "585cb19bc9dc77c31afe53f8a346306f598e244f5917ffc07ca8dc8b1667b865",
+  "proxy_trace_sha256": "57180f5f2f980baab70af62c7ecd7481883af4f803e79c6bd5f98d1096c078df",
+  "workspace_sha256": "d05344ceb4af5143883dba87b5559407ca04112b224f78c4cb1605c65b275d4a",
+  "process_request": {
+    "request_sha256": "6078d245807e6fd2913df70b7ef1671edf47689fde945846f60498a71d7c42fc",
+    "trace_payload_chars": 49103,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "grading/default_rubric.py (missing llm_rubric.py)"
+  },
+  "oracle_result": {
+    "task": "078-local-api-cursor-retry-ledger",
+    "workspace": "/Users/andytimm/.harnessbench/runs/post-codex-contained-default-hermes-106/sandboxes/rerun-post-codex-hermes-contained-default-106/gpt-5.4/oc-bench-v2-078-local-api-cursor-retry-ledger-gpt-5.4-20260816-035752-f4aef3c7/workspace",
+    "checks": [
+      {
+        "id": "json_parse",
+        "label": "api_inventory.json parses",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "source_url",
+        "label": "source_base_url records the provided mock API",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "dataset_count",
+        "label": "dataset_count exact",
+        "pass": true,
+        "weight": 2.0,
+        "detail": null
+      },
+      {
+        "id": "artifact_count",
+        "label": "artifact_count follows a documented global-count interpretation",
+        "pass": true,
+        "weight": 2.0,
+        "detail": null
+      },
+      {
+        "id": "jobs_by_status",
+        "label": "jobs_by_status exact",
+        "pass": true,
+        "weight": 2.0,
+        "detail": null
+      },
+      {
+        "id": "datasets",
+        "label": "datasets exact",
+        "pass": true,
+        "weight": 3.0,
+        "detail": null
+      },
+      {
+        "id": "ledger_read",
+        "label": "retry_ledger.csv parses",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "ledger_header",
+        "label": "retry ledger header exact",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "ledger_events",
+        "label": "ledger records 429, 503, and cursor recovery",
+        "pass": true,
+        "weight": 3.0,
+        "detail": null
+      },
+      {
+        "id": "visited_datasets",
+        "label": "server log includes /datasets",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "visited_jobs",
+        "label": "server log includes /jobs",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "visited_artifacts",
+        "label": "server log includes /artifacts",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "visited_checkpoint",
+        "label": "server log includes /checkpoint",
+        "pass": true,
+        "weight": 3.0,
+        "detail": null
+      },
+      {
+        "id": "retry_observed",
+        "label": "server log shows retries",
+        "pass": true,
+        "weight": 2.0,
+        "detail": null
+      },
+      {
+        "id": "quality_terms",
+        "label": "quality report covers duplicate, orphan, cursor, 429, and 503",
+        "pass": true,
+        "weight": 3.0,
+        "detail": null
+      }
+    ],
+    "outcome_score": 1.0,
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "grading/default_rubric.py (missing llm_rubric.py)",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.92,
+        "consistency": 0.9,
+        "robustness": 0.95
+      },
+      "total": 0.9233,
+      "notes": "Agent correctly read contract, recovered from wrong path with search, executed a comprehensive Python script hitting the mock API with retry/checkpoint logic, verified outputs by reading them back, and updated todos throughout. Minor: initial path typo caused one ENOENT but was immediately recovered.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.92, \"consistency\": 0.90, \"robustness\": 0.95}, \"security_gate\": 1, \"notes\": \"Agent correctly read contract, recovered from wrong path with search, executed a comprehensive Python script hitting the mock API with retry/checkpoint logic, verified outputs by reading them back, and updated todos throughout. Minor: initial path typo caused one ENOENT but was immediately recovered.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.92,
+          "consistency": 0.9,
+          "robustness": 0.95
+        },
+        "security_gate": 1,
+        "notes": "Agent correctly read contract, recovered from wrong path with search, executed a comprehensive Python script hitting the mock API with retry/checkpoint logic, verified outputs by reading them back, and updated todos throughout. Minor: initial path typo caused one ENOENT but was immediately recovered."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072859-q8gqmfILSMelcxj6qp4v",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 19829,
+        "completion_tokens": 105,
+        "total_tokens": 19934,
+        "cost": 0.06045138,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.061062,
+          "upstream_inference_prompt_cost": 0.059487,
+          "upstream_inference_completions_cost": 0.001575
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9233,
+    "process_effective": 0.9233,
+    "security_score": 1.0,
+    "outcome_score": 1.0,
+    "oracle_outcome_score": 1.0,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.9233,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=1.0 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.06045138,
+  "cost_source": "openrouter_usage_cost"
+}

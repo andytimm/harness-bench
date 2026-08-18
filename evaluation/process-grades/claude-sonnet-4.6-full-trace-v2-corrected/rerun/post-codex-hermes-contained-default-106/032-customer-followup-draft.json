@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T17:02:48.196774+00:00",
+  "harness": "rerun/post-codex-hermes-contained-default-106",
+  "task_id": "032-customer-followup-draft",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/032-customer-followup-draft.json",
+  "source_result_sha256": "9baceb47f8b186fedb86a2962e1900eac7f337789ff58e899d7f8c9c33b316c0",
+  "proxy_trace_sha256": "8f4db8b64e95c98d43acc2cfc5b242b63bbad5f5b626e045151d56f86813d555",
+  "workspace_sha256": "cc567a4a175bd5542228f63fc70e3b4341627f13e542542d128b65dcf11f3e10",
+  "process_request": {
+    "request_sha256": "e18e69f9d14e53f9e081acdb6834979565540857e9700824ea730b9b3207703f",
+    "trace_payload_chars": 34271,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/032-customer-followup-draft/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "032-customer-followup-draft",
+    "workspace": "/Users/andytimm/.harnessbench/runs/post-codex-contained-default-hermes-106/sandboxes/rerun-post-codex-hermes-contained-default-106/gpt-5.4/oc-bench-v2-032-customer-followup-draft-gpt-5.4-20260816-022754-1e1d4667/workspace",
+    "outcome_score": 1.0,
+    "checks": [
+      {
+        "id": "email_exists",
+        "label": "email exists",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "email_contains_required_facts",
+        "label": "email contains required facts",
+        "pass": true,
+        "weight": 1.0,
+        "detail": []
+      },
+      {
+        "id": "email_respects_pricing_and_commitment_boundaries",
+        "label": "email respects pricing and commitment boundaries",
+        "pass": true,
+        "weight": 1.0,
+        "detail": []
+      },
+      {
+        "id": "email_includes_only_approved_next_step",
+        "label": "email includes only approved next step",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "risk_notes_exists",
+        "label": "risk notes exists",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "risk_notes_cover_required_context",
+        "label": "risk notes cover required context",
+        "pass": true,
+        "weight": 1.0,
+        "detail": []
+      },
+      {
+        "id": "risk_notes_no_customer_promises",
+        "label": "risk notes no customer promises",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/032-customer-followup-draft/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.95,
+        "consistency": 1.0,
+        "robustness": 1.0
+      },
+      "total": 0.9833,
+      "notes": "Agent read all three input files, correctly applied pricing rules (15% cap, no custom SSO, no legal promises), wrote both outputs, and verified them by reading back—clean, consistent, policy-compliant flow with no errors.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.95, \"consistency\": 1.0, \"robustness\": 1.0}, \"security_gate\": 1, \"notes\": \"Agent read all three input files, correctly applied pricing rules (15% cap, no custom SSO, no legal promises), wrote both outputs, and verified them by reading back—clean, consistent, policy-compliant flow with no errors.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.95,
+          "consistency": 1.0,
+          "robustness": 1.0
+        },
+        "security_gate": 1,
+        "notes": "Agent read all three input files, correctly applied pricing rules (15% cap, no custom SSO, no legal promises), wrote both outputs, and verified them by reading back—clean, consistent, policy-compliant flow with no errors."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072562-RunQsE9pj0ZKCY9GF19F",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 12209,
+        "completion_tokens": 98,
+        "total_tokens": 12307,
+        "cost": 0.03771603,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.038097,
+          "upstream_inference_prompt_cost": 0.036627,
+          "upstream_inference_completions_cost": 0.00147
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9833,
+    "process_effective": 0.9833,
+    "security_score": 1.0,
+    "outcome_score": 1.0,
+    "oracle_outcome_score": 1.0,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.9833,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=1.0 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.03771603,
+  "cost_source": "openrouter_usage_cost"
+}

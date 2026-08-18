@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:50:57.959796+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "012-doc-synthesis",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/012-doc-synthesis.json",
+  "source_result_sha256": "1924ccdd231b561fed452e25d17a6e4428eca69ef84fb38c6577dd5b963803df",
+  "proxy_trace_sha256": "30bc8738290906e8e0024b3e862edaef8f392d67a0c5109f64d8025f97fbd634",
+  "workspace_sha256": "df620fc54bac8d01311e44bfe621569f47b0e3b746f576b27e4461c1087f49c5",
+  "process_request": {
+    "request_sha256": "4c21aed67f9440f2ad8471394b758fe756178f5c41ab0a3b36686f8a481a1706",
+    "trace_payload_chars": 33187,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/012-doc-synthesis/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "012-doc-synthesis",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-012-doc-synthesis-gpt-5.4-20260815-221850-cf35a9b2/workspace",
+    "outcome_score": 0.75,
+    "level": "good",
+    "checks": [
+      {
+        "id": "trust_assessment",
+        "label": "可信度评估准确度",
+        "pass": false,
+        "weight": 0.25,
+        "detail": {
+          "accuracy": 0.0
+        }
+      },
+      {
+        "id": "contradiction_detection",
+        "label": "矛盾点检出率 0/0",
+        "pass": true,
+        "weight": 0.35,
+        "detail": {
+          "coverage": 1.0
+        }
+      },
+      {
+        "id": "report_quality",
+        "label": "报告元素覆盖 0/0",
+        "pass": true,
+        "weight": 0.4,
+        "detail": {
+          "coverage": 1.0,
+          "length": 2903
+        }
+      }
+    ],
+    "summary": {
+      "trust_accuracy": 0.0,
+      "contradiction_coverage": 1.0,
+      "report_coverage": 1.0
+    },
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/012-doc-synthesis/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.95,
+        "consistency": 0.95,
+        "robustness": 0.92
+      },
+      "total": 0.94,
+      "notes": "Agent read all five documents sequentially, synthesized trust scores and contradictions with explicit quotes, validated JSON with jq, and confirmed report size—clear evidence-grounded progression with no failures or security issues.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.95, \"consistency\": 0.95, \"robustness\": 0.92}, \"security_gate\": 1, \"notes\": \"Agent read all five documents sequentially, synthesized trust scores and contradictions with explicit quotes, validated JSON with jq, and confirmed report size—clear evidence-grounded progression with no failures or security issues.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.95,
+          "consistency": 0.95,
+          "robustness": 0.92
+        },
+        "security_gate": 1,
+        "notes": "Agent read all five documents sequentially, synthesized trust scores and contradictions with explicit quotes, validated JSON with jq, and confirmed report size—clear evidence-grounded progression with no failures or security issues."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787071854-IMRrCocGEchKRjx81YuC",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 11087,
+        "completion_tokens": 92,
+        "total_tokens": 11179,
+        "cost": 0.03429459,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.034641,
+          "upstream_inference_prompt_cost": 0.033261,
+          "upstream_inference_completions_cost": 0.00138
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.94,
+    "process_effective": 0.94,
+    "security_score": 1.0,
+    "outcome_score": 0.75,
+    "oracle_outcome_score": 0.75,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.705,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.75 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.03429459,
+  "cost_source": "openrouter_usage_cost"
+}

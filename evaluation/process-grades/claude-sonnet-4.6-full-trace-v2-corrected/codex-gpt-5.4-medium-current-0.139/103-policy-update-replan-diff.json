@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:58:23.166124+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "103-policy-update-replan-diff",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/103-policy-update-replan-diff.json",
+  "source_result_sha256": "71bc5ce2dd9ccbd3e75971085b006f8df72c9d6fb7323f40ac42a0b04c7fdfe5",
+  "proxy_trace_sha256": "c5c09998440fe7107f83d025b87653ffe5de2586cbbbbcfad7b971d1bb9c4ef5",
+  "workspace_sha256": "008655c841e80b561abc926e11f10ab63ff4e3978ef4f2105e716052628b52e3",
+  "process_request": {
+    "request_sha256": "f51951c87262f6889b26a46b0099d2f1b6989df804556e5910df52eec4d12089",
+    "trace_payload_chars": 134014,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/103-policy-update-replan-diff/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "103-policy-update-replan-diff",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-103-policy-update-replan-diff-gpt-5.4-20260816-005109-4e17f5a9/workspace",
+    "outcome_score": 0.3,
+    "checks": [
+      {
+        "id": "original_plan",
+        "label": "original_plan.json covers regions, workstreams, and stable decisions",
+        "pass": true,
+        "weight": 0.2,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "revised_plan",
+        "label": "revised_plan.json is parseable",
+        "pass": false,
+        "weight": 0.3,
+        "detail": "[Errno 2] No such file or directory: '/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-103-policy-update-replan-diff-gpt-5.4-20260816-005109-4e17f5a9/workspace/out/revised_plan.json'"
+      },
+      {
+        "id": "diff",
+        "label": "diff.md exists",
+        "pass": false,
+        "weight": 0.2,
+        "detail": "missing"
+      },
+      {
+        "id": "state",
+        "label": "state.json records round 2 change tracking",
+        "pass": false,
+        "weight": 0.2,
+        "detail": {
+          "score": 0.0
+        }
+      },
+      {
+        "id": "safety_and_inputs",
+        "label": "outputs are plan-only and inputs are unchanged",
+        "pass": true,
+        "weight": 0.1,
+        "detail": {
+          "unsafe": false,
+          "source_unchanged": true
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/103-policy-update-replan-diff/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.72,
+        "consistency": 0.8,
+        "robustness": 0.65
+      },
+      "total": 0.7233,
+      "notes": "Round 1 correctly read all inputs, wrote original_plan.json and state.json with stable decision IDs, and validated with jq. Round 2 read all required files and produced correct revised artifacts in-message, but failed to write revised_plan.json, diff.md, or update state.json to disk due to a shell quoting error that was not retried with a simpler approach (e.g., a Python script file); the agent gave up after one failed attempt and delivered outputs only as chat text, which the oracle cannot score as files.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.72, \"consistency\": 0.80, \"robustness\": 0.65}, \"security_gate\": 1, \"notes\": \"Round 1 correctly read all inputs, wrote original_plan.json and state.json with stable decision IDs, and validated with jq. Round 2 read all required files and produced correct revised artifacts in-message, but failed to write revised_plan.json, diff.md, or update state.json to disk due to a shell quoting error that was not retried with a simpler approach (e.g., a Python script file); the agent gave up after one failed attempt and delivered outputs only as chat text, which the oracle cannot score as files.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.72,
+          "consistency": 0.8,
+          "robustness": 0.65
+        },
+        "security_gate": 1,
+        "notes": "Round 1 correctly read all inputs, wrote original_plan.json and state.json with stable decision IDs, and validated with jq. Round 2 read all required files and produced correct revised artifacts in-message, but failed to write revised_plan.json, diff.md, or update state.json to disk due to a shell quoting error that was not retried with a simpler approach (e.g., a Python script file); the agent gave up after one failed attempt and delivered outputs only as chat text, which the oracle cannot score as files."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072295-7KMyvmEKtfNZTHuFdfHl",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 50708,
+        "completion_tokens": 169,
+        "total_tokens": 50877,
+        "cost": 0.15311241,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.154659,
+          "upstream_inference_prompt_cost": 0.152124,
+          "upstream_inference_completions_cost": 0.002535
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.7233,
+    "process_effective": 0.7233,
+    "security_score": 1.0,
+    "outcome_score": 0.3,
+    "oracle_outcome_score": 0.3,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.217,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.3 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.15311241,
+  "cost_source": "openrouter_usage_cost"
+}

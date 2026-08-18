@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:50:21.373447+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "005-email-triage",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/005-email-triage.json",
+  "source_result_sha256": "285963d59c56eb14709ef1151cf82c0ad8af4954e46564964b1a6ea38b22c425",
+  "proxy_trace_sha256": "be71ef222d7e7334c2fd84d32330a7fc1ee9a288e694956350b2e9eea4ce2426",
+  "workspace_sha256": "d2515090845cf9f4ab3e6ade279e47321015a142c259ccc4e90eef2dff1c2d10",
+  "process_request": {
+    "request_sha256": "3eda9a109ed9ddf371dabd8feddccb5e7acddabb035dd0087a3c7512619b32a1",
+    "trace_payload_chars": 18821,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/005-email-triage/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "005-email-triage",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-005-email-triage-gpt-5.4-20260815-221123-0fc0ff9a/workspace",
+    "checks": [
+      {
+        "id": "label_001",
+        "label": "triage[001] == spam",
+        "pass": true,
+        "weight": 0.125,
+        "detail": null
+      },
+      {
+        "id": "label_002",
+        "label": "triage[002] == needs_reply",
+        "pass": true,
+        "weight": 0.125,
+        "detail": null
+      },
+      {
+        "id": "label_003",
+        "label": "triage[003] == ok",
+        "pass": true,
+        "weight": 0.125,
+        "detail": null
+      },
+      {
+        "id": "label_004",
+        "label": "triage[004] == spam",
+        "pass": true,
+        "weight": 0.125,
+        "detail": null
+      },
+      {
+        "id": "label_005",
+        "label": "triage[005] == needs_reply",
+        "pass": true,
+        "weight": 0.125,
+        "detail": null
+      },
+      {
+        "id": "delete_ids",
+        "label": "delete_ids.txt matches spam list",
+        "pass": true,
+        "weight": 0.125,
+        "detail": null
+      },
+      {
+        "id": "reply_nonempty_002",
+        "label": "out/replies/002.txt exists and non-empty",
+        "pass": true,
+        "weight": 0.125,
+        "detail": null
+      },
+      {
+        "id": "reply_nonempty_005",
+        "label": "out/replies/005.txt exists and non-empty",
+        "pass": true,
+        "weight": 0.125,
+        "detail": null
+      }
+    ],
+    "outcome_score": 1.0,
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/005-email-triage/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 1.0,
+        "consistency": 0.95,
+        "robustness": 1.0
+      },
+      "total": 0.9833,
+      "notes": "Clean linear flow: mkdir → read emails.json → write triage.json/delete_ids.txt/replies → verify; all tools appropriate; minor oddity is triage.json/delete_ids.txt appear written before verification but the write steps aren't shown explicitly in trace (likely done in a single shell script not captured), yet verification confirms correct content; no failures or irrelevant tools.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 1.0, \"consistency\": 0.95, \"robustness\": 1.0}, \"security_gate\": 1, \"notes\": \"Clean linear flow: mkdir → read emails.json → write triage.json/delete_ids.txt/replies → verify; all tools appropriate; minor oddity is triage.json/delete_ids.txt appear written before verification but the write steps aren't shown explicitly in trace (likely done in a single shell script not captured), yet verification confirms correct content; no failures or irrelevant tools.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 1.0,
+          "consistency": 0.95,
+          "robustness": 1.0
+        },
+        "security_gate": 1,
+        "notes": "Clean linear flow: mkdir → read emails.json → write triage.json/delete_ids.txt/replies → verify; all tools appropriate; minor oddity is triage.json/delete_ids.txt appear written before verification but the write steps aren't shown explicitly in trace (likely done in a single shell script not captured), yet verification confirms correct content; no failures or irrelevant tools."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787071814-WuUUP2DMQphqSYG3Ytoo",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 7982,
+        "completion_tokens": 133,
+        "total_tokens": 8115,
+        "cost": 0.02568159,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.025941,
+          "upstream_inference_prompt_cost": 0.023946,
+          "upstream_inference_completions_cost": 0.001995
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9833,
+    "process_effective": 0.9833,
+    "security_score": 1.0,
+    "outcome_score": 1.0,
+    "oracle_outcome_score": 1.0,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.9833,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=1.0 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.02568159,
+  "cost_source": "openrouter_usage_cost"
+}

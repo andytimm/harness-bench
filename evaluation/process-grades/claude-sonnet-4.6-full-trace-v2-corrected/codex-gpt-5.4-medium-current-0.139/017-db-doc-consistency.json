@@ -1,0 +1,317 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:51:27.727721+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "017-db-doc-consistency",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/017-db-doc-consistency.json",
+  "source_result_sha256": "4a014c09313b522752142b79c56f2d4cc6fe9d11efb17250bea54827898a6b08",
+  "proxy_trace_sha256": "4311069fee0c97b0eee81110bfa26c793994886768277b58f3578cb8b266db69",
+  "workspace_sha256": "044d6e829057a00e226e06e8a5bab49323fe3c72e7c1ee3cce0749bfd3825acd",
+  "process_request": {
+    "request_sha256": "128b79950e7a6e8e4bb3474b1c43277025b314fc564de7d7ecc5ef6a5c471afa",
+    "trace_payload_chars": 53844,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/017-db-doc-consistency/llm_rubric.py"
+  },
+  "oracle_result": {
+    "contradiction_accuracy": 1.0,
+    "progress": 1.0,
+    "input_integrity": 1.0,
+    "violations": [],
+    "details": {
+      "expected_contradictions": [
+        [
+          "db_global",
+          "deployment_guide",
+          "db_connection_pool_size",
+          "150",
+          "300",
+          "config_mismatch"
+        ],
+        [
+          "db_cluster_nodes",
+          "deployment_guide",
+          "web-02.cpu_cores",
+          "8",
+          "4",
+          "hardware_mismatch"
+        ],
+        [
+          "db_global",
+          "deployment_guide",
+          "api_rate_limit",
+          "100",
+          "500",
+          "config_mismatch"
+        ],
+        [
+          "db_global",
+          "configmap_production",
+          "session_timeout_min",
+          "15",
+          "30",
+          "env_override_mismatch"
+        ],
+        [
+          "db_cluster_nodes",
+          "deployment_guide",
+          "worker-01.region",
+          "us-west-2",
+          "us-east-1",
+          "region_mismatch"
+        ],
+        [
+          "db_global",
+          "deployment_guide",
+          "max_db_connections",
+          "500",
+          "200",
+          "config_mismatch"
+        ],
+        [
+          "db_cluster_nodes",
+          "deployment_guide",
+          "web-01.cpu_cores",
+          "8",
+          "4",
+          "hardware_mismatch"
+        ],
+        [
+          "db_global",
+          "deployment_guide",
+          "worker_timeout",
+          "30",
+          "120",
+          "config_mismatch"
+        ],
+        [
+          "db_global",
+          "deployment_guide",
+          "log_level",
+          "INFO",
+          "WARN",
+          "config_mismatch"
+        ],
+        [
+          "db_cluster_nodes",
+          "deployment_guide",
+          "db-replica-01.region",
+          "us-west-2",
+          "us-east-1",
+          "region_mismatch"
+        ]
+      ],
+      "actual_contradictions": [
+        [
+          "db_global",
+          "deployment_guide",
+          "db_connection_pool_size",
+          "150",
+          "300",
+          "config_mismatch"
+        ],
+        [
+          "db_cluster_nodes",
+          "deployment_guide",
+          "web-02.cpu_cores",
+          "8",
+          "4",
+          "hardware_mismatch"
+        ],
+        [
+          "db_global",
+          "deployment_guide",
+          "api_rate_limit",
+          "100",
+          "500",
+          "config_mismatch"
+        ],
+        [
+          "db_global",
+          "configmap_production",
+          "session_timeout_min",
+          "15",
+          "30",
+          "env_override_mismatch"
+        ],
+        [
+          "db_cluster_nodes",
+          "deployment_guide",
+          "worker-01.region",
+          "us-west-2",
+          "us-east-1",
+          "region_mismatch"
+        ],
+        [
+          "db_global",
+          "deployment_guide",
+          "max_db_connections",
+          "500",
+          "200",
+          "config_mismatch"
+        ],
+        [
+          "db_cluster_nodes",
+          "deployment_guide",
+          "web-01.cpu_cores",
+          "8",
+          "4",
+          "hardware_mismatch"
+        ],
+        [
+          "db_global",
+          "deployment_guide",
+          "worker_timeout",
+          "30",
+          "120",
+          "config_mismatch"
+        ],
+        [
+          "db_global",
+          "deployment_guide",
+          "log_level",
+          "INFO",
+          "WARN",
+          "config_mismatch"
+        ],
+        [
+          "db_cluster_nodes",
+          "deployment_guide",
+          "db-replica-01.region",
+          "us-west-2",
+          "us-east-1",
+          "region_mismatch"
+        ]
+      ],
+      "expected_count": 10,
+      "actual_count": 10,
+      "correct_count": 10,
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    "row_scores": {
+      "row_0_db_connection_pool_size": {
+        "score": 1.0,
+        "errors": []
+      },
+      "row_1_web-02.cpu_cores": {
+        "score": 1.0,
+        "errors": []
+      },
+      "row_2_api_rate_limit": {
+        "score": 1.0,
+        "errors": []
+      },
+      "row_3_session_timeout_min": {
+        "score": 1.0,
+        "errors": []
+      },
+      "row_4_worker-01.region": {
+        "score": 1.0,
+        "errors": []
+      },
+      "row_5_max_db_connections": {
+        "score": 1.0,
+        "errors": []
+      },
+      "row_6_web-01.cpu_cores": {
+        "score": 1.0,
+        "errors": []
+      },
+      "row_7_worker_timeout": {
+        "score": 1.0,
+        "errors": []
+      },
+      "row_8_log_level": {
+        "score": 1.0,
+        "errors": []
+      },
+      "row_9_db-replica-01.region": {
+        "score": 1.0,
+        "errors": []
+      }
+    },
+    "score": 1.0,
+    "outcome_score": 1.0,
+    "rating": "excellent",
+    "explanation": "Contradiction accuracy: 100.0% | Progress note: 100.0% | Input integrity: 100.0%",
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/017-db-doc-consistency/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.92,
+        "consistency": 0.95,
+        "robustness": 0.95
+      },
+      "total": 0.94,
+      "notes": "Agent correctly read all four source files, extracted SQL INSERT rows via grep/node, parsed the markdown table and ConfigMap YAML, then wrote audit_report.csv and progress.md with verified values; flow is clean and evidence-grounded throughout.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.92, \"consistency\": 0.95, \"robustness\": 0.95}, \"security_gate\": 1, \"notes\": \"Agent correctly read all four source files, extracted SQL INSERT rows via grep/node, parsed the markdown table and ConfigMap YAML, then wrote audit_report.csv and progress.md with verified values; flow is clean and evidence-grounded throughout.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.92,
+          "consistency": 0.95,
+          "robustness": 0.95
+        },
+        "security_gate": 1,
+        "notes": "Agent correctly read all four source files, extracted SQL INSERT rows via grep/node, parsed the markdown table and ConfigMap YAML, then wrote audit_report.csv and progress.md with verified values; flow is clean and evidence-grounded throughout."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787071883-5LHBOy8J1q2M7sDjQSPn",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 19949,
+        "completion_tokens": 101,
+        "total_tokens": 20050,
+        "cost": 0.06074838,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.061362,
+          "upstream_inference_prompt_cost": 0.059847,
+          "upstream_inference_completions_cost": 0.001515
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.94,
+    "process_effective": 0.94,
+    "security_score": 1.0,
+    "outcome_score": 1.0,
+    "oracle_outcome_score": 1.0,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.94,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=1.0 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.06074838,
+  "cost_source": "openrouter_usage_cost"
+}

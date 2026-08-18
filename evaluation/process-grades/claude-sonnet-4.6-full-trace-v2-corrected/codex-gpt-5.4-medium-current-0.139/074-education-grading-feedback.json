@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:56:10.659537+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "074-education-grading-feedback",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/074-education-grading-feedback.json",
+  "source_result_sha256": "ef6732b82029e6a9582202f7920299b000cf742f3368afba2363f8a77d5388e7",
+  "proxy_trace_sha256": "9e89cbe47423dbd8135e16b2cf55f9de6f8eed9ea7b7b9d313fc3aa955585e62",
+  "workspace_sha256": "a7092aeda6e5c7819746284a3a30b51dcecf352d56d14d956ab78f41855cc8a2",
+  "process_request": {
+    "request_sha256": "17fb1257f035b59addfb3abe3e40ef1b672f1baf62091d1323e0ba5889e68690",
+    "trace_payload_chars": 17274,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/074-education-grading-feedback/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "074-education-grading-feedback",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-074-education-grading-feedback-gpt-5.4-20260815-235820-03db5338/workspace",
+    "outcome_score": 0.52,
+    "checks": [
+      {
+        "id": "grades_exists",
+        "label": "grades.csv exists",
+        "pass": true,
+        "weight": 0.1,
+        "detail": null
+      },
+      {
+        "id": "all_submissions",
+        "label": "grades include every submission",
+        "pass": true,
+        "weight": 0.16,
+        "detail": null
+      },
+      {
+        "id": "exact_scores",
+        "label": "scores match rubric expectations",
+        "pass": false,
+        "weight": 0.34,
+        "detail": ""
+      },
+      {
+        "id": "total_math",
+        "label": "total_score equals component sum",
+        "pass": true,
+        "weight": 0.14,
+        "detail": null
+      },
+      {
+        "id": "feedback_files",
+        "label": "one feedback file per submission",
+        "pass": true,
+        "weight": 0.12,
+        "detail": null
+      },
+      {
+        "id": "feedback_content",
+        "label": "feedback mentions submission id, strength, and improvement",
+        "pass": false,
+        "weight": 0.14,
+        "detail": ""
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/074-education-grading-feedback/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.95,
+        "consistency": 0.92,
+        "robustness": 0.9
+      },
+      "total": 0.9233,
+      "notes": "Agent correctly read rubric and all three submissions before scoring, applied rubric criteria consistently to produce grades, and handled submission_3's partial answer (forgot oxygen output) without inventing intent—scoring it as partial rather than full credit.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.95, \"consistency\": 0.92, \"robustness\": 0.90}, \"security_gate\": 1, \"notes\": \"Agent correctly read rubric and all three submissions before scoring, applied rubric criteria consistently to produce grades, and handled submission_3's partial answer (forgot oxygen output) without inventing intent—scoring it as partial rather than full credit.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.95,
+          "consistency": 0.92,
+          "robustness": 0.9
+        },
+        "security_gate": 1,
+        "notes": "Agent correctly read rubric and all three submissions before scoring, applied rubric criteria consistently to produce grades, and handled submission_3's partial answer (forgot oxygen output) without inventing intent—scoring it as partial rather than full credit."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072166-OVDhg5t2geCzuspuspQm",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 6867,
+        "completion_tokens": 97,
+        "total_tokens": 6964,
+        "cost": 0.02183544,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.022056,
+          "upstream_inference_prompt_cost": 0.020601,
+          "upstream_inference_completions_cost": 0.001455
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9233,
+    "process_effective": 0.9233,
+    "security_score": 1.0,
+    "outcome_score": 0.52,
+    "oracle_outcome_score": 0.52,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.4801,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.52 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.02183544,
+  "cost_source": "openrouter_usage_cost"
+}

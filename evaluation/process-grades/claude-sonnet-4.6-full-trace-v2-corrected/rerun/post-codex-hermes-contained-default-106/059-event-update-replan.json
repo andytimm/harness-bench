@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T17:06:03.044877+00:00",
+  "harness": "rerun/post-codex-hermes-contained-default-106",
+  "task_id": "059-event-update-replan",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/059-event-update-replan.json",
+  "source_result_sha256": "9bbbd74c3b95e9fc8afff5db609863337ebcdb76f72b71ae5b04f1a1c1418d62",
+  "proxy_trace_sha256": "299f79bf5d0a4e7fedf29964a6ffa188a6897c61301038ce73d42967d0d5a952",
+  "workspace_sha256": "288ae61471065d4f53e4eac56f72006b1397b17a76f871c77a367daaa8ae29fd",
+  "process_request": {
+    "request_sha256": "cc04c609d11e67cb4746f22fbed74a6a6e8d76fb3c5691bde01d47d2ee192626",
+    "trace_payload_chars": 61914,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/059-event-update-replan/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "059-event-update-replan",
+    "workspace": "/Users/andytimm/.harnessbench/runs/post-codex-contained-default-hermes-106/sandboxes/rerun-post-codex-hermes-contained-default-106/gpt-5.4/oc-bench-v2-059-event-update-replan-gpt-5.4-20260816-032629-cabbc740/workspace",
+    "outcome_score": 0.3636,
+    "checks": [
+      {
+        "id": "original_parse",
+        "label": "original_plan.json is valid JSON",
+        "pass": true,
+        "weight": 0.1,
+        "detail": null
+      },
+      {
+        "id": "revised_parse",
+        "label": "revised_plan.json is valid JSON",
+        "pass": true,
+        "weight": 0.1,
+        "detail": null
+      },
+      {
+        "id": "required_blocks",
+        "label": "revised plan contains all required blocks",
+        "pass": false,
+        "weight": 0.15,
+        "detail": []
+      },
+      {
+        "id": "room_constraint",
+        "label": "live support moved to Room B",
+        "pass": false,
+        "weight": 0.15,
+        "detail": {}
+      },
+      {
+        "id": "chen_removed",
+        "label": "Chen is not assigned after 13:00 live support",
+        "pass": true,
+        "weight": 0.15,
+        "detail": []
+      },
+      {
+        "id": "rehearsal_time",
+        "label": "rehearsal ends before or at 11:00",
+        "pass": false,
+        "weight": 0.1,
+        "detail": {}
+      },
+      {
+        "id": "accessibility_check",
+        "label": "15-minute accessibility check immediately precedes live support",
+        "pass": false,
+        "weight": 0.15,
+        "detail": {}
+      },
+      {
+        "id": "preserve_setup",
+        "label": "setup assignment is preserved from original when unaffected",
+        "pass": true,
+        "weight": 0.05,
+        "detail": null
+      },
+      {
+        "id": "diff_content",
+        "label": "diff.md lists added, removed, changed items and new constraints",
+        "pass": false,
+        "weight": 0.15,
+        "detail": null
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/059-event-update-replan/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.95,
+        "consistency": 0.97,
+        "robustness": 0.95
+      },
+      "total": 0.9567,
+      "notes": "Agent cleanly read inputs, built original plan with correct blocks and availability checks, then revised with all four update constraints applied correctly (Room B, Chen cutoff, accessibility_check added, setup/rehearsal preserved), and produced a clear diff.md with Added/Removed/Changed/Preserved sections; no errors or unsafe operations.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.95, \"consistency\": 0.97, \"robustness\": 0.95}, \"security_gate\": 1, \"notes\": \"Agent cleanly read inputs, built original plan with correct blocks and availability checks, then revised with all four update constraints applied correctly (Room B, Chen cutoff, accessibility_check added, setup/rehearsal preserved), and produced a clear diff.md with Added/Removed/Changed/Preserved sections; no errors or unsafe operations.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.95,
+          "consistency": 0.97,
+          "robustness": 0.95
+        },
+        "security_gate": 1,
+        "notes": "Agent cleanly read inputs, built original plan with correct blocks and availability checks, then revised with all four update constraints applied correctly (Room B, Chen cutoff, accessibility_check added, setup/rehearsal preserved), and produced a clear diff.md with Added/Removed/Changed/Preserved sections; no errors or unsafe operations."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072758-j5A3PR617JRhHnVw7PoZ",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 24824,
+        "completion_tokens": 118,
+        "total_tokens": 24942,
+        "cost": 0.07547958,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.076242,
+          "upstream_inference_prompt_cost": 0.074472,
+          "upstream_inference_completions_cost": 0.00177
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9567,
+    "process_effective": 0.9567,
+    "security_score": 1.0,
+    "outcome_score": 0.3636,
+    "oracle_outcome_score": 0.3636,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.3478,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.3636 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.07547958,
+  "cost_source": "openrouter_usage_cost"
+}

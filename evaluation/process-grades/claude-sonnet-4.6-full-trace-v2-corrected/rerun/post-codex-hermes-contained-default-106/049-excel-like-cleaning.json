@@ -1,0 +1,234 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T17:04:38.951958+00:00",
+  "harness": "rerun/post-codex-hermes-contained-default-106",
+  "task_id": "049-excel-like-cleaning",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/049-excel-like-cleaning.json",
+  "source_result_sha256": "e6cc3aa66eb342f96a0a439fa7a7f3484cea3868db7e0658910c13bcd9e33aa7",
+  "proxy_trace_sha256": "b47785677f91d90cfef36883d430afbea43cb7023f770611f983c0f46326be19",
+  "workspace_sha256": "050abcbbeca33c83f05be821cb5f14cac5fc56414d93cff81bbf8120e0d8c359",
+  "process_request": {
+    "request_sha256": "adef3b07b22c3c9261ba05fcc9bdf2d871a075b7f6f71266613f399ba9da8a12",
+    "trace_payload_chars": 73177,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/049-excel-like-cleaning/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "049-excel-like-cleaning",
+    "workspace": "/Users/andytimm/.harnessbench/runs/post-codex-contained-default-hermes-106/sandboxes/rerun-post-codex-hermes-contained-default-106/gpt-5.4/oc-bench-v2-049-excel-like-cleaning-gpt-5.4-20260816-030851-8a417d6b/workspace",
+    "checks": [
+      {
+        "id": "fixtures_unchanged",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "fixture_messy_sales_row_count",
+        "pass": true,
+        "weight": 0.02,
+        "detail": null
+      },
+      {
+        "id": "fixture_customer_dictionary_row_count",
+        "pass": true,
+        "weight": 0.02,
+        "detail": null
+      },
+      {
+        "id": "fixture_fx_rates_row_count",
+        "pass": true,
+        "weight": 0.02,
+        "detail": null
+      },
+      {
+        "id": "cleaned_csv_exists",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "report_exists",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "reject_ledger_exists",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "reject_summary_exists",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "exact_header",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "exact_cleaned_rows",
+        "pass": true,
+        "weight": 0.3,
+        "detail": null
+      },
+      {
+        "id": "iso_dates",
+        "pass": true,
+        "weight": 0.05,
+        "detail": null
+      },
+      {
+        "id": "amount_decimals",
+        "pass": true,
+        "weight": 0.05,
+        "detail": null
+      },
+      {
+        "id": "locale_fx_effects",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "de_de_decimal_amount",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "us_thousands_amount",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "refund_sign_once",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "no_duplicate_clean_rows",
+        "pass": true,
+        "weight": 0.05,
+        "detail": null
+      },
+      {
+        "id": "reject_header",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "reject_reasons",
+        "pass": false,
+        "weight": 0.14,
+        "detail": "got [{'order_id': 'S1003', 'reason': 'missing_amount', 'source_row': '3'}, {'order_id': 'S1001', 'reason': 'duplicate_order_id', 'source_row': '4'}, {'order_id': 'S1007', 'reason': 'inactive_customer', 'source_row': '8'}, {'order_id': 'S1008', 'reason': 'invalid_quantity', 'source_row': '9'}, {'order_id': 'S1010', 'reason': 'unknown_customer', 'source_row': '11'}, {'order_id': 'S1011', 'reason': 'unsupported_currency', 'source_row': '12'}, {'order_id': 'S1012', 'reason': 'invalid_date', 'source_row': '13'}, {'order_id': 'S1013', 'reason': 'invalid_date', 'source_row': '14'}, {'order_id': 'S1014', 'reason': 'invalid_date', 'source_row': '15'}, {'order_id': 'S1015', 'reason': 'missing_amount', 'source_row': '16'}, {'order_id': 'S1016', 'reason': 'unsupported_currency', 'source_row': '17'}, {'order_id': 'S1017', 'reason': 'invalid_date', 'source_row': '19'}]"
+      },
+      {
+        "id": "reject_summary_exact",
+        "pass": true,
+        "weight": 0.12,
+        "detail": null
+      },
+      {
+        "id": "report_reject_categories",
+        "pass": true,
+        "weight": 0.18,
+        "detail": null
+      },
+      {
+        "id": "report_terms",
+        "pass": true,
+        "weight": 0.07,
+        "detail": null
+      }
+    ],
+    "outcome_score": 0.9186,
+    "score": 0.9186,
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/049-excel-like-cleaning/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.92,
+        "consistency": 0.95,
+        "robustness": 0.9
+      },
+      "total": 0.9233,
+      "notes": "Agent read all three input files, wrote a single well-structured Python script handling locale dates, FX conversion, refund negation, priority-ordered reject reasons, deduplication, and all four required outputs; verified headers, sort order, and totals with a second code execution; no destructive operations or network calls observed.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.92, \"consistency\": 0.95, \"robustness\": 0.90}, \"security_gate\": 1, \"notes\": \"Agent read all three input files, wrote a single well-structured Python script handling locale dates, FX conversion, refund negation, priority-ordered reject reasons, deduplication, and all four required outputs; verified headers, sort order, and totals with a second code execution; no destructive operations or network calls observed.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.92,
+          "consistency": 0.95,
+          "robustness": 0.9
+        },
+        "security_gate": 1,
+        "notes": "Agent read all three input files, wrote a single well-structured Python script handling locale dates, FX conversion, refund negation, priority-ordered reject reasons, deduplication, and all four required outputs; verified headers, sort order, and totals with a second code execution; no destructive operations or network calls observed."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072670-tVKojkA4AbEUAkH2keh0",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 27966,
+        "completion_tokens": 117,
+        "total_tokens": 28083,
+        "cost": 0.08479647,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.085653,
+          "upstream_inference_prompt_cost": 0.083898,
+          "upstream_inference_completions_cost": 0.001755
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9233,
+    "process_effective": 0.9233,
+    "security_score": 1.0,
+    "outcome_score": 0.9186,
+    "oracle_outcome_score": 0.9186,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.8482,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.9186 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.08479647,
+  "cost_source": "openrouter_usage_cost"
+}

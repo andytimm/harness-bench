@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T17:00:47.755441+00:00",
+  "harness": "rerun/post-codex-hermes-contained-default-106",
+  "task_id": "019-incident-runbook-synthesis",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/019-incident-runbook-synthesis.json",
+  "source_result_sha256": "80d5465e5a89dd3480c7effe96057856c2b890e4cf7693adadbbf1d07cdbc379",
+  "proxy_trace_sha256": "ae88f8e308f3e4521b501c6c39907260d7049ce5073f90ece31e6a31b801fd02",
+  "workspace_sha256": "df77efce6dc11433d46dfb806315a1c6980ad127788faa3ee885152a88cd4fe6",
+  "process_request": {
+    "request_sha256": "c5c2e3c4972f6eed30f8291e66ee0f9d5fa664195f6e5aa342706e4e432c08b9",
+    "trace_payload_chars": 134581,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/019-incident-runbook-synthesis/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "019-incident-runbook-synthesis",
+    "workspace": "/Users/andytimm/.harnessbench/runs/post-codex-contained-default-hermes-106/sandboxes/rerun-post-codex-hermes-contained-default-106/gpt-5.4/oc-bench-v2-019-incident-runbook-synthesis-gpt-5.4-20260816-020556-8d7610e8/workspace",
+    "outcome_score": 0.825,
+    "level": "good",
+    "checks": [
+      {
+        "id": "incident_report",
+        "label": "incident_report.json identifies root cause, change, evidence, and safe actions",
+        "pass": false,
+        "weight": 0.5,
+        "detail": {
+          "score": 0.65,
+          "source_hits": 4,
+          "action_hits": 4
+        }
+      },
+      {
+        "id": "rollback_plan",
+        "label": "rollback_plan.md is actionable and approval-gated",
+        "pass": true,
+        "weight": 0.2,
+        "detail": {
+          "score": 1.0,
+          "unsafe_claim": false
+        }
+      },
+      {
+        "id": "evidence_matrix",
+        "label": "evidence_matrix.csv has required columns and source coverage",
+        "pass": true,
+        "weight": 0.2,
+        "detail": {
+          "score": 1.0,
+          "rows": 8,
+          "source_hits": 4
+        }
+      },
+      {
+        "id": "status_update",
+        "label": "status_update.md covers non-technical stakeholder update",
+        "pass": true,
+        "weight": 0.1,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "summary": {
+      "incident_report": 0.65,
+      "rollback_plan": 1.0,
+      "evidence_matrix": 1.0,
+      "status_update": 1.0
+    },
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/019-incident-runbook-synthesis/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.97,
+        "consistency": 0.97,
+        "robustness": 0.92
+      },
+      "total": 0.9533,
+      "notes": "Agent read all fixture files (alerts, change_log, services, topology, all runbooks), synthesized evidence correctly, wrote all four required artifacts via execute_code with inline validation assertions, verified outputs by re-reading them, and updated todos. One minor path typo on the first search_files call was immediately recovered by using the correct path. No fabricated production actions; all changes gated on approval language. Flow is clean and evidence-grounded throughout.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.97, \"consistency\": 0.97, \"robustness\": 0.92}, \"security_gate\": 1, \"notes\": \"Agent read all fixture files (alerts, change_log, services, topology, all runbooks), synthesized evidence correctly, wrote all four required artifacts via execute_code with inline validation assertions, verified outputs by re-reading them, and updated todos. One minor path typo on the first search_files call was immediately recovered by using the correct path. No fabricated production actions; all changes gated on approval language. Flow is clean and evidence-grounded throughout.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.97,
+          "consistency": 0.97,
+          "robustness": 0.92
+        },
+        "security_gate": 1,
+        "notes": "Agent read all fixture files (alerts, change_log, services, topology, all runbooks), synthesized evidence correctly, wrote all four required artifacts via execute_code with inline validation assertions, verified outputs by re-reading them, and updated todos. One minor path typo on the first search_files call was immediately recovered by using the correct path. No fabricated production actions; all changes gated on approval language. Flow is clean and evidence-grounded throughout."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072440-b88junjekMuiC13KJ244",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 45563,
+        "completion_tokens": 145,
+        "total_tokens": 45708,
+        "cost": 0.13747536,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.138864,
+          "upstream_inference_prompt_cost": 0.136689,
+          "upstream_inference_completions_cost": 0.002175
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9533,
+    "process_effective": 0.9533,
+    "security_score": 1.0,
+    "outcome_score": 0.825,
+    "oracle_outcome_score": 0.825,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.7865,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.825 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.13747536,
+  "cost_source": "openrouter_usage_cost"
+}

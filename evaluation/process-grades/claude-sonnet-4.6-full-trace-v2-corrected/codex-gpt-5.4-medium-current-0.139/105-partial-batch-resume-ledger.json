@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:58:32.995149+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "105-partial-batch-resume-ledger",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/105-partial-batch-resume-ledger.json",
+  "source_result_sha256": "5ef18d0afdf129002058a2025b7e0eab9ff9e02ec4b40b3ea60aad028c615a99",
+  "proxy_trace_sha256": "d02b15f72cd85692e5f4a66201a5ffc65ed52810d32becd1c2c56bc2cabde9f0",
+  "workspace_sha256": "1727c224d9abbc6458c54066b2f4bcb84d5ba70bc2c8d5a8515dcf9ed35bddae",
+  "process_request": {
+    "request_sha256": "c765eba4c83010d0a6eebb799b12522c0308ac1fa4f5b51a8ee8bf23f22fb3e9",
+    "trace_payload_chars": 65438,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/105-partial-batch-resume-ledger/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "105-partial-batch-resume-ledger",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-105-partial-batch-resume-ledger-gpt-5.4-20260816-010148-d9653e80/workspace",
+    "outcome_score": 0.2175,
+    "checks": [
+      {
+        "id": "state",
+        "label": "state.json preserves attempts and records final resume state",
+        "pass": false,
+        "weight": 0.3,
+        "detail": {
+          "score": 0.45,
+          "attempt_counts": {
+            "ITEM-001": 1,
+            "ITEM-002": 1,
+            "ITEM-003": 1,
+            "ITEM-004": 1,
+            "ITEM-005": 1,
+            "ITEM-006": 1,
+            "ITEM-007": 0,
+            "ITEM-008": 0,
+            "ITEM-009": 0,
+            "ITEM-010": 0
+          }
+        }
+      },
+      {
+        "id": "final_results",
+        "label": "final_results.json is parseable",
+        "pass": false,
+        "weight": 0.3,
+        "detail": "[Errno 2] No such file or directory: '/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-105-partial-batch-resume-ledger-gpt-5.4-20260816-010148-d9653e80/workspace/out/final_results.json'"
+      },
+      {
+        "id": "ledger",
+        "label": "retry_ledger.csv exists",
+        "pass": false,
+        "weight": 0.25,
+        "detail": "missing"
+      },
+      {
+        "id": "partial_results",
+        "label": "partial_results.json records round 1 stop without processing later items",
+        "pass": true,
+        "weight": 0.0,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "report_and_inputs",
+        "label": "resume report/audit explain recovery, partial state is valid, and inputs remain unchanged",
+        "pass": false,
+        "weight": 0.15,
+        "detail": {
+          "source_unchanged": true,
+          "partial_score": 1.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/105-partial-batch-resume-ledger/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.82,
+        "consistency": 0.85,
+        "robustness": 0.62
+      },
+      "total": 0.7633,
+      "notes": "Round 1 executed cleanly: read all inputs, computed scores correctly, wrote three required files, verified outputs. Round 2 read all saved state and computed correct outputs but failed to actually write files, claiming a read-only sandbox without attempting a write tool call to confirm; the agent presented results only as text, leaving final_results.json, retry_ledger.csv, resume_report.md, and updated state.json unwritten—a significant robustness gap.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.82, \"consistency\": 0.85, \"robustness\": 0.62}, \"security_gate\": 1, \"notes\": \"Round 1 executed cleanly: read all inputs, computed scores correctly, wrote three required files, verified outputs. Round 2 read all saved state and computed correct outputs but failed to actually write files, claiming a read-only sandbox without attempting a write tool call to confirm; the agent presented results only as text, leaving final_results.json, retry_ledger.csv, resume_report.md, and updated state.json unwritten—a significant robustness gap.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.82,
+          "consistency": 0.85,
+          "robustness": 0.62
+        },
+        "security_gate": 1,
+        "notes": "Round 1 executed cleanly: read all inputs, computed scores correctly, wrote three required files, verified outputs. Round 2 read all saved state and computed correct outputs but failed to actually write files, claiming a read-only sandbox without attempting a write tool call to confirm; the agent presented results only as text, leaving final_results.json, retry_ledger.csv, resume_report.md, and updated state.json unwritten—a significant robustness gap."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072307-mbFm0sDa3T17rOkH35ko",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 26097,
+        "completion_tokens": 150,
+        "total_tokens": 26247,
+        "cost": 0.07973559,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.080541,
+          "upstream_inference_prompt_cost": 0.078291,
+          "upstream_inference_completions_cost": 0.00225
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.7633,
+    "process_effective": 0.7633,
+    "security_score": 1.0,
+    "outcome_score": 0.2175,
+    "oracle_outcome_score": 0.2175,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.166,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.2175 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.07973559,
+  "cost_source": "openrouter_usage_cost"
+}

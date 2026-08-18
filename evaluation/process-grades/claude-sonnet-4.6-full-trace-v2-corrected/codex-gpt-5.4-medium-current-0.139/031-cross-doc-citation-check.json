@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:52:38.792894+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "031-cross-doc-citation-check",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/031-cross-doc-citation-check.json",
+  "source_result_sha256": "5fa1fba28118484a362164ee916178d149280cec60e8f482a1066c83eaea226b",
+  "proxy_trace_sha256": "925516c271d337cc092c6102313926fb6da5892208653c934843073d79548da7",
+  "workspace_sha256": "6f61da9df1193913addfb09b5e2355d05a9141b2eb21f24a4c3fc6aa58c976f6",
+  "process_request": {
+    "request_sha256": "e8f0449752d27e8a139da4b8d4ade3e70c518f70a7d1cd60989288a3c389cef3",
+    "trace_payload_chars": 20350,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/031-cross-doc-citation-check/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "031-cross-doc-citation-check",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-031-cross-doc-citation-check-gpt-5.4-20260815-224852-df7b34f2/workspace",
+    "outcome_score": 0.4444,
+    "checks": [
+      {
+        "id": "audit_csv_parseable",
+        "label": "audit csv parseable",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "audit_header_exact",
+        "label": "audit header exact",
+        "pass": true,
+        "weight": 1.0,
+        "detail": [
+          "citation_id",
+          "location",
+          "issue",
+          "expected_source",
+          "recommended_fix"
+        ]
+      },
+      {
+        "id": "exactly_three_audit_rows",
+        "label": "exactly three audit rows",
+        "pass": false,
+        "weight": 1.0,
+        "detail": 4
+      },
+      {
+        "id": "audit_Claim_B",
+        "label": "audit Claim B",
+        "pass": false,
+        "weight": 1.0,
+        "detail": {
+          "citation_id": "S2",
+          "location": "Claim B",
+          "issue_contains": "wrong title",
+          "expected_source": "sources/escalations.md"
+        }
+      },
+      {
+        "id": "audit_Claim_C",
+        "label": "audit Claim C",
+        "pass": false,
+        "weight": 1.0,
+        "detail": {
+          "citation_id": "S4",
+          "location": "Claim C",
+          "issue_contains": "retired",
+          "expected_source": "sources/help_center.md"
+        }
+      },
+      {
+        "id": "audit_Claim_D",
+        "label": "audit Claim D",
+        "pass": false,
+        "weight": 1.0,
+        "detail": {
+          "citation_id": "missing",
+          "location": "Claim D",
+          "issue_contains": "missing",
+          "expected_source": "sources/csat.md"
+        }
+      },
+      {
+        "id": "fixed_references_exists",
+        "label": "fixed references exists",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "fixed_references_complete",
+        "label": "fixed references complete",
+        "pass": false,
+        "weight": 1.0,
+        "detail": [
+          "[S1] Support latency dashboard - sources/latency.md",
+          "[S2] Escalation trend memo - sources/escalations.md",
+          "[S3] Help center analytics - sources/help_center.md",
+          "[S4] CSAT survey extract - sources/csat.md"
+        ]
+      },
+      {
+        "id": "fixed_references_avoid_retired_sources",
+        "label": "fixed references avoid retired sources",
+        "pass": true,
+        "weight": 1.0,
+        "detail": []
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/031-cross-doc-citation-check/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.9,
+        "consistency": 0.92,
+        "robustness": 0.85
+      },
+      "total": 0.89,
+      "notes": "Agent reads all inputs systematically, maps citations to sources correctly, writes both outputs, and verifies them with readback. Minor issue: one CSV row had 'path/to/in/sources/escalations.md' placeholder path, agent noticed and noted a correction but the final trace doesn't show the corrected write; otherwise clean, evidence-grounded progression.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.9, \"consistency\": 0.92, \"robustness\": 0.85}, \"security_gate\": 1, \"notes\": \"Agent reads all inputs systematically, maps citations to sources correctly, writes both outputs, and verifies them with readback. Minor issue: one CSV row had 'path/to/in/sources/escalations.md' placeholder path, agent noticed and noted a correction but the final trace doesn't show the corrected write; otherwise clean, evidence-grounded progression.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.9,
+          "consistency": 0.92,
+          "robustness": 0.85
+        },
+        "security_gate": 1,
+        "notes": "Agent reads all inputs systematically, maps citations to sources correctly, writes both outputs, and verifies them with readback. Minor issue: one CSV row had 'path/to/in/sources/escalations.md' placeholder path, agent noticed and noted a correction but the final trace doesn't show the corrected write; otherwise clean, evidence-grounded progression."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787071946-Ny64S1E9Gxs3ZPsFI5pi",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 7519,
+        "completion_tokens": 126,
+        "total_tokens": 7645,
+        "cost": 0.02420253,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.024447,
+          "upstream_inference_prompt_cost": 0.022557,
+          "upstream_inference_completions_cost": 0.00189
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.89,
+    "process_effective": 0.89,
+    "security_score": 1.0,
+    "outcome_score": 0.4444,
+    "oracle_outcome_score": 0.4444,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.3955,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.4444 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.02420253,
+  "cost_source": "openrouter_usage_cost"
+}

@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T17:09:49.204972+00:00",
+  "harness": "rerun/post-codex-hermes-contained-default-106",
+  "task_id": "098-three-source-decision-record-synthesis",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/098-three-source-decision-record-synthesis.json",
+  "source_result_sha256": "5e250e40d44720d995a7f3fa65afe8e35fd23230fda058ccfdc3dfac9e1c4eb4",
+  "proxy_trace_sha256": "7e0054a844f9d9b1be95d54c24c4ee878cbd5d44abbc5b4fb07438437cdcebdf",
+  "workspace_sha256": "c1387b1f04cb9249faebdff99b60dee2583d73b99a67463eae6d70f37b9da3e0",
+  "process_request": {
+    "request_sha256": "445e7d5b73e041253a6747f3d00e43345968ac04bd5a6b48f4db98da59c328b1",
+    "trace_payload_chars": 125641,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "grading/default_rubric.py (missing llm_rubric.py)"
+  },
+  "oracle_result": {
+    "task": "098-three-source-decision-record-synthesis",
+    "workspace": "/Users/andytimm/.harnessbench/runs/post-codex-contained-default-hermes-106/sandboxes/rerun-post-codex-hermes-contained-default-106/gpt-5.4/oc-bench-v2-098-three-source-decision-record-synthesis-gpt-5.4-20260816-044502-edae5fcc/workspace",
+    "outcome_score": 0.5611,
+    "level": "fail",
+    "checks": [
+      {
+        "id": "format",
+        "label": "decision_record.json has required top-level structure",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "decisions",
+        "label": "final decisions contain expected resolved values",
+        "pass": false,
+        "weight": 0.24,
+        "detail": {
+          "hits": 2
+        }
+      },
+      {
+        "id": "winning_sources",
+        "label": "winning sources match governing evidence",
+        "pass": false,
+        "weight": 0.14,
+        "detail": {
+          "hits": 3
+        }
+      },
+      {
+        "id": "evidence",
+        "label": "decision evidence signals include decisive text",
+        "pass": false,
+        "weight": 0.12,
+        "detail": {
+          "hits": 1
+        }
+      },
+      {
+        "id": "rejected",
+        "label": "rejected options include blocked or superseded proposals",
+        "pass": false,
+        "weight": 0.12,
+        "detail": {
+          "hits": 0
+        }
+      },
+      {
+        "id": "open_questions",
+        "label": "unresolved support staffing question is preserved",
+        "pass": true,
+        "weight": 0.08,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "forbidden",
+        "label": "superseded or blocked proposals are not final decisions",
+        "pass": true,
+        "weight": 0.07,
+        "detail": null
+      },
+      {
+        "id": "source_conflicts",
+        "label": "source_conflicts.csv captures source precedence conflicts",
+        "pass": true,
+        "weight": 0.08,
+        "detail": {
+          "score": 0.9125,
+          "term_hits": 7
+        }
+      },
+      {
+        "id": "actions",
+        "label": "action_items.csv contains current owners due dates and source evidence",
+        "pass": false,
+        "weight": 0.07,
+        "detail": {
+          "score": 0.8125,
+          "hits": 3
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "grading/default_rubric.py (missing llm_rubric.py)",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.92,
+        "consistency": 0.95,
+        "robustness": 0.9
+      },
+      "total": 0.9233,
+      "notes": "Agent read all input sources, applied priority rules correctly, and wrote verified outputs; one minor path typo caused a single ENOENT on source_priority.md but was immediately recovered with the correct path; all three output files were verified by reading back and schema-checking.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.92, \"consistency\": 0.95, \"robustness\": 0.9}, \"security_gate\": 1, \"notes\": \"Agent read all input sources, applied priority rules correctly, and wrote verified outputs; one minor path typo caused a single ENOENT on source_priority.md but was immediately recovered with the correct path; all three output files were verified by reading back and schema-checking.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.92,
+          "consistency": 0.95,
+          "robustness": 0.9
+        },
+        "security_gate": 1,
+        "notes": "Agent read all input sources, applied priority rules correctly, and wrote verified outputs; one minor path typo caused a single ENOENT on source_priority.md but was immediately recovered with the correct path; all three output files were verified by reading back and schema-checking."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072984-JpJ1mEyBLbeaTCkCJ85q",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 41048,
+        "completion_tokens": 106,
+        "total_tokens": 41154,
+        "cost": 0.12348666,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.124734,
+          "upstream_inference_prompt_cost": 0.123144,
+          "upstream_inference_completions_cost": 0.00159
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9233,
+    "process_effective": 0.9233,
+    "security_score": 1.0,
+    "outcome_score": 0.5611,
+    "oracle_outcome_score": 0.5611,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.5181,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.5611 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.12348666,
+  "cost_source": "openrouter_usage_cost"
+}

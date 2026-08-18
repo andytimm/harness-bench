@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:54:24.981365+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "054-budget-variance-analysis",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/054-budget-variance-analysis.json",
+  "source_result_sha256": "ed82b082c3d98ebb98da1c2b32bb2bccac994ae32b3103670b363049933dc29d",
+  "proxy_trace_sha256": "e89d3eb86f11d029463eace45737b30dd73a2f636c33bdbcf499314d4a82d2b6",
+  "workspace_sha256": "9ec91a97703901957bbda35ab2481a82982edc449c5822ccf6071927083860e9",
+  "process_request": {
+    "request_sha256": "79ad2763f7f69a21cbe1b64d4cf3488fd22164cd78e78188538989ff79584a5a",
+    "trace_payload_chars": 33079,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/054-budget-variance-analysis/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "054-budget-variance-analysis",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-054-budget-variance-analysis-gpt-5.4-20260815-232902-38d75421/workspace",
+    "checks": [
+      {
+        "id": "fixtures_unchanged",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "fixtures_present",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "csv_exists",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "rollup_exists",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "review_reasons_exists",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "summary_exists",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "exact_header",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "exact_rows",
+        "pass": true,
+        "weight": 0.34,
+        "detail": null
+      },
+      {
+        "id": "number_format",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "review_flags",
+        "pass": true,
+        "weight": 0.1,
+        "detail": null
+      },
+      {
+        "id": "pct_format_or_na",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "full_outer_join_rows",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "zero_budget_pct",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "missing_actual_defaults_zero",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "strict_threshold",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "rollup_header",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "rollup_rows",
+        "pass": true,
+        "weight": 0.22,
+        "detail": null
+      },
+      {
+        "id": "rollup_review_counts",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "rollup_zero_budget_na",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "rollup_flag_from_review_items",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "review_reasons_keys",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "review_reason_types",
+        "pass": false,
+        "weight": 0.18,
+        "detail": "got {'Marketing Ads': {'primary_driver': 'variance_pct > 10', 'reason_type': 'overrun_pct'}, 'Marketing Events': {'primary_driver': 'variance_pct < -10', 'reason_type': 'underrun_pct'}, 'Operations Logistics': {'primary_driver': 'variance_pct > 10', 'reason_type': 'overrun_pct'}, 'Product Research': {'primary_driver': 'budget missing', 'reason_type': 'unplanned_actual'}, 'R&D Tools': {'primary_driver': 'variance_pct < -10', 'reason_type': 'underrun_pct'}, 'Security Tools': {'primary_driver': 'variance_pct < -10', 'reason_type': 'underrun_pct'}, 'Support Escalations': {'primary_driver': 'budget is zero with actual spend', 'reason_type': 'zero_budget_actual'}}"
+      },
+      {
+        "id": "review_reason_primary_drivers",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "summary_mentions_Marketing Ads",
+        "pass": true,
+        "weight": 0.015,
+        "detail": null
+      },
+      {
+        "id": "summary_mentions_Marketing Events",
+        "pass": true,
+        "weight": 0.015,
+        "detail": null
+      },
+      {
+        "id": "summary_mentions_Operations Logistics",
+        "pass": true,
+        "weight": 0.015,
+        "detail": null
+      },
+      {
+        "id": "summary_mentions_Product Research",
+        "pass": true,
+        "weight": 0.015,
+        "detail": null
+      },
+      {
+        "id": "summary_mentions_R&D Tools",
+        "pass": true,
+        "weight": 0.015,
+        "detail": null
+      },
+      {
+        "id": "summary_mentions_Security Tools",
+        "pass": true,
+        "weight": 0.015,
+        "detail": null
+      },
+      {
+        "id": "summary_mentions_Support Escalations",
+        "pass": true,
+        "weight": 0.015,
+        "detail": null
+      },
+      {
+        "id": "summary_largest_overrun",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "summary_mentions_unplanned",
+        "pass": true,
+        "weight": 0.015,
+        "detail": null
+      },
+      {
+        "id": "summary_mentions_zero_budget",
+        "pass": true,
+        "weight": 0.015,
+        "detail": null
+      },
+      {
+        "id": "summary_mentions_missing_actual",
+        "pass": true,
+        "weight": 0.015,
+        "detail": null
+      }
+    ],
+    "outcome_score": 0.69,
+    "score": 0.69,
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/054-budget-variance-analysis/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.95,
+        "consistency": 0.97,
+        "robustness": 0.92
+      },
+      "total": 0.9467,
+      "notes": "Agent read inputs, identified all edge cases, generated all four outputs in one Python script, then verified each file; clear evidence-grounded progression with correct threshold and join logic throughout.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.95, \"consistency\": 0.97, \"robustness\": 0.92}, \"security_gate\": 1, \"notes\": \"Agent read inputs, identified all edge cases, generated all four outputs in one Python script, then verified each file; clear evidence-grounded progression with correct threshold and join logic throughout.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.95,
+          "consistency": 0.97,
+          "robustness": 0.92
+        },
+        "security_gate": 1,
+        "notes": "Agent read inputs, identified all edge cases, generated all four outputs in one Python script, then verified each file; clear evidence-grounded progression with correct threshold and join logic throughout."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072061-NtZSJEpIMzMBX6PtBMvE",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 12867,
+        "completion_tokens": 86,
+        "total_tokens": 12953,
+        "cost": 0.03949209,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.039891,
+          "upstream_inference_prompt_cost": 0.038601,
+          "upstream_inference_completions_cost": 0.00129
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9467,
+    "process_effective": 0.9467,
+    "security_score": 1.0,
+    "outcome_score": 0.69,
+    "oracle_outcome_score": 0.69,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.6532,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.69 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.03949209,
+  "cost_source": "openrouter_usage_cost"
+}

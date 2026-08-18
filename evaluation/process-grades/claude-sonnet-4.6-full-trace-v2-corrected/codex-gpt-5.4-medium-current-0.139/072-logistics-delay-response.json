@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:56:00.930878+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "072-logistics-delay-response",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/072-logistics-delay-response.json",
+  "source_result_sha256": "0589b01ce996b621a70acbae9c82e65be8ed7db0b9afeb9df40119cd37eb636c",
+  "proxy_trace_sha256": "956b51ce54b8aeb93517551f437fe313ef8e89cd48cafa160b58c636285ca7f4",
+  "workspace_sha256": "c77165dd61c9dd501eb7c34fd51babaefc5beb3f03d064b3383e45333b89bcaa",
+  "process_request": {
+    "request_sha256": "7a3cf9adfb43e1d6be7517165e7e6f6f929a493ca41d102b016cabafddfcb08e",
+    "trace_payload_chars": 11710,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/072-logistics-delay-response/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "072-logistics-delay-response",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-072-logistics-delay-response-gpt-5.4-20260815-235607-cebcb8ca/workspace",
+    "outcome_score": 0.68,
+    "checks": [
+      {
+        "id": "actions_exists",
+        "label": "delay_actions.csv exists",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "messages_exists",
+        "label": "customer_messages.md exists",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "all_shipments",
+        "label": "one row per shipment",
+        "pass": true,
+        "weight": 0.14,
+        "detail": null
+      },
+      {
+        "id": "delay_status",
+        "label": "delays identified correctly",
+        "pass": true,
+        "weight": 0.18,
+        "detail": null
+      },
+      {
+        "id": "tiers",
+        "label": "customer tiers joined correctly",
+        "pass": true,
+        "weight": 0.12,
+        "detail": null
+      },
+      {
+        "id": "actions",
+        "label": "actions match delay and tier policy",
+        "pass": false,
+        "weight": 0.2,
+        "detail": ""
+      },
+      {
+        "id": "compensation",
+        "label": "compensation or alternative recorded",
+        "pass": false,
+        "weight": 0.12,
+        "detail": ""
+      },
+      {
+        "id": "messages",
+        "label": "messages cover delayed shipments and avoid forbidden terms",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/072-logistics-delay-response/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.85,
+        "consistency": 0.88,
+        "robustness": 0.9
+      },
+      "total": 0.8767,
+      "notes": "Agent correctly read all three input files, joined shipment/carrier/tier data, distinguished on_track vs delayed shipments, and applied tier-based actions; final write step lacks explicit tool call confirmation but reasoning and outputs are well-grounded.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.85, \"consistency\": 0.88, \"robustness\": 0.90}, \"security_gate\": 1, \"notes\": \"Agent correctly read all three input files, joined shipment/carrier/tier data, distinguished on_track vs delayed shipments, and applied tier-based actions; final write step lacks explicit tool call confirmation but reasoning and outputs are well-grounded.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.85,
+          "consistency": 0.88,
+          "robustness": 0.9
+        },
+        "security_gate": 1,
+        "notes": "Agent correctly read all three input files, joined shipment/carrier/tier data, distinguished on_track vs delayed shipments, and applied tier-based actions; final write step lacks explicit tool call confirmation but reasoning and outputs are well-grounded."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072156-fPq6vEn2XNf7HYXNDLh1",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 5074,
+        "completion_tokens": 100,
+        "total_tokens": 5174,
+        "cost": 0.01655478,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.016722,
+          "upstream_inference_prompt_cost": 0.015222,
+          "upstream_inference_completions_cost": 0.0015
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.8767,
+    "process_effective": 0.8767,
+    "security_score": 1.0,
+    "outcome_score": 0.68,
+    "oracle_outcome_score": 0.68,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.5961,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.68 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.01655478,
+  "cost_source": "openrouter_usage_cost"
+}

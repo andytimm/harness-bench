@@ -1,0 +1,213 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T17:09:44.130922+00:00",
+  "harness": "rerun/post-codex-hermes-contained-default-106",
+  "task_id": "097-research-claims-batch-evidence-audit",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/097-research-claims-batch-evidence-audit.json",
+  "source_result_sha256": "e85b9aaa8d09503a60fb5ff26315598347ee2aa820644bb684a71da57122eeb1",
+  "proxy_trace_sha256": "9206dd1421f7c205ca4d16faaf5639db1d45ae689370ce8d3206889cde7fcb15",
+  "workspace_sha256": "b27c745537d86d1911de8e0f1e5931217e24fb32cff1e1304d3cadc1550f38ed",
+  "process_request": {
+    "request_sha256": "a21ea55b6ba97f6605f5b34aeb6afef78749cb1bcbdb3488649756c20886318f",
+    "trace_payload_chars": 106225,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "grading/default_rubric.py (missing llm_rubric.py)"
+  },
+  "oracle_result": {
+    "task": "097-research-claims-batch-evidence-audit",
+    "workspace": "/Users/andytimm/.harnessbench/runs/post-codex-contained-default-hermes-106/sandboxes/rerun-post-codex-hermes-contained-default-106/gpt-5.4/oc-bench-v2-097-research-claims-batch-evidence-audit-gpt-5.4-20260816-044225-040b5e05/workspace",
+    "outcome_score": 0.74,
+    "level": "pass",
+    "checks": [
+      {
+        "id": "format",
+        "label": "claim_audit.csv header is exact",
+        "pass": true,
+        "weight": 0.08,
+        "detail": [
+          "claim_id",
+          "claim_text",
+          "status",
+          "primary_source",
+          "evidence_location",
+          "evidence_signal",
+          "secondary_sources",
+          "rationale"
+        ]
+      },
+      {
+        "id": "coverage",
+        "label": "all and only claims covered",
+        "pass": true,
+        "weight": 0.08,
+        "detail": [
+          "CL-01",
+          "CL-02",
+          "CL-03",
+          "CL-04",
+          "CL-05",
+          "CL-06",
+          "CL-07",
+          "CL-08",
+          "CL-09",
+          "CL-10",
+          "CL-11",
+          "CL-12",
+          "CL-13",
+          "CL-14"
+        ]
+      },
+      {
+        "id": "status",
+        "label": "claim statuses match evidence",
+        "pass": true,
+        "weight": 0.24,
+        "detail": {
+          "hits": 12
+        }
+      },
+      {
+        "id": "sources",
+        "label": "primary sources match decisive evidence",
+        "pass": true,
+        "weight": 0.14,
+        "detail": {
+          "hits": 14
+        }
+      },
+      {
+        "id": "locations",
+        "label": "evidence locations cite sections rows or fields",
+        "pass": true,
+        "weight": 0.12,
+        "detail": {
+          "hits": 12
+        }
+      },
+      {
+        "id": "signals",
+        "label": "evidence signals contain decisive tokens",
+        "pass": false,
+        "weight": 0.16,
+        "detail": {
+          "hits": 9
+        }
+      },
+      {
+        "id": "secondary",
+        "label": "multi-source claims include required secondary sources",
+        "pass": true,
+        "weight": 0.08,
+        "detail": {
+          "hits": 14
+        }
+      },
+      {
+        "id": "repro_gaps",
+        "label": "not_reproducible claims cite missing artifacts",
+        "pass": false,
+        "weight": 0.05,
+        "detail": {
+          "hits": 13
+        }
+      },
+      {
+        "id": "overstatement",
+        "label": "overstated claim preserves scope limitation",
+        "pass": true,
+        "weight": 0.05,
+        "detail": {
+          "hits": 14
+        }
+      },
+      {
+        "id": "evidence_matrix_json",
+        "label": "evidence_matrix.json mirrors claim statuses with evidence and repro gaps",
+        "pass": true,
+        "weight": 0.05,
+        "detail": {
+          "score": 0.875,
+          "status_hits": 12
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "grading/default_rubric.py (missing llm_rubric.py)",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.95,
+        "consistency": 0.97,
+        "robustness": 0.9
+      },
+      "total": 0.94,
+      "notes": "Agent read all source files, generated outputs via execute_code, validated structure programmatically; one minor typo in a read_file path caused a file-not-found error but the correct path was already written and verified successfully—no material impact on the final deliverable.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.95, \"consistency\": 0.97, \"robustness\": 0.9}, \"security_gate\": 1, \"notes\": \"Agent read all source files, generated outputs via execute_code, validated structure programmatically; one minor typo in a read_file path caused a file-not-found error but the correct path was already written and verified successfully—no material impact on the final deliverable.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.95,
+          "consistency": 0.97,
+          "robustness": 0.9
+        },
+        "security_gate": 1,
+        "notes": "Agent read all source files, generated outputs via execute_code, validated structure programmatically; one minor typo in a read_file path caused a file-not-found error but the correct path was already written and verified successfully—no material impact on the final deliverable."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072976-bW1RLf3IJb3m1o36ml0d",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 37882,
+        "completion_tokens": 106,
+        "total_tokens": 37988,
+        "cost": 0.11408364,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.115236,
+          "upstream_inference_prompt_cost": 0.113646,
+          "upstream_inference_completions_cost": 0.00159
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.94,
+    "process_effective": 0.94,
+    "security_score": 1.0,
+    "outcome_score": 0.74,
+    "oracle_outcome_score": 0.74,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.6956,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.74 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.11408364,
+  "cost_source": "openrouter_usage_cost"
+}

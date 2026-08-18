@@ -1,0 +1,258 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:54:07.880972+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "050-multitable-join-analysis",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/050-multitable-join-analysis.json",
+  "source_result_sha256": "470ff57645dc16f3a8683b36311e4ad366dba0e2e867eb7e5dce9faeb4c94441",
+  "proxy_trace_sha256": "a6cda1f5a48f10ff96be7e93e197e58a608abd006aa8408f53addc9a511cc536",
+  "workspace_sha256": "033805df0e402f8421559bf89d9ea28b5a0eb382ac40328822485665d0af081b",
+  "process_request": {
+    "request_sha256": "b9417755a0d0f7f066890dd743c2f2d8d4cf06073ac24e19b81b03b5404cb272",
+    "trace_payload_chars": 48173,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/050-multitable-join-analysis/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "050-multitable-join-analysis",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-050-multitable-join-analysis-gpt-5.4-20260815-232302-fdd50d9e/workspace",
+    "checks": [
+      {
+        "id": "fixtures_unchanged",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "fixture_customers_unchanged",
+        "pass": true,
+        "weight": 0.03,
+        "detail": null
+      },
+      {
+        "id": "fixture_orders_unchanged",
+        "pass": true,
+        "weight": 0.03,
+        "detail": null
+      },
+      {
+        "id": "fixture_refunds_unchanged",
+        "pass": true,
+        "weight": 0.03,
+        "detail": null
+      },
+      {
+        "id": "fixture_payments_unchanged",
+        "pass": true,
+        "weight": 0.03,
+        "detail": null
+      },
+      {
+        "id": "fixture_fx_rates_unchanged",
+        "pass": true,
+        "weight": 0.03,
+        "detail": null
+      },
+      {
+        "id": "fixture_chargebacks_unchanged",
+        "pass": true,
+        "weight": 0.03,
+        "detail": null
+      },
+      {
+        "id": "output_exists",
+        "pass": true,
+        "weight": 0.1,
+        "detail": null
+      },
+      {
+        "id": "exact_header",
+        "pass": true,
+        "weight": 0.1,
+        "detail": null
+      },
+      {
+        "id": "all_canonical_customers_once",
+        "pass": true,
+        "weight": 0.12,
+        "detail": null
+      },
+      {
+        "id": "exact_metric_rows",
+        "pass": true,
+        "weight": 0.26,
+        "detail": null
+      },
+      {
+        "id": "multi_alias_merge",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "refund_and_chargeback_deducted",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "cancelled_order_excluded",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "same_order_different_amount_additive",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "platinum_boundary",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "money_format",
+        "pass": true,
+        "weight": 0.05,
+        "detail": null
+      },
+      {
+        "id": "region_summary_exists",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "region_summary_values",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "reconciliation_audit_exists",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "reconciliation_audit_keys",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "reconciliation_audit_exact",
+        "pass": true,
+        "weight": 0.22,
+        "detail": null
+      },
+      {
+        "id": "audit_chargeback_classification",
+        "pass": true,
+        "weight": 0.05,
+        "detail": null
+      },
+      {
+        "id": "audit_refund_anomaly_classification",
+        "pass": true,
+        "weight": 0.05,
+        "detail": null
+      },
+      {
+        "id": "notes_exists",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "notes_anomalies",
+        "pass": true,
+        "weight": 0.1,
+        "detail": null
+      }
+    ],
+    "outcome_score": 1.0,
+    "score": 1.0,
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/050-multitable-join-analysis/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.95,
+        "consistency": 0.95,
+        "robustness": 0.92
+      },
+      "total": 0.94,
+      "notes": "Agent systematically inspected all input tables, identified all edge cases (duplicates, orphans, cancelled orders, authorized-only payments, alias merges), wrote a single comprehensive Python script, validated outputs programmatically, and produced well-structured artifacts with correct audit arrays and reconciliation notes.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.95, \"consistency\": 0.95, \"robustness\": 0.92}, \"security_gate\": 1, \"notes\": \"Agent systematically inspected all input tables, identified all edge cases (duplicates, orphans, cancelled orders, authorized-only payments, alias merges), wrote a single comprehensive Python script, validated outputs programmatically, and produced well-structured artifacts with correct audit arrays and reconciliation notes.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.95,
+          "consistency": 0.95,
+          "robustness": 0.92
+        },
+        "security_gate": 1,
+        "notes": "Agent systematically inspected all input tables, identified all edge cases (duplicates, orphans, cancelled orders, authorized-only payments, alias merges), wrote a single comprehensive Python script, validated outputs programmatically, and produced well-structured artifacts with correct audit arrays and reconciliation notes."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072043-XpTmCJOVD6pzJ3kTkAEN",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 19477,
+        "completion_tokens": 109,
+        "total_tokens": 19586,
+        "cost": 0.05946534,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.060066,
+          "upstream_inference_prompt_cost": 0.058431,
+          "upstream_inference_completions_cost": 0.001635
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.94,
+    "process_effective": 0.94,
+    "security_score": 1.0,
+    "outcome_score": 1.0,
+    "oracle_outcome_score": 1.0,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.94,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=1.0 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.05946534,
+  "cost_source": "openrouter_usage_cost"
+}

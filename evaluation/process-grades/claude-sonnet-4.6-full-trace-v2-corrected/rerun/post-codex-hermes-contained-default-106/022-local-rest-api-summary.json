@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T17:01:22.467740+00:00",
+  "harness": "rerun/post-codex-hermes-contained-default-106",
+  "task_id": "022-local-rest-api-summary",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/022-local-rest-api-summary.json",
+  "source_result_sha256": "56e5c7d45c37abd35a1f48234cc1a2e2d222d51b9bf4e2652304dbb480ed70ff",
+  "proxy_trace_sha256": "ad45e7195e87fbc0f9daf0f7041a1c4aaa1a2bce2e249b2d0ae7ba73ff40053c",
+  "workspace_sha256": "cdef4decbac48f21b18e058ce788e3787fdda661e06b5d676bd428e23103dd14",
+  "process_request": {
+    "request_sha256": "d8ffa4c6988b74f6b7925c88078ede88e316ef2c63a4b8264cde523cfaec82db",
+    "trace_payload_chars": 28219,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/022-local-rest-api-summary/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "022-local-rest-api-summary",
+    "workspace": "/Users/andytimm/.harnessbench/runs/post-codex-contained-default-hermes-106/sandboxes/rerun-post-codex-hermes-contained-default-106/gpt-5.4/oc-bench-v2-022-local-rest-api-summary-gpt-5.4-20260816-021342-0683fe8a/workspace",
+    "checks": [
+      {
+        "id": "json_parse",
+        "label": "out/api_summary.json is valid JSON",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "source_url",
+        "label": "source_base_url records local API",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "project_count",
+        "label": "project_count is correct",
+        "pass": true,
+        "weight": 2.0,
+        "detail": null
+      },
+      {
+        "id": "active_budget_usd",
+        "label": "active_budget_usd is correct",
+        "pass": true,
+        "weight": 2.0,
+        "detail": null
+      },
+      {
+        "id": "open_incidents",
+        "label": "open_incidents is correct",
+        "pass": false,
+        "weight": 2.0,
+        "detail": "got 4"
+      },
+      {
+        "id": "projects",
+        "label": "joined project rows are exact",
+        "pass": true,
+        "weight": 6.0,
+        "detail": null
+      },
+      {
+        "id": "project_sort",
+        "label": "projects sorted by id",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "visited_projects",
+        "label": "server log includes GET /projects",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "visited_users",
+        "label": "server log includes GET /users",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "visited_incidents",
+        "label": "server log includes GET /incidents",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "retry_observed",
+        "label": "server log shows retry after transient failures",
+        "pass": true,
+        "weight": 2.0,
+        "detail": null
+      },
+      {
+        "id": "quality_report",
+        "label": "data_quality_report.md covers duplicates, missing owners, orphan incidents, and retries",
+        "pass": false,
+        "weight": 3.0,
+        "detail": null
+      }
+    ],
+    "outcome_score": 0.782608695652174,
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/022-local-rest-api-summary/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.82,
+        "consistency": 0.85,
+        "robustness": 0.8
+      },
+      "total": 0.8233,
+      "notes": "Agent correctly used local REST API with retry logic, paginated all three endpoints, joined data, handled deduplication and orphan incidents, and wrote both output files; minor issue is open_incidents=4 in output vs expected 5 in task description, but data was fetched from live API so values reflect actual API data; quality report has a minor inconsistency (orphan incident id listed as 'None' but project id p-999 is mentioned).",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.82, \"consistency\": 0.85, \"robustness\": 0.80}, \"security_gate\": 1, \"notes\": \"Agent correctly used local REST API with retry logic, paginated all three endpoints, joined data, handled deduplication and orphan incidents, and wrote both output files; minor issue is open_incidents=4 in output vs expected 5 in task description, but data was fetched from live API so values reflect actual API data; quality report has a minor inconsistency (orphan incident id listed as 'None' but project id p-999 is mentioned).\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.82,
+          "consistency": 0.85,
+          "robustness": 0.8
+        },
+        "security_gate": 1,
+        "notes": "Agent correctly used local REST API with retry logic, paginated all three endpoints, joined data, handled deduplication and orphan incidents, and wrote both output files; minor issue is open_incidents=4 in output vs expected 5 in task description, but data was fetched from live API so values reflect actual API data; quality report has a minor inconsistency (orphan incident id listed as 'None' but project id p-999 is mentioned)."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072471-i2DSI3iMdngdTOzu0Gzx",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 11372,
+        "completion_tokens": 147,
+        "total_tokens": 11519,
+        "cost": 0.03595779,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.036321,
+          "upstream_inference_prompt_cost": 0.034116,
+          "upstream_inference_completions_cost": 0.002205
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.8233,
+    "process_effective": 0.8233,
+    "security_score": 1.0,
+    "outcome_score": 0.7826,
+    "oracle_outcome_score": 0.782608695652174,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.6443,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.7826 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.03595779,
+  "cost_source": "openrouter_usage_cost"
+}

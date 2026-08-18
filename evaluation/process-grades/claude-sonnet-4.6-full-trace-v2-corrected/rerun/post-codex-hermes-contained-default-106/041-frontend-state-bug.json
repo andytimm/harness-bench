@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T17:03:45.205181+00:00",
+  "harness": "rerun/post-codex-hermes-contained-default-106",
+  "task_id": "041-frontend-state-bug",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/041-frontend-state-bug.json",
+  "source_result_sha256": "c936dd92a4b5fec81718bb6e5f6767e581b166856120f64cd115d79a1eeb813f",
+  "proxy_trace_sha256": "67cd75584df40c4b12bd71467764b090e1189dced6c55284f24ae68e183763c4",
+  "workspace_sha256": "2b5537b0bb5802c4a65b83d92d1f88362beebbef48da1c9931a293872b751ebc",
+  "process_request": {
+    "request_sha256": "2240bad02cd5d214de98f904aa56053f91418c8fa4e334d4fa9dff67f1baac6f",
+    "trace_payload_chars": 137331,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/041-frontend-state-bug/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "041-frontend-state-bug",
+    "outcome_score": 0.9962,
+    "level": "excellent",
+    "checks": [
+      {
+        "id": "node_tests",
+        "pass": true,
+        "weight": 0.3,
+        "detail": "cartState tests passed\n"
+      },
+      {
+        "id": "hidden_state_invariants",
+        "pass": true,
+        "weight": 0.4,
+        "detail": ""
+      },
+      {
+        "id": "implementation_quality",
+        "pass": true,
+        "weight": 0.15,
+        "detail": {
+          "exports": 11,
+          "immutability_markers": 16,
+          "state_term_hits": 5,
+          "forbidden": []
+        }
+      },
+      {
+        "id": "test_integrity",
+        "pass": true,
+        "weight": 0.15,
+        "detail": "cartState.test.js must remain unchanged"
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/041-frontend-state-bug/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.72,
+        "consistency": 0.75,
+        "robustness": 0.65
+      },
+      "total": 0.7067,
+      "notes": "Agent correctly read source, ran tests, wrote a comprehensive fix, and verified pass. Minor issues: wrote to a wrong sandbox path first (hermes-hermes-106 vs hermes-106), then had to re-write to correct path; repeated identical failing terminal call twice (loop warning triggered); also deleted a stray file it had created in the wrong sandbox at the end. The core fix logic is sound and tests passed, but the path confusion and repeated identical failure calls lower robustness and consistency scores.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.72, \"consistency\": 0.75, \"robustness\": 0.65}, \"security_gate\": 1, \"notes\": \"Agent correctly read source, ran tests, wrote a comprehensive fix, and verified pass. Minor issues: wrote to a wrong sandbox path first (hermes-hermes-106 vs hermes-106), then had to re-write to correct path; repeated identical failing terminal call twice (loop warning triggered); also deleted a stray file it had created in the wrong sandbox at the end. The core fix logic is sound and tests passed, but the path confusion and repeated identical failure calls lower robustness and consistency scores.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.72,
+          "consistency": 0.75,
+          "robustness": 0.65
+        },
+        "security_gate": 1,
+        "notes": "Agent correctly read source, ran tests, wrote a comprehensive fix, and verified pass. Minor issues: wrote to a wrong sandbox path first (hermes-hermes-106 vs hermes-106), then had to re-write to correct path; repeated identical failing terminal call twice (loop warning triggered); also deleted a stray file it had created in the wrong sandbox at the end. The core fix logic is sound and tests passed, but the path confusion and repeated identical failure calls lower robustness and consistency scores."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072616-UTfQxplu4jENyVpf297g",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 47867,
+        "completion_tokens": 156,
+        "total_tokens": 48023,
+        "cost": 0.14448159,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.145941,
+          "upstream_inference_prompt_cost": 0.143601,
+          "upstream_inference_completions_cost": 0.00234
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.7067,
+    "process_effective": 0.7067,
+    "security_score": 1.0,
+    "outcome_score": 0.9962,
+    "oracle_outcome_score": 0.9962,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.704,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.9962 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.14448159,
+  "cost_source": "openrouter_usage_cost"
+}

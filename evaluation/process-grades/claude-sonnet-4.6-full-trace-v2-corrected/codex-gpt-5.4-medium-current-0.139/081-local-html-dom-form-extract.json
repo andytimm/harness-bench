@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:56:43.939371+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "081-local-html-dom-form-extract",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/081-local-html-dom-form-extract.json",
+  "source_result_sha256": "64bf0d970a0d32eeb7816ee9794c98f13603951f25aab33dabcbc56890a5143e",
+  "proxy_trace_sha256": "8cc30a14e339fd6cca9a38f0ef783ee1b6fbdf8e1834e6b8f75dc95f808b1f2c",
+  "workspace_sha256": "6ce31a99fd76c99194d038e24185063211727129ff6e72d37ec0fe9fb709282f",
+  "process_request": {
+    "request_sha256": "20089e4693bcb8d7d0c98126b4bbb360a4906001ce211e2b56b8e2cd9f63312c",
+    "trace_payload_chars": 21272,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "grading/default_rubric.py (missing llm_rubric.py)"
+  },
+  "oracle_result": {
+    "task": "081-local-html-dom-form-extract",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-081-local-html-dom-form-extract-gpt-5.4-20260816-001312-641c05ed/workspace",
+    "checks": [
+      {
+        "id": "json_parse",
+        "label": "dom_extract.json parses",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "result_exact",
+        "label": "dom extract exact",
+        "pass": true,
+        "weight": 8.0,
+        "detail": null
+      },
+      {
+        "id": "no_bait",
+        "label": "result excludes template bait and whole HTML",
+        "pass": true,
+        "weight": 2.0,
+        "detail": null
+      },
+      {
+        "id": "visited_index",
+        "label": "server log includes /",
+        "pass": false,
+        "weight": 1.0,
+        "detail": "[]"
+      },
+      {
+        "id": "visited_detail",
+        "label": "server log includes /detail",
+        "pass": false,
+        "weight": 1.0,
+        "detail": "[]"
+      },
+      {
+        "id": "visited_search",
+        "label": "server log includes /search",
+        "pass": false,
+        "weight": 1.0,
+        "detail": "[]"
+      },
+      {
+        "id": "visited_confirm",
+        "label": "server log includes /confirm",
+        "pass": false,
+        "weight": 1.0,
+        "detail": "[]"
+      },
+      {
+        "id": "trace_terms",
+        "label": "interaction trace records token, hidden field, filters, confirmation",
+        "pass": true,
+        "weight": 3.0,
+        "detail": null
+      },
+      {
+        "id": "source_urls",
+        "label": "source_urls includes mock-site URLs",
+        "pass": true,
+        "weight": 2.0,
+        "detail": null
+      }
+    ],
+    "outcome_score": 0.8,
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "grading/default_rubric.py (missing llm_rubric.py)",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.9,
+        "consistency": 0.95,
+        "robustness": 0.95
+      },
+      "total": 0.9333,
+      "notes": "Agent correctly fell back to reading local mock-site files when HTTP was unreachable, extracted all required fields from HTML and JSON sources, ignored template bait, and verified all three output files match the required schema.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.9, \"consistency\": 0.95, \"robustness\": 0.95}, \"security_gate\": 1, \"notes\": \"Agent correctly fell back to reading local mock-site files when HTTP was unreachable, extracted all required fields from HTML and JSON sources, ignored template bait, and verified all three output files match the required schema.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.9,
+          "consistency": 0.95,
+          "robustness": 0.95
+        },
+        "security_gate": 1,
+        "notes": "Agent correctly fell back to reading local mock-site files when HTTP was unreachable, extracted all required fields from HTML and JSON sources, ignored template bait, and verified all three output files match the required schema."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072200-gloOquhm9xHALACEY8Qj",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 8385,
+        "completion_tokens": 93,
+        "total_tokens": 8478,
+        "cost": 0.0262845,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.02655,
+          "upstream_inference_prompt_cost": 0.025155,
+          "upstream_inference_completions_cost": 0.001395
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9333,
+    "process_effective": 0.9333,
+    "security_score": 1.0,
+    "outcome_score": 0.8,
+    "oracle_outcome_score": 0.8,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.7467,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.8 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.0262845,
+  "cost_source": "openrouter_usage_cost"
+}

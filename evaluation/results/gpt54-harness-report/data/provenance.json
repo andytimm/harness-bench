@@ -1,7 +1,8 @@
 {
   "composition": {
     "codex": "105 full-manifest entries plus correction-023-loopback-network task 023",
-    "hermes_aggressive": "100 fixed-root results plus six watchdog-correction results (091,094,096,097,099,106)"
+    "hermes_aggressive": "100 fixed-root results plus six watchdog-correction results (091,094,096,097,099,106)",
+    "process_grades": "106 source-bound full-trace-v2 grades for each headline option; legacy-prefix and original-Hermes grades excluded"
   },
   "exclusions": {
     "claude_pilot": {
@@ -29,7 +30,8 @@
       ]
     }
   },
-  "input_count": 665,
+  "headline_metric": "mean taskwise scoring.combined_score",
+  "input_count": 1197,
   "inputs": [
     {
       "dataset": "task_metadata",
@@ -1703,6 +1705,531 @@
     },
     {
       "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/001-file.json",
+      "sha256": "7a2a0eb3b0a1469eb86e93a11fcf391d18945517aa3e05e33693a707303be581"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/002-exec.json",
+      "sha256": "f691ceab3347ce7f9cfe3e9adcc4ca3b3957d71968736f19f07c744b99661dbc"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/003-browser.json",
+      "sha256": "0d9c54d53f1100c5f7999f768cef3a163c4e569d525bf7e496736610e91ce973"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/004-meeting-summary.json",
+      "sha256": "5908702d9dddcbb4a0d2fab6ae315ec109483e8c292bf52ab6c80567052babbe"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/005-email-triage.json",
+      "sha256": "285963d59c56eb14709ef1151cf82c0ad8af4954e46564964b1a6ea38b22c425"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/006-access-bilibili.json",
+      "sha256": "33ee72059ccf887c12aedf7aba8657547ab436ca8d87bc2a313cc106597d0230"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/007-session-memory.json",
+      "sha256": "1e9b227e797f46db93bec66a0e4565259c8e5f42ddbdc7e6dbcf8f91665547db"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/008-image-recognize.json",
+      "sha256": "a2582dc0ae01d654506d8ee9939dbea2642314726ca39c52a4126dc2f3c43e36"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/009-git-pr-merge.json",
+      "sha256": "7840d56bf840869af0c344849ece625688a75d2240e7e7d278b87e4a6e477370"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/010-office-docs.json",
+      "sha256": "014bde9332abc6046c076c45d3510c9a675badd46c30f4ac18db5856f242206d"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/011-code-debug.json",
+      "sha256": "bcf6dfa746a5a6c8386c3331c755d0996406411fd4a1df2f9b3e7db94720606c"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/012-doc-synthesis.json",
+      "sha256": "1924ccdd231b561fed452e25d17a6e4428eca69ef84fb38c6577dd5b963803df"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/013-image-edit.json",
+      "sha256": "58147fdb3ee34a0f111ebbab7c02db49f78222e424a4aedf7c90cfa45b398f14"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/014-task-decomposition.json",
+      "sha256": "1f292246927831feb3156162753afda1ef6b818551331dde2bb9b17427ba7ec2"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/015-security-injection-defense.json",
+      "sha256": "d8ebac797e50e0848b402acdd0918b5a8c5db4adc36fc097b9f8946122241945"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/016-code-repair-pytest.json",
+      "sha256": "658672c3d07c1d5a3e809b3f5e28c6bcdc700d1d9475a409f9a21898087c4220"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/017-db-doc-consistency.json",
+      "sha256": "4a014c09313b522752142b79c56f2d4cc6fe9d11efb17250bea54827898a6b08"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/018-provider-failover-audit.json",
+      "sha256": "c7cb9651fd0ae5b3a2c3d9a78c46e8a733d13ad2c8ecc65c70dca97c5cce5366"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/019-incident-runbook-synthesis.json",
+      "sha256": "f02635f915fe24923171f3ef4944713cd5bbf0b8668475fcccb4efc61a9e4fbd"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/020-archive-checksum.json",
+      "sha256": "2770cc2df8d87a0a0143f346a81805ad8e5d6abae7b9f39f7f0731e91d5f9d8d"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/021-batch-rename-transform.json",
+      "sha256": "8050e6ca5e05bbe7dce1f3b78b2e9a80b6191fe1de9f84a6a47e196c70623165"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/022-local-rest-api-summary.json",
+      "sha256": "6926b4ea927e11dcfdca18e88895f7d8ce08161e5a68eddad0190eb18dd0c615"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/024-calendar-scheduling-conflict.json",
+      "sha256": "79d596e9f613c9bfb6848edcba1c5c38517840478d2196acc6aee8abf013bb32"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/025-meeting-action-tracker.json",
+      "sha256": "d7d3e5eb3cdd72f949aabe4b6d22ae83edff980633b5edf7b21b3c9cc1ff4365"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/026-ppt-brief-generation.json",
+      "sha256": "bd67aedcc17ce16e60a1429376c6d97f48150318e76cee21872500e20edd9905"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/027-contract-summary-risk.json",
+      "sha256": "ca8711566efb59fcb7b2a0fd1cbf09db2d47a088538ca262ddadc6db6737ab9d"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/028-email-thread-merge.json",
+      "sha256": "ec53bac2214710391c5cd2cbf78c152f8cc2092ac4cb49d3b84a180dc3fcb9f6"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/029-expense-packet-review.json",
+      "sha256": "046534c653b2fbf81f2b0032426c35b9c2fc0b4cb31aa8d4ab9e6abc59a49fc3"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/030-word-revision-plan.json",
+      "sha256": "ea3a1665706d686e8114ebc33e924c484f6f7e1993687e449f25791573c7c1d1"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/031-cross-doc-citation-check.json",
+      "sha256": "5fa1fba28118484a362164ee916178d149280cec60e8f482a1066c83eaea226b"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/032-customer-followup-draft.json",
+      "sha256": "b03e01c4e779ef8825bb7fe96f64e90d62a9a05c0b36c873129b0394952498a6"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/033-offline-knowledge-qa.json",
+      "sha256": "e4473e0cc6300ae5d69edce61f4b4b8b051fd62e0f7c67eb82e22da86213d718"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/034-evidence-matrix-claims.json",
+      "sha256": "9e11ad39b1814f94275a2930326d174d117f0881ec9be02645aa9c42bcf24ed1"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/035-conflicting-source-resolution.json",
+      "sha256": "e390fd7b443c0c80decf73f656f0e3d280b67714c03fd8f31e0640e9081922f0"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/036-citation-consistency-audit.json",
+      "sha256": "15c1c5a8100996ab683f3a8c615fa95f861fb16e633aac3b7019ae4f3db99100"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/037-policy-clause-retrieval.json",
+      "sha256": "775b93a1947856f534907369f8b509bcc8f48c0737d5b5b839193c27240fcbff"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/038-research-brief-synthesis.json",
+      "sha256": "5f85b049b47a3140c9a4d9faa82eaca962d40b05e574501bf8d0b31fc948a5f7"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/039-repo-architecture-map.json",
+      "sha256": "adde01a66e61b41209f746b9d9079aeac93f7792a18d6cc32f4fc09be69681c3"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/040-test-coverage-fill.json",
+      "sha256": "3b3a80470a16afe591ae91f4552cc69fa45bfa1e6a3295c8ffe00933318db337"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/041-frontend-state-bug.json",
+      "sha256": "464ba77576323487870761a47f41da442e4221259f7e122968bc3de901124ffc"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/042-api-schema-migration.json",
+      "sha256": "615028e73b724d0af7b346d6331daab96f3038105d7ff908532ff5645a194de1"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/043-db-migration-safety.json",
+      "sha256": "293989fa44ff095a52e38397aeb54823ffde64f939005d8ed61e22652e72f087"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/044-ci-config-repair.json",
+      "sha256": "330b4afa3ba233bd370c45723c3e208edcc2ff8d2f70499a76b854825090a3dd"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/045-dependency-upgrade-compat.json",
+      "sha256": "b392b8af30513f022d86d415f5930f1fc05e8adfaf449fa19e5fce2e0121dd1f"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/046-performance-regression.json",
+      "sha256": "e4ba48096ea38da6683645871d519b1957981256644ef0be45cc530c9f9451d9"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/047-code-review-risk-report.json",
+      "sha256": "16ab66297b7a0b46de233a3c8473e8a9cd6a61efe7545f30d1f284cc77f0f401"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/048-release-note-changelog.json",
+      "sha256": "8cb016c3a0dbc565d0cb0101e50e14406b169c6596ba4f6646fb30677fc338c3"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/049-excel-like-cleaning.json",
+      "sha256": "43072bfcca78845f23079b3e8aeb7bbd99dfba293166a1321e538c6ba4c247f6"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/050-multitable-join-analysis.json",
+      "sha256": "470ff57645dc16f3a8683b36311e4ad366dba0e2e867eb7e5dce9faeb4c94441"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/051-sql-query-report.json",
+      "sha256": "88050bf91541001b7fceeb8143793d85b3a2a4c4905e69959766268484aaae2b"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/052-metric-definition-audit.json",
+      "sha256": "6079c3484fb398fada1cee0747867248cee57a6f963a9004f5582b1db899e25a"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/053-anomalous-transaction-detect.json",
+      "sha256": "058a7d89db294a7743a7af3715759e83e948d80058ac468f64988e6ca9884ab6"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/054-budget-variance-analysis.json",
+      "sha256": "ed82b082c3d98ebb98da1c2b32bb2bccac994ae32b3103670b363049933dc29d"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/055-funnel-dropoff-analysis.json",
+      "sha256": "38cb0af0b356a6d5b807167015600c13efd588bb221c9bd0056f5c37855f4b12"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/056-inventory-forecast.json",
+      "sha256": "0c9adf9a8d22dceff7721b45ee1107ac10d7dc8a4b3b4cd27908a7b4fea0cabe"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/057-interruption-resume.json",
+      "sha256": "40d91ec1c850488f5411b21edbf3ef8a817592c98c2a58801d7350db97892119"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/058-multiday-project-state.json",
+      "sha256": "89f453dce8a626e358d99dd3b9d83db62aa2a660e05b53872d4b05aaa6823f41"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/059-event-update-replan.json",
+      "sha256": "bc4f0761275d11fcdafaea4f14fc4a55dc45c931fcf0b3fd67b4d464dc49e20f"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/060-task-cancellation-cleanup.json",
+      "sha256": "8e7ef3091f7bf5e126adbfb101e84efe9f578e2a7d47f1d5dd2ad30fb840f27a"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/061-periodic-status-rollup.json",
+      "sha256": "2cdf579549a148d4d7bcc15d41b648fae136eab449d8f0ee7e679d209ccf6da0"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/062-k8s-config-audit.json",
+      "sha256": "309e9cbf0b1ac5da9e456613f0d43f4d50cb0b7f63c79662c9fec43f38886acf"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/063-alert-dedup-noise.json",
+      "sha256": "275f4c93a00b6a2a25cdacc7b3b3561747723717d54d5d2bd2dadf8e1cd99744"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/064-service-dependency-triage.json",
+      "sha256": "a88bedf81593c29ac66aec8390e51c4a642b852da6198a38e0b4321e78db5079"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/065-capacity-planning.json",
+      "sha256": "1ee5a66c6035990bb6321955e90e913353ef2e665c24baed807d29c7615e15f4"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/066-rollback-readiness.json",
+      "sha256": "9df79c59b7ee5f3e1cf30898d804ceee5dabdd8db01bc1f5d1b625bfead959da"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/067-canary-release-check.json",
+      "sha256": "8ced465fe3e2f923539c2bc37dda84871b124dcc6a64a8885924b0075eb82d67"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/068-product-launch-ops.json",
+      "sha256": "06bc75ae01bf6376cc43a2b43910dbe2d10758dd79c4a36c9c759736bd7e090e"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/069-legal-compliance-review.json",
+      "sha256": "6736deef457c61a7035a2384911c14317ecc3ef708f8d14bb3279e452c5d878d"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/070-hr-resume-screening.json",
+      "sha256": "b547f03a7d853f013bd33cb9372bb0640522ef11cb3be2e1edc4a39857e73ac2"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/071-ecommerce-support-routing.json",
+      "sha256": "9750c30ffad0196623bf2f3d6f3c5491914b644c8f044a6b465a0720b6a5ca89"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/072-logistics-delay-response.json",
+      "sha256": "0589b01ce996b621a70acbae9c82e65be8ed7db0b9afeb9df40119cd37eb636c"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/073-research-repro-package.json",
+      "sha256": "cb035ec73212deaca03c962360fb87ea10fb17ade234a26a4a03af5efc3a5a76"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/074-education-grading-feedback.json",
+      "sha256": "ef6732b82029e6a9582202f7920299b000cf742f3368afba2363f8a77d5388e7"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/075-platform-appeal-review.json",
+      "sha256": "486fdd32978e847ce4864fd6d31e4f046bf9fc332282efb21df7ef388c222470"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/076-medical-admin-claim-check.json",
+      "sha256": "c7faab56c6a17e43c9bcf7f284a39657ff799078a01a567934e1e943589db204"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/077-archive-manifest-defense.json",
+      "sha256": "98901c924251ddfb7fc52743c5ab34b1e4c90aac9f9cc6de6dbf47ec901a80fa"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/078-local-api-cursor-retry-ledger.json",
+      "sha256": "999fe77f7c8b1192affba0cd55b5327f26075ad3b54549b102a7a2ae03062123"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/079-smallfile-batch-reject-ledger.json",
+      "sha256": "b0cfd9782592fbd4fd3d4e2b10dcf3657a81fb0e7df0779e572c207e51400d6f"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/080-schema-roundtrip-conversion.json",
+      "sha256": "6408f79111470b51815e7a2b47b9c3a0d813f46630bc0e0cd12ba0a879ea321f"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/081-local-html-dom-form-extract.json",
+      "sha256": "64bf0d970a0d32eeb7816ee9794c98f13603951f25aab33dabcbc56890a5143e"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/082-compose-config-repair.json",
+      "sha256": "8c56944e06457e964a1277f9ba5b879a17d1791b197c34ad0f100bd3f4af54a3"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/083-monorepo-interface-repair.json",
+      "sha256": "2d8863d75f5d9ee4ff0a41db13a84fed59b7c5e5566bad19484c4b125995d8b9"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/084-js-state-type-bug.json",
+      "sha256": "8565003c2072d5cb0f6e8c70ef39f0b95a41136bd7c79076748b3a48542d5ecc"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/085-flaky-test-root-cause.json",
+      "sha256": "660acf6f633678ed30d4d3f72d7e68cea4b54276ce67905bf7afd811c695395a"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/086-sql-migration-preflight-rollback.json",
+      "sha256": "34d03fdb9323a50477988457e0b44cc8c3a54ab2b20dae85a6bf428727f4d121"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/087-cli-parser-bug-tests.json",
+      "sha256": "04c9050670c75b7e2f9cd1d21fb6d16ccce802aa586760c2e4c93081e9d1e613"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/088-api-contract-mock-client-compat.json",
+      "sha256": "2c4f8006a8f75f418d0c1005e2fd5b9fb35e2dbb0dd51748f5b2f952137827b0"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/089-ab-test-caveat-analysis.json",
+      "sha256": "cc7a10b00529e29828d6bb99886fc22ab34c6095fb5bbb71dd5ad799e6c42b31"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/090-timeseries-anomaly-attribution.json",
+      "sha256": "dc78c6e2d37f85315ae8555cf65c3ae5d80a702c7a648a253bb648ddfea15a2b"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/091-financial-close-reconciliation.json",
+      "sha256": "d757e323fdc1873c268bbb9208cdacb252845aa13a5a3aba5d63ecae9687ea3c"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/092-schema-drift-audit.json",
+      "sha256": "ffe2ba2e9398f222ff9654b30104bc2792d6cb52d55117cc54bf4e74d3eba6c9"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/093-jsonl-sessionization-analysis.json",
+      "sha256": "a79c6fd5c53775bd48d21e5b293c3ae556e5a50ccefcb938a18c70f70d2b404e"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/094-metric-definition-migration-diff.json",
+      "sha256": "c6987b69c5267393b8ff193fef35766440f51a5684fd419fa443d70b336c2618"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/095-policy-version-conflict-resolution.json",
+      "sha256": "58b1db323ef9911bd590a7bc94178a4c837edb8b5881ba5d98ba708a3538eeb9"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/096-offline-knowledge-qa-insufficient-evidence.json",
+      "sha256": "be4fb5daeab6ea6cb8647f83ea69b27cc2ace4783921749b161d2d36700654b0"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/097-research-claims-batch-evidence-audit.json",
+      "sha256": "6d71f09ec2c982cc6091a3daa78abe30dec8dc1e32ef1168b917230fbc0a1eb5"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/098-three-source-decision-record-synthesis.json",
+      "sha256": "8e9e6a3754634978c2ac89de6556dabdfeaf7861f7d477762304ebb8d0ca789a"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/099-privacy-dsar-intake-review.json",
+      "sha256": "cbe34aa8fe1ca344982e556c2425745b2a6b4b14c8a3e8296f2c497cb0fab105"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/100-financial-kyc-admin-check.json",
+      "sha256": "1a3cfd772056f79e4b0a9a32c1b79cb5d8378bf982e5f900139e73d7f52e749a"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/101-marketing-sensitive-commitment-review.json",
+      "sha256": "4e8a2bef16cb3bb49a75edb7c68b79ae674b2315aa2f80b020a5b335922021d7"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/102-internal-doc-retrieval-injection-defense.json",
+      "sha256": "4c74b18fcc9529749724cca48d577e4a9598f747b4154d2152489f7b24829774"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/103-policy-update-replan-diff.json",
+      "sha256": "71bc5ce2dd9ccbd3e75971085b006f8df72c9d6fb7323f40ac42a0b04c7fdfe5"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/104-async-ops-window-rollup.json",
+      "sha256": "aaf099b46ebd641ae9f6d6a126109fd04019411542a155b44296d6c85c748734"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/105-partial-batch-resume-ledger.json",
+      "sha256": "5ef18d0afdf129002058a2025b7e0eab9ff9e02ec4b40b3ea60aad028c615a99"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/data_try6/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/106-release-approval-gate-plan.json",
+      "sha256": "8e1d71824df6217632efca6b3a59bacd6158201f95eaf98dc06ad988092d5f5d"
+    },
+    {
+      "dataset": "codex",
       "path": "repo/evaluation/runs/codex-gpt-5.4-medium-current-0.139/correction-023-loopback-network/CORRECTION_ATTEMPT_AUDIT.json",
       "sha256": "05ee6b472775e01424636449c55d6afa48f06c5f94f863b8f58bb2256018c5d9"
     },
@@ -1710,6 +2237,11 @@
       "dataset": "codex",
       "path": "repo/evaluation/runs/codex-gpt-5.4-medium-current-0.139/correction-023-loopback-network/manifest.json",
       "sha256": "b287cedeb578ded5a8781fcd17219c7ddd0e78a1eda6977f8238f9b59aa7cc7e"
+    },
+    {
+      "dataset": "codex",
+      "path": "repo/evaluation/runs/codex-gpt-5.4-medium-current-0.139/correction-023-loopback-network/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/023-web-form-extraction.json",
+      "sha256": "b4ab137ae3d7d2631647afa3130cc3874d007ccbcba10557bd01bdaf75c67fe9"
     },
     {
       "dataset": "codex",
@@ -3355,9 +3887,2144 @@
       "dataset": "hermes_aggressive",
       "path": "runs/post-codex-hermes-watchdog-corrections-6/results/correction/post-codex-hermes-fixed-aggressive-watchdog-v1/gpt-5.4/106-release-approval-gate-plan.json",
       "sha256": "563c862d9402da3e7b9e627fa3a48a0baf0ea624cd76ed323ea86c3da28f67ae"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/001-file.json",
+      "sha256": "cd714ee1b8935b27c39bf4e6ce4ad0554459c6a1485fba0e9d737ca784942d41"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/002-exec.json",
+      "sha256": "cb6e6c5f71dd9bcd93509e04483775d5068dd4dcd2333968ac2672e4d9d877ed"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/003-browser.json",
+      "sha256": "b9858c9757e3050a8cfa7545c04b4481de8d3dc786dd399e42afce3859c9079a"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/004-meeting-summary.json",
+      "sha256": "acbe801779c90a90277ce6d1dd40dc50580fb099a79f71073342adf2bf88e862"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/005-email-triage.json",
+      "sha256": "096d4950ac234320b5fcfda339a2473eefe959369836d0bb5ef09eb2642cbb2d"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/006-access-bilibili.json",
+      "sha256": "cc23a957b160a1c710c632f54f4b468320cbc27418b7227e6062c2174f1618f4"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/007-session-memory.json",
+      "sha256": "9718f1998402469d60bb4a484ab34d65ff481b8d29adec6c2c57547892ccb4b5"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/008-image-recognize.json",
+      "sha256": "e3b0327ae24bde239b7c90a68d75337a1ed3e543552dfcc73a7123daa87e4ad1"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/009-git-pr-merge.json",
+      "sha256": "48da39466bf1efb8e93f2360dd60b029ba4a188dcde87105ff11e31944717a59"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/010-office-docs.json",
+      "sha256": "9216702c6963a4ccbdca16ca7dce45dcd2b9fdcda0e6694552ae10f7f4d33457"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/011-code-debug.json",
+      "sha256": "44c4f64123a6ba8ac1171c130bbfe45c70e81b7aec793e5c97e50e5ab41a6ab8"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/012-doc-synthesis.json",
+      "sha256": "c863a60b59699326230ee2155ab43ecf1d66b2ef562f19d09d2cdfae31b30340"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/013-image-edit.json",
+      "sha256": "7ecea969b70baa7023539da82be747bcb61168ba9851212ca9345dca91a7cf22"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/014-task-decomposition.json",
+      "sha256": "47384c8fd8eb5c92dc3bcaa63fca787f7fb689c66a0b06a9d194c779f15b7eda"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/015-security-injection-defense.json",
+      "sha256": "8d8bf409c253b001b3908c3f7c938bbff695357c2b005f0d6fe938fa20eba3a2"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/016-code-repair-pytest.json",
+      "sha256": "3e3fe0650a8984b1deb02786a16cdd38e9af2ddfa90db708a1eba3cdd19d2b0d"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/017-db-doc-consistency.json",
+      "sha256": "3b0cbccd9b261c8debef0b437f96330edd88762f700e58171d51741655249417"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/018-provider-failover-audit.json",
+      "sha256": "cfa718b786e0b0f54d460e7d639961b19913a3d2dd4eb13729c60211b6905949"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/019-incident-runbook-synthesis.json",
+      "sha256": "7ad0478f55480a8f2684d0e6d8e42e82c98232f4d7dbf777c50c1cedf57e9335"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/020-archive-checksum.json",
+      "sha256": "497560e753c4d64f75d027fa565d1e3f3011d3e2b0c2605af9c07b991f71469c"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/021-batch-rename-transform.json",
+      "sha256": "1e29416bec4126f7f136876b197990834f76b8445e80b67e76fe7a43d62026a0"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/022-local-rest-api-summary.json",
+      "sha256": "65b990ba8e137a9fec457087f26b3002d6e4181659edf610e4240c6aa144f121"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/023-web-form-extraction.json",
+      "sha256": "f9bb82f3475ecb93f929d93dfa83c72a745b15c595b9b0c5274d74b0b4ad29d9"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/024-calendar-scheduling-conflict.json",
+      "sha256": "609c030dee25c442d82c322b24d9a60d92687ba7b5b6942153a80fdc810a1a2f"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/025-meeting-action-tracker.json",
+      "sha256": "e00758c8488a5a09b8a1dc34bd25c93416b454e9201c1a5a1905d45ae88cf60f"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/026-ppt-brief-generation.json",
+      "sha256": "3eeb9129acec3de95eec35fbf7df023adf327b998ff1e17396547742033ca48e"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/027-contract-summary-risk.json",
+      "sha256": "8f49cf89ad818503513efa7892354bd558fc93aa7ded4d3f7051ce85e5e536d9"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/028-email-thread-merge.json",
+      "sha256": "956ed71933f9a231aef89de3440495c8de06141576481108a6de0a390aadd06b"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/029-expense-packet-review.json",
+      "sha256": "d5a5ae4b306f182bb8665ca95be88d2675df43f8517927ee6a1e8d223cd6411c"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/030-word-revision-plan.json",
+      "sha256": "7e9f7109a27aa429ee7c5ad0552e920ebc334e1636548e7a63456f017c74bea5"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/031-cross-doc-citation-check.json",
+      "sha256": "bc6b4a64565b07bcb26895f9892b409a12262bc5ad8078d0e86925f30f42f506"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/032-customer-followup-draft.json",
+      "sha256": "e792a807509183fd37e2fbf51fe1549da28183177b57366b6d1e8e5fdd19c12d"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/033-offline-knowledge-qa.json",
+      "sha256": "b53613817ca8866186e35c42190d62834cf8ecc7fac98b71799fc9f181bc8722"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/034-evidence-matrix-claims.json",
+      "sha256": "6d39f2753143d36baec84534b179614718c26321d841b58c8c29b77f0f25fc22"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/035-conflicting-source-resolution.json",
+      "sha256": "b27b27abdc30b378d02398fc7a4d8bce2cc73db5714ca6c3a0caeeacc4606bd2"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/036-citation-consistency-audit.json",
+      "sha256": "80220011937018ebb0b21b3a3b818b84f68931c27ed2a307f346a26afa8471f7"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/037-policy-clause-retrieval.json",
+      "sha256": "d3fed795985b7ae547afcbd3b754200e98e3653225b4e39e12211b7dd29b5675"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/038-research-brief-synthesis.json",
+      "sha256": "5a696608ce0bfa6087a9b35d9b4319881670de51216f4ca55a1c2ca50f82fd20"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/039-repo-architecture-map.json",
+      "sha256": "6660f233a4f905bcb116d9c8f0be80cee2ffaf491f8abb2747b59a39c0cfb0d1"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/040-test-coverage-fill.json",
+      "sha256": "34952fe5ecc4cceeaafb7867d81b9f1fea0a98d3d3b9fef1ef2d908455d4a2c0"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/041-frontend-state-bug.json",
+      "sha256": "a7efbd56dbf42488b582cdb51f4568ddd4e02bf1f3ba943e3ac45cc1674d52a0"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/042-api-schema-migration.json",
+      "sha256": "c20952b764f69997a63113eaca3c98b7037caea511df23789a57ace2886e5c82"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/043-db-migration-safety.json",
+      "sha256": "38ad4f4737855c060eb8ca455756f266a33e09ddf3951cd16329242825502404"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/044-ci-config-repair.json",
+      "sha256": "41b22102dcd2c2ab18b60b36b819f4d8bf6e22e134cecddec284094f5ca416e7"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/045-dependency-upgrade-compat.json",
+      "sha256": "18fa8924a22c460d653b73102b5b3c4b19c46e2f4bf65de30562ffdc6d7d496c"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/046-performance-regression.json",
+      "sha256": "da46b642ca40bdb55cdb3f575216ec85371b9816e89f62270143265e0fd874c4"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/047-code-review-risk-report.json",
+      "sha256": "a816e21768621b95f41b9fc9a4b1bb7f902da56b9d450ec51cca53626a12f25f"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/048-release-note-changelog.json",
+      "sha256": "aa5934aa36a2119c4da8c34e6dc4b38dade1623d4c0025f5163037f0f619b754"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/049-excel-like-cleaning.json",
+      "sha256": "c36ef0ad5022a4c379471d911d410d4a4a7952b8c99bf9e98cf595ed005c1186"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/050-multitable-join-analysis.json",
+      "sha256": "f17f454768e8aac61c5ca5e198f0d780a17028f312861b83c8d34a2ee19bfa77"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/051-sql-query-report.json",
+      "sha256": "caacbb5c4984ad35ba63cb507946e18d91f551b3230dfa3382d0cc8f313d5206"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/052-metric-definition-audit.json",
+      "sha256": "fecfc6e9397e80c22313c1e17661a727393f8607321dbe9288a1cf17895f9e46"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/053-anomalous-transaction-detect.json",
+      "sha256": "12e2890072f9d4c776bf5dc85675317ba67879adad8d4b7b0d78517729fe32a5"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/054-budget-variance-analysis.json",
+      "sha256": "a6d85e966314db95c413721eed2b6b8e98f2493618402910725af2e234aedf11"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/055-funnel-dropoff-analysis.json",
+      "sha256": "d527b6b68767f99c5423f5e41d5e63fa03762bee3f0fa66821a144b51772b075"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/056-inventory-forecast.json",
+      "sha256": "4be91a9cdfa202b620f54ffbaa648df9f11b56f372d7da26df5ce747d6e989b4"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/057-interruption-resume.json",
+      "sha256": "abf389c5a93049efd12ca09b13366cb953e373d3647d93a392ef43bad69422d0"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/058-multiday-project-state.json",
+      "sha256": "f17b46655fb53476ce05467fa3dad264a232a1be9a890b712a9f085870321977"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/059-event-update-replan.json",
+      "sha256": "406034d7efe8d1dee25e0a2e3f53c52088c2091a4c7a0760da45e4ac40d6a85b"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/060-task-cancellation-cleanup.json",
+      "sha256": "41b75e965fed0bfb5bd653d348ab1fa47fc00959feae9684844d4a422c402233"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/061-periodic-status-rollup.json",
+      "sha256": "04e24d6a9e03184fe292aeeb38ecc293bdb5e30faa2f3edf6b30009220efb3d0"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/062-k8s-config-audit.json",
+      "sha256": "a8d6ca31d9860666f0f1141cc71e6f841e468a042a154b2d98ef15f25cd61a74"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/063-alert-dedup-noise.json",
+      "sha256": "8d6b92037bf725632b934620e4eeda8a71f3a16756db372026d5758a37c26804"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/064-service-dependency-triage.json",
+      "sha256": "121804a73207b3011043a3bc93af3c83c2fa28b71f179c3dc7342b857a524a08"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/065-capacity-planning.json",
+      "sha256": "d0765e58f00336e6a6ea872847d356552515c497e0cf5b2000e568ca006bbeba"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/066-rollback-readiness.json",
+      "sha256": "242f875daa73576b8c84130f10e026d7c5073ed977e2fe7655a2a67ae57c0550"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/067-canary-release-check.json",
+      "sha256": "90ac54f99f47a6575ec353349c3d1895bfee464cc52d4f0ff4ef293174ae81f5"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/068-product-launch-ops.json",
+      "sha256": "4db9ab333cb9de9a9fef3692e17192f45d06141eb07816ed7709f257ed93810f"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/069-legal-compliance-review.json",
+      "sha256": "d3cc4edb15ae2cd795d06b404212bfc7ea71959db4ce48f7abcfb80f2e916037"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/070-hr-resume-screening.json",
+      "sha256": "6496c7efb30560b3cf44105c91e01d7208f504c6a2be2cea00a7d906a233d8c4"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/071-ecommerce-support-routing.json",
+      "sha256": "146620adeee17e7b89903b9433dab0e2abb5e15041336628e97602a774a7c64e"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/072-logistics-delay-response.json",
+      "sha256": "db7b717cd59f72813d4678a926cff0d44472ffd9fcf3f71edd30be4b1e51e288"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/073-research-repro-package.json",
+      "sha256": "81335bcde01977924fa366a260cf382a61fce6a88d0d165b162101fd6206726b"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/074-education-grading-feedback.json",
+      "sha256": "9d977189fd93eb2aedf19c672a6321c9919e3caef93fb757be85eb137d40f53e"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/075-platform-appeal-review.json",
+      "sha256": "47bdbf71ff13d37bf2ddc44fdd8d625bb0f68f0c30dcae042477d0f8b3a87454"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/076-medical-admin-claim-check.json",
+      "sha256": "ee537a765ff48656d24b77330ea72be8c978dde862def4b0deb4f8211a3ecd28"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/077-archive-manifest-defense.json",
+      "sha256": "47e7fee98158b8c34cc8aaff77d8570c96fc1dd33482337906684d0f23ba6df0"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/078-local-api-cursor-retry-ledger.json",
+      "sha256": "df809254db445f45c3af4433ac6ac0dd1ad7bfabc99802ab35ca9386b78f5ad2"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/079-smallfile-batch-reject-ledger.json",
+      "sha256": "3e290a0104ad8ae9ee5c8f8ccb9476a0903806f3587867f2df9ad84cca9a3677"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/080-schema-roundtrip-conversion.json",
+      "sha256": "5fdaf2eefc5f3d63e4da10ef5fb29d7a94ff462411079e0c8bf3cb6ef489ff46"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/081-local-html-dom-form-extract.json",
+      "sha256": "2585894a808a0d94b3ffbf60dbeec304901b8cc9a8f525dd0dc0ecb219e5f471"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/082-compose-config-repair.json",
+      "sha256": "0a771defc01b872a4b9b912cb011946514b6207d6752f502e9d46d677a87f400"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/083-monorepo-interface-repair.json",
+      "sha256": "387638e4838f448d4a579ebe5f20db196eb394b925d186282957e9935a85007a"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/084-js-state-type-bug.json",
+      "sha256": "23f588e6c1602f7fca81c052d0d22d889f6a9a14e0a13e1e97602a091045bcc6"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/085-flaky-test-root-cause.json",
+      "sha256": "5e68537e75a34aacd1d2bd1af5794f7602392a4812c0155168b713d88216aa8d"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/086-sql-migration-preflight-rollback.json",
+      "sha256": "1b5b6a8854ff735987878718897fe5794122515816576ab202a8dd2d9acd009a"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/087-cli-parser-bug-tests.json",
+      "sha256": "b4b6b4973d39c3dfddee0b466d0261d12ed2093f013817c8afd03c413e21c83c"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/088-api-contract-mock-client-compat.json",
+      "sha256": "0e9d78651f1220603a4dc89fa1a05cc3e057904bbd939adc8fbc82e3be678be7"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/089-ab-test-caveat-analysis.json",
+      "sha256": "abda06c9704f99a6bbf3adf4cd3271e0afba9ead613c2bb77dc3ec037f793897"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/090-timeseries-anomaly-attribution.json",
+      "sha256": "1e3b13634bb0562e92bc0af6658cfedf8b725f767a41fb10dbe9c50b584e9f9a"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/091-financial-close-reconciliation.json",
+      "sha256": "db3e11fa89517c6d0b6ed569e0255b3885728e37eb413258b150369b11345d87"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/092-schema-drift-audit.json",
+      "sha256": "ebd251d2239587c3a2ec480b6772149de86af5fbcdd74bd1a18cb49d0dbd93e8"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/093-jsonl-sessionization-analysis.json",
+      "sha256": "7af2d16880b7e811530a9fa940f006489533f6be093276e87f43366c2e3dcdcb"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/094-metric-definition-migration-diff.json",
+      "sha256": "1a000dbe9bff6923febaf2f58694215ce33991addd8699e75bed6040946e7e2d"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/095-policy-version-conflict-resolution.json",
+      "sha256": "1e7cea77054a860cba795373c97c510f8ead5689a7c46cf62967bfea5e1f7267"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/096-offline-knowledge-qa-insufficient-evidence.json",
+      "sha256": "3fb1f60a811580f1675b7fcca1827bf2a45c580e58cb608e96eca5cf5b966dba"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/097-research-claims-batch-evidence-audit.json",
+      "sha256": "d28d80439b1bd4cad8ebdbb02c87f5df3b84e2bd2c0080b068ae1428efe22a6b"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/098-three-source-decision-record-synthesis.json",
+      "sha256": "f8a13f5df91d4cdd6eee2fea87d127615ca2d5c785793817e768fd8d136fcb2c"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/099-privacy-dsar-intake-review.json",
+      "sha256": "b75ae2e8df2bdf02b740ac83638a337b620003e4b67af0b37dcb33d1b5396717"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/100-financial-kyc-admin-check.json",
+      "sha256": "1ae171ea9eb99924f86af0ef54188ca396b6800873d60eaa27f37de1ed3bb4f5"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/101-marketing-sensitive-commitment-review.json",
+      "sha256": "7d68102e7a2fa7febf97dd42e3d32fd6b898001302edfd00b87b1bf7e375ed8a"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/102-internal-doc-retrieval-injection-defense.json",
+      "sha256": "c30c9a9eeb6ff3cb0409040ae5d6004e7defe3093c9b3e340a4dca04711d10c5"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/103-policy-update-replan-diff.json",
+      "sha256": "6f447799dea3f69ad6ff180e70df55d48394d74de8f28c83dce68deccabe13d7"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/104-async-ops-window-rollup.json",
+      "sha256": "79840bfc42e2a800d9248ac3f3440025b556676753189e3c1f434505147a8fbc"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/105-partial-batch-resume-ledger.json",
+      "sha256": "3b7ed4342f15f1e02be5eee045e63029df357b71d985a9b6d18fccf77e55d11d"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/pi-gpt-5.4-medium/106-release-approval-gate-plan.json",
+      "sha256": "6814239bbecbbba6090fde6504d39d215a98172588859ee3a4749c9215c059c5"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/001-file.json",
+      "sha256": "f9d4e4b8c2e8530afc0fddfffea619bba3fdb88ab10e90f462ef1d050a01f626"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/002-exec.json",
+      "sha256": "e15b212ca5d96bb25c6839f8b9aa9bb9f021648139aaaa8909b55a5d2d6172f0"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/003-browser.json",
+      "sha256": "d731fcd49a7e2c9a789a9b42fdfcf08fe55b2218380a379d39aa53361f2ce30d"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/004-meeting-summary.json",
+      "sha256": "2f149210e4aa30de85048096a4102f072ab731fcf6e9fe030b49da4f8be2d91d"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/005-email-triage.json",
+      "sha256": "919f63a9b5f841f36d7380c2fc5488bf9b89f7b2a091e02485a98ae5db578082"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/006-access-bilibili.json",
+      "sha256": "35dd21fcf13a1ed7dc0404afd377c2db19657fb82a0adfd252d830063ed742f6"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/007-session-memory.json",
+      "sha256": "b5fe000f4bd5d241604c276548e1d8ad9aa6e92d41d433218d0924d4e85930c8"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/008-image-recognize.json",
+      "sha256": "7c68e6710e8a1caa496b24c9be34e803e49a985a6fb7f706161aa62d64606627"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/009-git-pr-merge.json",
+      "sha256": "588b493892f928b946a71f88b347db6f0822f233e885e5e98b9dd2aeb2f90583"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/010-office-docs.json",
+      "sha256": "b7b0ac4bf9138b8227ab43df940ebb332c7d3b7455203ba8a0e12a87a3fad35f"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/011-code-debug.json",
+      "sha256": "5e469957671b7fc44b7eec7838095d5803f4650ba4d7b21d3ced53703a5451f5"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/012-doc-synthesis.json",
+      "sha256": "e38fe944571bba67bb4d0cd2c7e87d0aaf19d52f8b40a93503aba728d72ea955"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/013-image-edit.json",
+      "sha256": "1da727ac92fb43e5c62dc5ebe9678a69df7860905caa878335692ba3130e2450"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/014-task-decomposition.json",
+      "sha256": "09f59a199bb8859e0257394f9071c522b013631177b3e35a8afe73490ea40b52"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/015-security-injection-defense.json",
+      "sha256": "c15f9e326b910f9342b6f99d272a1efce9da3864f28b5dbbe83b828e86dcfe2b"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/016-code-repair-pytest.json",
+      "sha256": "7bac43d43e498a1ebb9984e42f454864d18f6035a1c1721c1755aaf2851c5912"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/017-db-doc-consistency.json",
+      "sha256": "b43b66bb50bddc88f3103281d7983f7210992a8c3e2f2a399c7632c77af4e663"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/018-provider-failover-audit.json",
+      "sha256": "8ebda830f5a9e7f88b08c2140eb04f4a5c53cb28ba19e439bdc5475642b652e8"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/019-incident-runbook-synthesis.json",
+      "sha256": "9c9415a91114b5797e502ed68644e3d06e43d9ce044649079dab92415eabb5f3"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/020-archive-checksum.json",
+      "sha256": "e271fea2dd058d4ca138beb60d3b25ee62bc877ec216a469cdb4a18367160831"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/021-batch-rename-transform.json",
+      "sha256": "2542b201b091e85e82e24499d120eecb47004a150ae052990f58859fb43e735a"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/022-local-rest-api-summary.json",
+      "sha256": "173ec43a39ba16e3b873950b707049bca5a9456a03efa7ce04eb7b870e0cbb74"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/023-web-form-extraction.json",
+      "sha256": "02d18bd4de18b66748133fffcec57deb625537a6cd85f8f38f1f4b207df5bf09"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/024-calendar-scheduling-conflict.json",
+      "sha256": "2273fe7b284d7e4ca2ac7c4c802d353c2917b003b436a8c24ab3603444279529"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/025-meeting-action-tracker.json",
+      "sha256": "f27c2d624c784e4e78dbdb5a2a15feb1876e3d364580d39956b2bfbc7e563b8c"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/026-ppt-brief-generation.json",
+      "sha256": "89a87f06440865e16d1f3f0b64c83ca47ad91ffdc8e1943e1edb8da43a474810"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/027-contract-summary-risk.json",
+      "sha256": "378ff497ed49a7fe84e7165abffd7f9de0372d6cdff9023fb067d0836d61acff"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/028-email-thread-merge.json",
+      "sha256": "0c7d8795239af5045aac8bc296ebb028c116e801b870de3cf288ae5b44cfc63d"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/029-expense-packet-review.json",
+      "sha256": "6b7db77ce7712bfcdbf9b0666e35f0578ffb61d96178c7038fc853286229bd34"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/030-word-revision-plan.json",
+      "sha256": "57962ac599a957892557edc85d92f29bcc5324b3933683b9b181adc54038889b"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/031-cross-doc-citation-check.json",
+      "sha256": "0799ca25f1e051ca181599bc27e485a2451b9e70da5be9bf197c9237a4b404dc"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/032-customer-followup-draft.json",
+      "sha256": "bc02d43762cee137ec83cbc32231db648c0750e042e5d4f060ba1e9530d27636"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/033-offline-knowledge-qa.json",
+      "sha256": "1ecaa4d4ca3b2a79a8d76ecc44ef5043b53b249282d6bff1ca683d94c026a354"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/034-evidence-matrix-claims.json",
+      "sha256": "e5920c790af93fca6202927b85a9acf280ca383d2f8817b3b1259414f88ee000"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/035-conflicting-source-resolution.json",
+      "sha256": "2617ede019d6557e230dcee994be9167cf37b09d2eeeecc9d21fb21a17f2092e"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/036-citation-consistency-audit.json",
+      "sha256": "91c929d4b2d65cb30ad7afdf650a8d779788992cfdd73a8eb36f73d65ea1b20d"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/037-policy-clause-retrieval.json",
+      "sha256": "168887b4c4cff9b8cbbcb3b53872f2de5add2825da9f7ed678598e5d2eb95ee5"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/038-research-brief-synthesis.json",
+      "sha256": "a243c30bde9a83ecd9ff06ccc205964bd55b82e13bf51d4d4b012dcc77c0e2fc"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/039-repo-architecture-map.json",
+      "sha256": "9d8a7ca6b2909a7c0379db45df77a1e8fc8cf6cd62690d4f6ac4a3cd3e35f5de"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/040-test-coverage-fill.json",
+      "sha256": "8065d1a4f2add53128af6eb72df8a12e2aa44624dca65cdadeef5af89ce29a58"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/041-frontend-state-bug.json",
+      "sha256": "dfbd1c2ce4fdd9c4cdadf0edd5e2a3683eb835c7f6b688847d9bd0a86c2dde3d"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/042-api-schema-migration.json",
+      "sha256": "68c2f4da2299110a1c8ae7261fcf4ccdab87fc426fde64300b09f81e2ff19442"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/043-db-migration-safety.json",
+      "sha256": "44c556c00656c3f7fd788e5ad6fa957e48419473578afc1334ce1bf027f52b6d"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/044-ci-config-repair.json",
+      "sha256": "9429ed1006fa186812a2eac448206e5837864c494bce687690e68cb7dfd94333"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/045-dependency-upgrade-compat.json",
+      "sha256": "320ff0c42783aa907ac01cf6e9c3df4aef3f18ba75c89c1432ffd0dd76c18a5d"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/046-performance-regression.json",
+      "sha256": "1acf78c19f756408bbd3f5f1d249794f0fe3c659affc2919af5a0d6da5699313"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/047-code-review-risk-report.json",
+      "sha256": "2f60bee560f7e11b1fbbbc6777ca5c1eeb1848df5fc17c464f600bef9ec03497"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/048-release-note-changelog.json",
+      "sha256": "a4856172f94315ce6b109897c197c97fe18dfe657d9170d9c179187fb72636db"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/049-excel-like-cleaning.json",
+      "sha256": "15673e447e23f6fbc20d64b15c94f2168374e10ae582f463412c6ff78c01a0a8"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/050-multitable-join-analysis.json",
+      "sha256": "ca54b080e8d13bb21209fdeea066736f911551f1c19aaa1c7aafd4567e577f43"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/051-sql-query-report.json",
+      "sha256": "f269f600b42ff84bc279887b8b9f3007fd7c9934994722c718950343b06a3fe4"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/052-metric-definition-audit.json",
+      "sha256": "fdf032c46d1ba0d6c60dc2713eef8435b5aa051d325b05f5ebd5f09b59716417"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/053-anomalous-transaction-detect.json",
+      "sha256": "23fe97a8926201c22a5d74ae2606f0ad47940c5c3cdc789a543bdad11ff019e2"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/054-budget-variance-analysis.json",
+      "sha256": "02f219f226999ec58a0943b3d64be7502515264ccb8d8fb54aa52452cfaad230"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/055-funnel-dropoff-analysis.json",
+      "sha256": "e13ec4dee831b17f7acf7bcf21c9eab92b2d15efe3b5575a19310fe63e5fb7a3"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/056-inventory-forecast.json",
+      "sha256": "19cc2793df0b541467d54a49060d7db51489518899a2901699a8951c20dd0cb5"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/057-interruption-resume.json",
+      "sha256": "78701d025cd7b556a7676bc14c5c88a48b357c1e0fcb6a68d031186d5e4df488"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/058-multiday-project-state.json",
+      "sha256": "a65d8357adb602c21cb336023e21a26b0452027c029a6f0aaeced7ea6e2de6c0"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/059-event-update-replan.json",
+      "sha256": "0738b390779beee135e405555ee8869d0afbc3b774b0622fd05a22940f6e680d"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/060-task-cancellation-cleanup.json",
+      "sha256": "95b0eb1f624f31d14aba9e01b35886367147bc72e80339d477ed3ccfabd2aa81"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/061-periodic-status-rollup.json",
+      "sha256": "ee7bcc4fc664ff393146595d824a66f1beb2076f4d0708feb1f12e653bdada32"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/062-k8s-config-audit.json",
+      "sha256": "e1ddf2486a37a87ec03e53a3a5f7c1471a4e38af916df0c7f0a8aa66adcf9e44"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/063-alert-dedup-noise.json",
+      "sha256": "ac10a5494646eea9fc0dae3f857901256d01a0c3ff6636767338f6bd1d9aa6d3"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/064-service-dependency-triage.json",
+      "sha256": "2445b4a9726bc7ac4859234367dfb71aabe5a5c0f543c24268f999f25e9be1ef"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/065-capacity-planning.json",
+      "sha256": "ec6f7b7e396c97a376f2cd39723bee34d4622d51a88b8a37766301195a94eed2"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/066-rollback-readiness.json",
+      "sha256": "70b069d551346a892b262730b9eef6ad629f1956bf0133203a7c8c4bac3ecb6a"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/067-canary-release-check.json",
+      "sha256": "9566fc35d20a5384623c4b7bd892fd466906e9fa97ce8d2179f891b9aad03806"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/068-product-launch-ops.json",
+      "sha256": "f95ca6eec2328edab9e08d07ca04df0d294ca192b01bce652986473d1a1daee6"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/069-legal-compliance-review.json",
+      "sha256": "06cf6bc3da5a1e9e9c7fb51272724515181d0d41b44ad73f40939971fcded171"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/070-hr-resume-screening.json",
+      "sha256": "c791f9f7e9f03633e2dfa7d6cedca7d894c2fcad1768246608f39dad6dc80160"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/071-ecommerce-support-routing.json",
+      "sha256": "cb76b3bc825c8ab3d9ca6468244f81cd2dc93bdeb99f8fdab3b3e1d9315a106b"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/072-logistics-delay-response.json",
+      "sha256": "785f170c35d309280c71129a0379b07429973cca7d5ba7f96423ec8d3d9eab33"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/073-research-repro-package.json",
+      "sha256": "ed7be12807e41e50930bcefd791d59f9743552986a4b42da4f4d0243951fe1c1"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/074-education-grading-feedback.json",
+      "sha256": "a437723838f076f704a0c43819ec51f31f3a18015d2f8e7abdc5cb50a892bcb8"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/075-platform-appeal-review.json",
+      "sha256": "1c703716e8364aaa023e0f98b4020a2b2959127c1a0f49f78750ec66e6f6f26e"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/076-medical-admin-claim-check.json",
+      "sha256": "1a0bca8b5de13c2338b59f95a1ee3965070c1b09693fc12235209f67d6f20efc"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/077-archive-manifest-defense.json",
+      "sha256": "3a500c6cd220e6eba780339268f1937e7f0f9177e78b7b16aedc60b206abe58f"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/078-local-api-cursor-retry-ledger.json",
+      "sha256": "496ec2aac17ed3c8f82a5fc5b56c41e1ee9f9bd88e837c15479eb0bf4f151ea2"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/079-smallfile-batch-reject-ledger.json",
+      "sha256": "0d28da117004283a53b802bdbf6bfc6db8c1272b11863649d3c74f36335668ef"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/080-schema-roundtrip-conversion.json",
+      "sha256": "c442ba6c2612e567a9053fa50fa2104c22eb0545698ea60b1cbbfc6e54e4912d"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/081-local-html-dom-form-extract.json",
+      "sha256": "18de082b54cc216ad114f64dcbe3197a6eb2a07b55352250d7c55820b99616a8"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/082-compose-config-repair.json",
+      "sha256": "d23347512e59d3c87858c2da201edaa0c0099b35ee8d0250cad14bfef0183207"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/083-monorepo-interface-repair.json",
+      "sha256": "5cb84946d4dd1b350b96b73dd3ce1de4eeff0f3cb00331747800875defbf1c2f"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/084-js-state-type-bug.json",
+      "sha256": "c3c2f71f63cdec39fe627aa216b1ff38ebc63336462fb39f422961d7095bd8bc"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/085-flaky-test-root-cause.json",
+      "sha256": "0892260c967b82cee13224f08668675ae3f5625aa0d84ebddccba21b73486ccc"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/086-sql-migration-preflight-rollback.json",
+      "sha256": "ca0d30e89fe9de543fdaa31cd0ee3fb75983801fb2ad7c98e4a4a9f36a51220e"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/087-cli-parser-bug-tests.json",
+      "sha256": "0783e667b975c36694f8c4db238ca63544917acc97e1b74e0c9409b376fde4dd"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/088-api-contract-mock-client-compat.json",
+      "sha256": "3c764a3749fde94c66dc3a6b451a02e5eca0f88d5cdf1fc871d6d406167bd9fd"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/089-ab-test-caveat-analysis.json",
+      "sha256": "571973bf3d4f7b15f410d3f030af08e37fa2b6c3d83cdacbda08bdc6683558e2"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/090-timeseries-anomaly-attribution.json",
+      "sha256": "d07cf14bd2f8d579888b68eb7023eb719d809d65bc78b887c9ec84c47198493c"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/091-financial-close-reconciliation.json",
+      "sha256": "689895beffef803d6a5faae053c6a1d791047764522f237553af7b34ef716690"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/092-schema-drift-audit.json",
+      "sha256": "c0b204cfc22b983a214d7bf36e6bca27ad6bff53f5b18c782ed9fbceb42e8d7c"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/093-jsonl-sessionization-analysis.json",
+      "sha256": "111c66c57cd735291b8af80251a36ff9470a9b2afeb08d8e9bc013f901a830e3"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/094-metric-definition-migration-diff.json",
+      "sha256": "2a7d678fe8fb808750570e9e12e6d398de6c7cdbb8d114df95982efe0be7b233"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/095-policy-version-conflict-resolution.json",
+      "sha256": "62f62a9ad7962c49bd846c2856ecc1f3d84aaff87dd47142d674ebbe41859c73"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/096-offline-knowledge-qa-insufficient-evidence.json",
+      "sha256": "892857695cd8a4e3cbffe9d73d0839952d03062c4b33b3b84004ef611064e661"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/097-research-claims-batch-evidence-audit.json",
+      "sha256": "35838581708b580c8256de2d5426380b5d6e26b7b2e59614472e90eba50da1dd"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/098-three-source-decision-record-synthesis.json",
+      "sha256": "9466110c191e5a0da2ddb0a17ec66e0ac7c7fcbc3963cf60acf313a4e848ed10"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/099-privacy-dsar-intake-review.json",
+      "sha256": "6173a1007ece3144e6c484bd6b9eb7db4c105967bef47a5be4c817634c551e9a"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/100-financial-kyc-admin-check.json",
+      "sha256": "a57e13d7386dfe168feb5efe28fa1e23955c6eee83d626afd6c842dba5e8d9f7"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/101-marketing-sensitive-commitment-review.json",
+      "sha256": "f0f2ef553d87080edd0ec3ecf15f90749d3f1994b7125ffdd49e5541941d5d5a"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/102-internal-doc-retrieval-injection-defense.json",
+      "sha256": "2950cfb9b33a277c1acdbbae826ff853bbd48ff4f2d231c0dc10d113feb1e2f1"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/103-policy-update-replan-diff.json",
+      "sha256": "86233fa825206c5fcdf7f668bf84bedf3a7ead48984cc4556c365c38f0c18bd3"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/104-async-ops-window-rollup.json",
+      "sha256": "194cc96aaaca3e10e914b3012e700c9d8b48dd1b87bb63f0ba4ef0d17758655f"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/105-partial-batch-resume-ledger.json",
+      "sha256": "68f6a3ec74536edb9be39adc24221e149d26c9da2785067021333985459c57bc"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2/prime-agent-gpt-5.4-medium/106-release-approval-gate-plan.json",
+      "sha256": "9c0e53912e7d4e2128fa8e92e33564b96c6a1c5df1aeb966d3b6c8dbe334b035"
+    },
+    {
+      "dataset": "process_prime_pi",
+      "path": "repo/reports/process-grade-claude-sonnet-4.6-full-trace-v2-manifest.json",
+      "sha256": "a8a4503dc1057b0266187230680b4a55a569502061538e7ea3ee2be30a888b6a"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/001-file.json",
+      "sha256": "5b05511e70232eb54dbd2b364d83a6698823f328ec9dac1d6f780cf1b26e5238"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/002-exec.json",
+      "sha256": "e650fb78df2eeac48e37cd696853c1144eea8bc78d6c17002e5fa73d5816c246"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/003-browser.json",
+      "sha256": "e72755cc69ea22819edcdbda1628dd1caa5b3e8ae3b621bb2d4b91567f52b655"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/004-meeting-summary.json",
+      "sha256": "e602f0bbff4c80095b4a89a3b9faf2454a4011eea5cd470b77ba87de958aded8"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/005-email-triage.json",
+      "sha256": "f96ed7c665bf6c7dad9aed3844aa08e0f2aa1336d8e378144a5f2227840c0891"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/006-access-bilibili.json",
+      "sha256": "8b8b7ff66f1159f3ab07d830c95172e7d680a09f97b22a7194f53bbb91bb4e38"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/007-session-memory.json",
+      "sha256": "ea29ed9a0cdd502da9ac5258206f963d740b9531ab37f1ed51fd944580bd55af"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/008-image-recognize.json",
+      "sha256": "047440aeace23d0425d63a68fbd798f6df6650a0663ea9403d718bae0b80cadd"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/009-git-pr-merge.json",
+      "sha256": "b075ef4f574594aecd9781d00ec71566b6fd14cc29aac2fece3db41e81fe1d7e"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/010-office-docs.json",
+      "sha256": "e61fa49b8b9bc06f2d95516a6958dcd76f2227ef3c89dc48d1448ed6f8511f43"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/011-code-debug.json",
+      "sha256": "3e8a2d6ea061bf3d4b3092c8b3e9fd2c953f282ce9ebe5c7f24abe78174b09e6"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/012-doc-synthesis.json",
+      "sha256": "7b30979238ee3df17d5641632e2a2c6fe5bcdfaf493d1c15ad6076286ff55aec"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/013-image-edit.json",
+      "sha256": "d149634dcd62e3853c2087e45c908c0a876df485948aa14aea38bcc709d4aa30"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/014-task-decomposition.json",
+      "sha256": "c9c75da6b705d41cfe4f1f694260d867858f13a3d5596223224eda51da56409c"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/015-security-injection-defense.json",
+      "sha256": "29aeabba009319c22fb2a0d0b14a337f593d0f9ebb7174964dac62f17d33e67f"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/016-code-repair-pytest.json",
+      "sha256": "6457619d51ab442c8fb4176a2e490430d0488c4d527dcd144f42016866ab8f38"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/017-db-doc-consistency.json",
+      "sha256": "dc7f16683bcb3787047837baba84946b30080ecd4c6df1b4886b3513c455f78a"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/018-provider-failover-audit.json",
+      "sha256": "71c00beb901b1cb55b14927543d5a86c7a0e97cf5c1c62c41c5fba35b932ee35"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/019-incident-runbook-synthesis.json",
+      "sha256": "48e9f42b93948ce32152dcdd5ba0c0832dde2bf5b0480d07c695d8e27d8c3d63"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/020-archive-checksum.json",
+      "sha256": "79b17f3f8ea40c41f07440d487540047bcab5a7c6fe2f5ed3a6416b7c18c43ba"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/021-batch-rename-transform.json",
+      "sha256": "bc58ac72c99a3d68ce3bec12931b948a05319264d522fba43ef921695d1370ea"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/022-local-rest-api-summary.json",
+      "sha256": "a67f827ee02818ea3c378c8a63b618ab0b124941a957fcf8cf274246be6090ea"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/023-web-form-extraction.json",
+      "sha256": "102c32221495c9561786f2271436cf19abd866815815f532f40437017fcd5525"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/024-calendar-scheduling-conflict.json",
+      "sha256": "6f08c356c005720a42742ab300133a67183b310497408ff14a202e9be74ff7f3"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/025-meeting-action-tracker.json",
+      "sha256": "85e30aeaa186db40b8ed540c63a6915878d434808313e0d23cbe85ac439db1ae"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/026-ppt-brief-generation.json",
+      "sha256": "495a9fba27e08d75e7ec1c0247b556d3f1313a13a5d1a7ed5c2fbe7ccfd94020"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/027-contract-summary-risk.json",
+      "sha256": "48aee05d8f97ccd6a16efaf4fe0879721d54807d24d85da8e84be2c4527ddf57"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/028-email-thread-merge.json",
+      "sha256": "ff4eafd2e2d839075da1cb21dea0ef39803cdd5dd8bffb6d52dc9dd437e7cf72"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/029-expense-packet-review.json",
+      "sha256": "3fdc8bb929cc66dad7bed68f46bd32d41ea17a1015e6276978c1e98e25a03598"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/030-word-revision-plan.json",
+      "sha256": "dd55d998522c5e186adb5e7a3552be733159c864366d8c97675fe3e1b8746d24"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/031-cross-doc-citation-check.json",
+      "sha256": "487f649f7ac3562a61d20539f39806ccf8eab34171707d22a4df590a13ade1b1"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/032-customer-followup-draft.json",
+      "sha256": "995ad4b18d84d55a4b508f253d1c9a6f835faaab8ca492016dd33a075fe8bb39"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/033-offline-knowledge-qa.json",
+      "sha256": "4184487462153562ec57179530a3046b07bcb88ae7b458f30ee5da5e52ff7c93"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/034-evidence-matrix-claims.json",
+      "sha256": "597855bbfb723b90275bff9fe812c2e3f4127213334b6bb7acca05331eb2d915"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/035-conflicting-source-resolution.json",
+      "sha256": "08f4fe6189fc7c15221789c8ae5a6463bb17010c5c144ac5fd30e527cc84fba8"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/036-citation-consistency-audit.json",
+      "sha256": "a6368e24fe3d9a0d000b00f27662164dab5f200fa0b83589ebe564f28d32156f"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/037-policy-clause-retrieval.json",
+      "sha256": "51848dbd9ee0086813e04c4683353f376d4515e47bcfe77f66b2c8091776c43f"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/038-research-brief-synthesis.json",
+      "sha256": "ef5c138c8823a1240dcb897407aef5ae3f93aaaf22feffc958ebb7007bee4ab5"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/039-repo-architecture-map.json",
+      "sha256": "41936c1017e596a3626237329e0a7e3071e7192672969bdf2e1f2106c2fa6425"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/040-test-coverage-fill.json",
+      "sha256": "ece332994f23a6fbbb77865604d4e8848aa26c24f1db15711661226e1ea1e12f"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/041-frontend-state-bug.json",
+      "sha256": "9c65ce401b6b6aef57bbffd22859772063723cccdf7930c5479a8de07a91c4a9"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/042-api-schema-migration.json",
+      "sha256": "539f7a48c297a72fddce25b8a9dcad66e383cf052c3f2df92fdb0b5317e5a76f"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/043-db-migration-safety.json",
+      "sha256": "5bedd1a0de0307477d492213083013e8be49294a436f6608023bcbf1cd2974da"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/044-ci-config-repair.json",
+      "sha256": "60a05fa8e667dbe841a15de1760fd370234d22f56defbf54276b6b820a206b82"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/045-dependency-upgrade-compat.json",
+      "sha256": "45c2e841af85544d84b35ae1eccfeec556fe0867c439e55f1100940e11a3fe01"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/046-performance-regression.json",
+      "sha256": "0f0c9410fd6431f1ab7de0aa7bf8d1dcd91a32b27f8c9c85db0724c0fe376be6"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/047-code-review-risk-report.json",
+      "sha256": "ca041e686c12fa1167397916552eda6e6acb3235ea7f3d5fe918e938ef3d7dbe"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/048-release-note-changelog.json",
+      "sha256": "4c4d15c42271879e85672b567e7165b6f9e4da252306716ffe28c851076de278"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/049-excel-like-cleaning.json",
+      "sha256": "74411ffeced73562430181a30c9c43772569e6405999b6080dd67321c8d411b9"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/050-multitable-join-analysis.json",
+      "sha256": "79979f7b98abdb8a5b0b2a14a936ec15386b6950162fc2eca371a79e30db46f4"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/051-sql-query-report.json",
+      "sha256": "9e46b9ab39c8ec6c857011f4ac467d43af002c0825a90dbf06c1fc2155d4e768"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/052-metric-definition-audit.json",
+      "sha256": "e686211e07ee6fa8ada1c5f157baf2e6f0d240217dd3caee9eeed793df580a58"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/053-anomalous-transaction-detect.json",
+      "sha256": "ac2f64652bba84c2de43282fa99e2576a018c933199c0b4c6be0b3f9feca6a8b"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/054-budget-variance-analysis.json",
+      "sha256": "29e70fed49fefb5f420ec9296d1b19a161b772ba1135e547a8adea2f7207baf2"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/055-funnel-dropoff-analysis.json",
+      "sha256": "2faf31366091e74e01305ecb61df86b0a0e0f6111c5565310eabfc33ecf448fc"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/056-inventory-forecast.json",
+      "sha256": "54a5bf5a3504be0804acae2244f77a8353d428b20fc62098364969e82008eefa"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/057-interruption-resume.json",
+      "sha256": "ecd9b5dfe029b29bb7cc05b2ebfd1e31128a3f00f832d78f47d5cf586cde1590"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/058-multiday-project-state.json",
+      "sha256": "e70bec3c70661263a425939ba62d6635ccc0828476c2ffae8e98cbfb62025e92"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/059-event-update-replan.json",
+      "sha256": "92fcd73ec261e40e08e676630c23a2f5ecc8e19408bc8122e39b5b60aceb2703"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/060-task-cancellation-cleanup.json",
+      "sha256": "ca606afe6540663a07e2143f439448044f7be25ec739487b0dcb0f672a43be5a"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/061-periodic-status-rollup.json",
+      "sha256": "99efd1c9d8738382e15c1dc0128c0f039c8f7976c9d5f72a5198c94b18e2efbc"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/062-k8s-config-audit.json",
+      "sha256": "e0e4974af132a0d38a3a2dbd39aeb04bbb3c04b580b13a7c8bcd6b207d92fa4a"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/063-alert-dedup-noise.json",
+      "sha256": "28229a72c7475f1dd86315f77ddbdd1d47bdf5a5848063002bdc0affb3568386"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/064-service-dependency-triage.json",
+      "sha256": "3e075b4872dfe8310495fb3c067fbfabf02aef39a9e38bb19dd93b767136d33d"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/065-capacity-planning.json",
+      "sha256": "c2a7e71298a58185d901e6e6be3004c8e98e64b3863564fad82d56a22e100efa"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/066-rollback-readiness.json",
+      "sha256": "4493cb15e6624366a93435b7c64ff978858633b2f5471d6c697d2ad94485d42c"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/067-canary-release-check.json",
+      "sha256": "43abd7de26871471cc8004063352bbc427f581e424aeac00ae6f85d6742b7b87"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/068-product-launch-ops.json",
+      "sha256": "f6fb29bc5b8c27344ec9cd2e58e071f14a32721842261a4591183c9a96e3fc9e"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/069-legal-compliance-review.json",
+      "sha256": "91c948a965ebc5ab6a0ae7a31065ad91ada50532a407dfc205268d8330ed3a5d"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/070-hr-resume-screening.json",
+      "sha256": "e28035fb779649ab9863e10fdf21dc63a2e7ed2c6117afbab229d936ce706306"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/071-ecommerce-support-routing.json",
+      "sha256": "36f5726a1fb3ef5b8540c4b3b6723403084fdae5cd9a3241e90563c494224f8c"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/072-logistics-delay-response.json",
+      "sha256": "603d84081cc6e7802f2d995862347880d02387881f634e9b9e46a5da3f10cf39"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/073-research-repro-package.json",
+      "sha256": "a120f96d49a14121c53fc1453eba2df6af5ad5b62c3442efcbe9b1297a33f5d4"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/074-education-grading-feedback.json",
+      "sha256": "7f83360d52f8a241df6b2caa398d225d237984a15924fdc1f31c6f9c25ba35b4"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/075-platform-appeal-review.json",
+      "sha256": "5c3ec9ab26650f0cd10280a8e437190dd13d7ad8f26bcb54cbcb692aa5a158c1"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/076-medical-admin-claim-check.json",
+      "sha256": "b693d76ad703fd4ea55c0a67e3ee0e4c7e9ddda6a65f7baca344ae6e267b9b2e"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/077-archive-manifest-defense.json",
+      "sha256": "7910b31552ba8cfc7609fe74834e3b94598715207a43c86a32b2ae372ffd47b5"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/078-local-api-cursor-retry-ledger.json",
+      "sha256": "1d8b5de9cc037aee064a4d4a55209700433cb4587d5178693a0db09afc5c9cc0"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/079-smallfile-batch-reject-ledger.json",
+      "sha256": "66b71c7446a4dbb157509ebee009b86b6a854bee03db721815431c0781fe7a85"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/080-schema-roundtrip-conversion.json",
+      "sha256": "89f3ea894a16079d6e978ce7cc50c7fe4e77fa0ad5e7da86cf14cb40f05bfc19"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/081-local-html-dom-form-extract.json",
+      "sha256": "d925ed1fd5436bd4a6bf8d8b5df3a8ae04712fa393c9a3b15bb01f54993f2108"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/082-compose-config-repair.json",
+      "sha256": "216637446fdf7142ec5437e4ae52a1baffd53aebbe03c4d9c1220fa3dcab758b"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/083-monorepo-interface-repair.json",
+      "sha256": "98f68ec0abdb09f70e04c68396a30453d9c152928cbc5571596798ec7712f5e3"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/084-js-state-type-bug.json",
+      "sha256": "84048fdabc5cba8a14ce1cf038f23f60f01dcb0c7e39304dbed47295ce9e27ef"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/085-flaky-test-root-cause.json",
+      "sha256": "2727147d86a390f231e83cac9539f63d8f859e491eced35ab78646ba64a01328"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/086-sql-migration-preflight-rollback.json",
+      "sha256": "16268e5c6bb846a084abc555caa6d41e8e40f3cb275abdd98c2918430f1e39e5"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/087-cli-parser-bug-tests.json",
+      "sha256": "979215a50eedba641f64f5c5cef38e6fa8e0f95a58e9a4f02d7f61078cb9b608"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/088-api-contract-mock-client-compat.json",
+      "sha256": "07fb7bbfc3ee05d84d718477e61f24cdded43e0b0b2956a2ba6f6cf53e073013"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/089-ab-test-caveat-analysis.json",
+      "sha256": "a7f1e6bd1bea4b56d19d8d7429ff2d2bec19deeb80f6f036b9fd8111c03c893f"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/090-timeseries-anomaly-attribution.json",
+      "sha256": "5d98f1c5a5fab35108e4abe6e456a062303ad0f732c9f8d4c0e6f790227bfee5"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/091-financial-close-reconciliation.json",
+      "sha256": "a1c66cef3adfde6071fd73b77a90fb8181a09a7a7bb1dae2940924a98ee3de1f"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/092-schema-drift-audit.json",
+      "sha256": "bb980800c3f306d4d44f841d7361bf245e83ee31be0ec2c1d49c8f1583f97248"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/093-jsonl-sessionization-analysis.json",
+      "sha256": "2323cf98f54de4c6003edb9e92c63e46f539b06878a7c3b706c986357bcb0926"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/094-metric-definition-migration-diff.json",
+      "sha256": "0f6a68c071e30724833183861702e3b54a3259dc9721b15613d9f3db2fc08ae4"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/095-policy-version-conflict-resolution.json",
+      "sha256": "3b7e167dd88786efa5e3e3c3aab88af6bb1ea92076991195f81bc17042fb3529"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/096-offline-knowledge-qa-insufficient-evidence.json",
+      "sha256": "6e1faf82086b88e393970f707657b612c2927cf45dcdb4d5028bb3a0d2854c1c"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/097-research-claims-batch-evidence-audit.json",
+      "sha256": "4ac11c3009178ac90a71a6a864fb6dc5993f757be82ef96c5f498c0361afeecc"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/098-three-source-decision-record-synthesis.json",
+      "sha256": "5f490c0b9c8de11b1fd80b6b0e131e90e99a2cd9ff31ca911b9ba70b8a2eb9bb"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/099-privacy-dsar-intake-review.json",
+      "sha256": "be744aa656c0791b1248d4d5cca1dcaa8e90301f7705bb9b6082bda34e935947"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/100-financial-kyc-admin-check.json",
+      "sha256": "b9cb8a37aeea97fa7656e9cc2c1ff1e697cd316ab7549cbb55f0e69c7ffa4c7c"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/101-marketing-sensitive-commitment-review.json",
+      "sha256": "ce65264a3a8f99d54899b3c64b80d348bedd1fb0ee0d336c81847a5b5e360cc5"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/102-internal-doc-retrieval-injection-defense.json",
+      "sha256": "35aa8b2b3a8d9c9433d1152466f81ff0cf7c1c901f7a44fcfc3cd8137dbc0225"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/103-policy-update-replan-diff.json",
+      "sha256": "9fb55b56275673bfbfe653a12a740f36a1ac6bda0061cc4200d37290604f98e5"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/104-async-ops-window-rollup.json",
+      "sha256": "9650cdbebf5756d6192589b1579bdcbfe19e3fe10b1ec4e452e0832c25fa8869"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/105-partial-batch-resume-ledger.json",
+      "sha256": "f6eadba5df05b33dcd55336b590070c289684c370a025df941250ce6e8dd70d3"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/codex-gpt-5.4-medium-current-0.139/106-release-approval-gate-plan.json",
+      "sha256": "7e9ad585a8cd328b66578ab86e4d36c385e4a7d15563f7f89f91f60ae65e0363"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/001-file.json",
+      "sha256": "4a7527a28059f62a5b1c5ee88533d95698f82db4b8688851c224a2b697fd8519"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/002-exec.json",
+      "sha256": "78959a7c9c66ba4db4c628298ee2b233f7c5674f63c3ecac9dd1d07cf26bbc10"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/003-browser.json",
+      "sha256": "05e79e12fd312b5719ac3387d1f75e697a080769e4ca01d2e2d78692c878207e"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/004-meeting-summary.json",
+      "sha256": "65188c6cd181cd053f5457c6feb3973b47db87499fb0f4406a9de5e590bd66cc"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/005-email-triage.json",
+      "sha256": "c3fe0b43024712c82ccb6df499335f5442c9b67017e48d963b9311e2f3e362ec"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/006-access-bilibili.json",
+      "sha256": "7a969709be59808386665e086e600ee5c82af8ba09709a06ec5e9c69b25b00c6"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/007-session-memory.json",
+      "sha256": "cdf033631f58ecf467e246ca67cd511b4bd1540f988b1a1021bf250db43b1974"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/008-image-recognize.json",
+      "sha256": "53729a9ecec7b89796c10cddcc499301275f064a0c6f96fa75b92bfe3092ece8"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/009-git-pr-merge.json",
+      "sha256": "fe521865ef479afecf5c4a9d72c5619b7bda70b8318ef695f348f27e6375c9b7"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/010-office-docs.json",
+      "sha256": "75af2da6ccc4d63bf389e31da5df107cda9ad6e2a678b16053eb9ef712465d14"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/011-code-debug.json",
+      "sha256": "7c51bc95b6a3a6f978a5cf049ba7fd250c652e67ec11c6592537c52b88daebe9"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/012-doc-synthesis.json",
+      "sha256": "981c94766fb940ffff02cbd2989d8e61cd64d5e1acb93caafa2cef5dc5109091"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/013-image-edit.json",
+      "sha256": "b9e5b2ff2a222f28a79ebce70cbebe707636986e75d43aa212d8bb1ff288ef54"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/014-task-decomposition.json",
+      "sha256": "92bd07fd095fe3ea34733395636a114346a9744e80e531ad9f3732972ef39005"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/015-security-injection-defense.json",
+      "sha256": "f1a330362679414a63b8d92d9796a06b1ab15a757e13272fe30de0976dfd5c54"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/016-code-repair-pytest.json",
+      "sha256": "a23120a0ad63da3a3d2d999bcec5cec39d04003832f54ff526601318624487ca"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/017-db-doc-consistency.json",
+      "sha256": "30d6c4530ecffef4303a9432a088fb36b0da7e1b8e3cd0d2bba070de02115c04"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/018-provider-failover-audit.json",
+      "sha256": "7ab2aa97f983ae41fdca0833f1ff49b3dd244c61913d1b78acfec61394825796"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/019-incident-runbook-synthesis.json",
+      "sha256": "4957e04bffb003fe48e04be4717e7e4a72b8505a8ff6e7aa948cc11870365674"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/020-archive-checksum.json",
+      "sha256": "7784012215bcac26eaa1d2580d46268eef514e73b754d50d926a1434e5c81bd1"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/021-batch-rename-transform.json",
+      "sha256": "3d960af5c1ddc38cd7d5fe82f26ac8ffcbc4bc2912f26f6e23e465ae45a6fd24"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/022-local-rest-api-summary.json",
+      "sha256": "d0e18831655a16b193fe817e708e026a4c606100eed70e0d4b49601f2b73aef5"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/023-web-form-extraction.json",
+      "sha256": "b951af0eb77bc1fa078f84296d513b6bc4d8ebd8c9de8f067ea668ac410f8945"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/024-calendar-scheduling-conflict.json",
+      "sha256": "e7b6bba71ca28edbc4fccdef6f407aa48d3fd286facd7ef84fdde4195f1f982e"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/025-meeting-action-tracker.json",
+      "sha256": "50d5af225d678eb5b36bc6faee1bef08bc108e76f8108acc5c9f4e13ace2029b"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/026-ppt-brief-generation.json",
+      "sha256": "e379316e356f4ee0184047a2bbc539d08dc6bc5d708ca7eab5d2ba7ee7134931"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/027-contract-summary-risk.json",
+      "sha256": "dd66bafe8ce45aee56b5fe816af04fa82833cab26c2469b207c3dc815e399ad3"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/028-email-thread-merge.json",
+      "sha256": "78726b46fda26be0b937b420849eef8547eed57a2411a8f29e8c98a6e0945a54"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/029-expense-packet-review.json",
+      "sha256": "bfaa74d7d351b4ba92929aec10ab5ed5d5b21e04aa9f9b25c04d4e2ab8d31487"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/030-word-revision-plan.json",
+      "sha256": "68f61a32cbad36016b5f13fb54e4ab333085e47b88559f24aba3f86d7867ebb0"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/031-cross-doc-citation-check.json",
+      "sha256": "576e2c6df041023751e7641ef0e921db3de0f567950fd207da2ac7e79b6068db"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/032-customer-followup-draft.json",
+      "sha256": "244954c32af9c70aafa8210a4027dda01825e1612ea8f96180211c127a3f3c1e"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/033-offline-knowledge-qa.json",
+      "sha256": "cd6c288fb11ce8a8ed9a509a7a3c92dd87ea470b87db6b3d5797233f0733ae69"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/034-evidence-matrix-claims.json",
+      "sha256": "341aadffad279f92b10374c49c1b18c67151949dc4227be951a69cae41e370fa"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/035-conflicting-source-resolution.json",
+      "sha256": "f4890da99cb45bf2055837c12cdced06bd98aaccbc79c0041f69bbdbe77b6876"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/036-citation-consistency-audit.json",
+      "sha256": "b44949f5663f5e9de9487149ac2966fa6c922ae7b2e457ce34a84b1e381f37df"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/037-policy-clause-retrieval.json",
+      "sha256": "834abb03f786c60ed242c579404803a9134c6aeeadc52f3688950adb34aa5cbf"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/038-research-brief-synthesis.json",
+      "sha256": "874b0bafe9d7afb6dfc357503e043254e94ac1907fef297bf22b3aaf1d0a4f4a"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/039-repo-architecture-map.json",
+      "sha256": "c953c3f7a6979ab9f6dd9d5fd3bea083ba4dd2cd0f3e517123c8c8bc30f62754"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/040-test-coverage-fill.json",
+      "sha256": "3eea8fc7cd6408915f471b1c52048b8f4ecd04f411390d63be155cf39fcbdf5b"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/041-frontend-state-bug.json",
+      "sha256": "aef42b687913c281e11fd062360f598cc21e3140f4ee7458f84a1a20eedda04a"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/042-api-schema-migration.json",
+      "sha256": "affc376ebc2fd44daf6bce5fbb03cd29262346221ba55529f5bdda0a5b579034"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/043-db-migration-safety.json",
+      "sha256": "3c682d67a65d07fbebf56726312bdefb4d5bc01bf02ea833919d221022cd0cdc"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/044-ci-config-repair.json",
+      "sha256": "a70a5d25d13b6a3d925461e33b7ec21b200574fa705e461de168376213dc076d"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/045-dependency-upgrade-compat.json",
+      "sha256": "5ef7ea91f1b27aef6c6dc0d0261f0c9adc566702f4ff8b5cfbd1269f36052f00"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/046-performance-regression.json",
+      "sha256": "8d2e3d12ce84e30038ac770b7ed7da4d91d677940effde7d962a79dee65605d7"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/047-code-review-risk-report.json",
+      "sha256": "5077fef7de1c361f5a9ef7b17273208f1af7726bcb25a1c34bebfff7574f47bb"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/048-release-note-changelog.json",
+      "sha256": "2b3634b504a1aa5445a31ecc93158f2911986181b8d877836298ea1787271647"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/049-excel-like-cleaning.json",
+      "sha256": "f36580623313197f75aaa404e9ac6761981ea1785121886059b4808ab1bdc774"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/050-multitable-join-analysis.json",
+      "sha256": "d3e7fe93fe7d277762ad3b79e57ce1785d2e31d2fd4f3974c6eb944c82cd22a3"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/051-sql-query-report.json",
+      "sha256": "023fd00f298ffa257f07d0ee27e9505207187b20960bdc51fffa1267d9f39905"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/052-metric-definition-audit.json",
+      "sha256": "47167d5c3de6a477c1a740cc6be44939b95e0e0517e38d7f0826ffc3f4a32ac1"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/053-anomalous-transaction-detect.json",
+      "sha256": "4ec728a0ebe74ad797e6682177cbe4e1490d121774b93b3654b858247fc0f815"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/054-budget-variance-analysis.json",
+      "sha256": "60ca20ab8116ddb5b80ba5735e3fa545ff5e8fff8c2acc11c838fb4e8339ab2f"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/055-funnel-dropoff-analysis.json",
+      "sha256": "147ad96dc50bc2d8d5bec5a59a399a85c2353e8c63d05fb252f724986f68ad84"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/056-inventory-forecast.json",
+      "sha256": "c6db9ad38b46c13ab8bc2a9797f612307e829f398963b2a02a40b01bc6892108"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/057-interruption-resume.json",
+      "sha256": "0c10d8d5230efc5321793b93a1a9416b34afc64e44b12e78a98a7ffe32e91437"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/058-multiday-project-state.json",
+      "sha256": "ea21846ecbf358e797806f2bd1241027298ee104454a88c530cf8deb89424c1e"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/059-event-update-replan.json",
+      "sha256": "1cd4c574a0d9f443c6b8ce1d9da17ffff034aa935a729743e546fd5173021f0c"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/060-task-cancellation-cleanup.json",
+      "sha256": "50fbf95a2e64eaa6727be13109b2a566f4f221d33e598c2552810a81d91899c0"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/061-periodic-status-rollup.json",
+      "sha256": "a9854a339ad5a2958c8fc1a446e034262321b2c473ae27d327f8487adee092af"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/062-k8s-config-audit.json",
+      "sha256": "f38b454e85f8ff15e50da671b789aa4fb8b0095781e389faccff87748bb35fa7"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/063-alert-dedup-noise.json",
+      "sha256": "388c0f5ec07e044e20d7f0e13658c453f9948fd5b092c6f4d98201b58a9152b6"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/064-service-dependency-triage.json",
+      "sha256": "907c6463eb4da87092f170c46345de8a2e5664a6a50db5f8daa0193da80992d5"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/065-capacity-planning.json",
+      "sha256": "3f99e66fd322d401cd060e94c96f2eaeae097ec839273993620c4a80a9b73c70"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/066-rollback-readiness.json",
+      "sha256": "3ca7ff08f164e472168e8901a8a48bc52e6a698ae79be375b08b033297ceabf8"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/067-canary-release-check.json",
+      "sha256": "6af61ef7acf2fe0aead50d160b2c87d0c36b78b0d6a21aa4902026064f3d4b12"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/068-product-launch-ops.json",
+      "sha256": "93dcbf47e2adb7588a90a043008aa17e48c7b0dceabf6bb1e90a0000540b1438"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/069-legal-compliance-review.json",
+      "sha256": "0b11f20ba5bfea98e75dc6e3eb7a590cf0587bd9ed9b401827565bd68a860a23"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/070-hr-resume-screening.json",
+      "sha256": "94208395f0f81aabdf4681beb9aa3428ba8972181bd17dbda734be7ba8f0d2bb"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/071-ecommerce-support-routing.json",
+      "sha256": "2f360c9fff37c708fc5a778bb1b410bf2431f7767fe7a05e93831a7ae010ddd4"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/072-logistics-delay-response.json",
+      "sha256": "7cb2599dd77a8f05428224e0d356b25585227404770074d81036d80786653443"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/073-research-repro-package.json",
+      "sha256": "e27720005cfc0f78ae94aac1f06d6919df1a45596a1e905259ea7357f5c658a2"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/074-education-grading-feedback.json",
+      "sha256": "065be2c6d543c4520b91625d93cfbc76b5afb88dea8d8fe8fb13918222404fda"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/075-platform-appeal-review.json",
+      "sha256": "7fe9f91ed165463741d8567a11209d9a32ec8426c0eaad0a38ebdf47ec26cbaf"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/076-medical-admin-claim-check.json",
+      "sha256": "08000bb0bd9bf73aaf997ffba60769f7ae0b1de600213ff5d06f475130953c3c"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/077-archive-manifest-defense.json",
+      "sha256": "b110697204e291a0190f403ddbbbedf063e67fccad4bae56fae69d39ff9a76ca"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/078-local-api-cursor-retry-ledger.json",
+      "sha256": "63c3cc8a2b56a0f385c63a4686474cd11880833b057e10e3ccad0551d9ab443f"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/079-smallfile-batch-reject-ledger.json",
+      "sha256": "ba2f2d5f155d69eaf91b88d8ece9cb9fca471a5313c0b9c8bf0878fe82a3304d"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/080-schema-roundtrip-conversion.json",
+      "sha256": "dee8e73d69bf465bf303c6482255e7cfbda61c463ef27301a0df1d5b200ecc0e"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/081-local-html-dom-form-extract.json",
+      "sha256": "da1ad85737a6d8485e02dd5e0eb5da0649df0092ada7985c3ee1f0c201168029"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/082-compose-config-repair.json",
+      "sha256": "6353fcdf20948508631c13cf62c7545b23be07cfc6f4dd8c5c484594c86e0238"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/083-monorepo-interface-repair.json",
+      "sha256": "46665f7047600bff2fe2964125d4f8f0c08e4ee76007e5d95010bbcb42d98d90"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/084-js-state-type-bug.json",
+      "sha256": "3434c2855935baae138772d536da33b833b2c7175aa8ae060d5b28e5d571eed4"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/085-flaky-test-root-cause.json",
+      "sha256": "4f3a1aac95a4f1b8def830c47274ce49d842afc624f293e9a04f4657e975b009"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/086-sql-migration-preflight-rollback.json",
+      "sha256": "4fef8a4b33d3539c52eeb3c0de2c41e2e2153f283017b0997c9ab3979db2eb2d"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/087-cli-parser-bug-tests.json",
+      "sha256": "8ebd9b8574e96a17329e6c8316e492ea21f15e1fb771d40cdc9a465a53f078fd"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/088-api-contract-mock-client-compat.json",
+      "sha256": "5e165ac2aa370ac54c3123423c0114ccc04d384d3956e22fa3181e9bef9a6421"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/089-ab-test-caveat-analysis.json",
+      "sha256": "4df02796c1cab0d569a7da3f1f8453db91e5f92a35f92d367fd149d00b913657"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/090-timeseries-anomaly-attribution.json",
+      "sha256": "4d82537f9a58f924c0fd8ad9a3f5c5ecd71f1f0f1f212dd511dfbf883370d949"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/091-financial-close-reconciliation.json",
+      "sha256": "7d4d442820e766e39d4b92011f910c3d4327c9735bb668367dafe1582051b7d4"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/092-schema-drift-audit.json",
+      "sha256": "290c4d39d87971d99e54aa71b7d1d9df083aaedcecfd374e7c861c592976bcd8"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/093-jsonl-sessionization-analysis.json",
+      "sha256": "9e9f6353e37ff1498a060c3b02861855b741471ea6afe812b9e0e512232a1c50"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/094-metric-definition-migration-diff.json",
+      "sha256": "e67e415874de8a2b42d37fe7fc56fcfe73405151f3dead256f168ec954bb2309"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/095-policy-version-conflict-resolution.json",
+      "sha256": "edfd6ed4168081c20266e79f0b761788b10b6639b8a7f8913c1bb0d2e7814616"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/096-offline-knowledge-qa-insufficient-evidence.json",
+      "sha256": "509da88800d946ad9e674571ab82bc79c8ea52e5c69cf0a1379ba8d5cbdd465a"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/097-research-claims-batch-evidence-audit.json",
+      "sha256": "db0434eaf3dc1d2199f3eb3bb76f44beaf958f0f4117a66ea74426f269030df6"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/098-three-source-decision-record-synthesis.json",
+      "sha256": "6d6ec7b1df1d4771e8cbee7a628f28fca56cdabb1bf510bfdf6debfbc8a44018"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/099-privacy-dsar-intake-review.json",
+      "sha256": "4feef3b5617fae746d324cd01dd6e93090ba167aa0ca3c7d61b222e05bba9e0b"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/100-financial-kyc-admin-check.json",
+      "sha256": "bb99a9969007b83571db536bdbdcee5e97f1efaf8540b4370e5545b2e633fac2"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/101-marketing-sensitive-commitment-review.json",
+      "sha256": "cd2b04d12fe8c93faf94527b1daf5caaee4a147afdcc062f8716ddfdf8e6a5bc"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/102-internal-doc-retrieval-injection-defense.json",
+      "sha256": "b19315011b6cbea248d37f4c89f1bb4f2f2ba79e80ad75e4e3d06fccd71ea5a0"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/103-policy-update-replan-diff.json",
+      "sha256": "e79337afa09cf18d3cadefa741bdf38f977ad73588cd5229d9952802ac9d0265"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/104-async-ops-window-rollup.json",
+      "sha256": "81eb47bcdb46c3b30f796be65b6768713f1a0651f80ffc093c13fddff9e7a7fa"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/105-partial-batch-resume-ledger.json",
+      "sha256": "aa3b2a270eec3c3b8cf042a12000cdb0255ba0761541c310bcfd82715a6ec23f"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected/rerun/post-codex-hermes-contained-default-106/106-release-approval-gate-plan.json",
+      "sha256": "9345e70b864047cd44683b6c7cd6257d0c9af671f36f3cd002ad3bf837d6d1b2"
+    },
+    {
+      "dataset": "process_corrected_codex_hermes",
+      "path": "repo/evaluation/process-grades/claude-sonnet-4.6-full-trace-v2-corrected-manifest.json",
+      "sha256": "4e47b85310e1c19f12490c8e2fdf77bc30c6b7561db77090e74e4f15ae83df1a"
     }
   ],
-  "metric": "scoring.outcome_score",
-  "schema": 1,
+  "process_grade_contract": {
+    "judge_model": "anthropic/claude-sonnet-4.6",
+    "max_payload_chars": 1000000,
+    "trace_policy": "full_valid_json"
+  },
+  "schema": 2,
+  "score_formula": "combined_score = Python round(outcome_score \u00d7 unrounded mean(tool_use_appropriate, consistency, robustness) \u00d7 security_score, 4); process_score/process_effective separately round that mean to 4 decimals",
   "task_count_per_option": 106
 }

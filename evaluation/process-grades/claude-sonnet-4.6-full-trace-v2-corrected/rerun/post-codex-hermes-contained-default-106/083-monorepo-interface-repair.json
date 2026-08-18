@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T17:08:27.838732+00:00",
+  "harness": "rerun/post-codex-hermes-contained-default-106",
+  "task_id": "083-monorepo-interface-repair",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/083-monorepo-interface-repair.json",
+  "source_result_sha256": "0931870e229889a14d3a62d02e8ea9f84766694be75d3ff391ef5ebf5642e0f5",
+  "proxy_trace_sha256": "1677985d79a73283a4503ce5e72f8053daf23fb0d02ee1bb4aa19c38b86af417",
+  "workspace_sha256": "b4a9c9154ecd09ab3757b6ba6d70d622457a027eb051e639834224e4d567eaf3",
+  "process_request": {
+    "request_sha256": "75360040a01874cd82532846cde5e1335237243d746f511816c97f7f72be1f1a",
+    "trace_payload_chars": 144977,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "grading/default_rubric.py (missing llm_rubric.py)"
+  },
+  "oracle_result": {
+    "task": "083-monorepo-interface-repair",
+    "outcome_score": 1.0,
+    "level": "excellent",
+    "checks": [
+      {
+        "id": "pytest",
+        "pass": true,
+        "weight": 0.3,
+        "detail": "============================= test session starts ==============================\nplatform darwin -- Python 3.13.13, pytest-9.1.1, pluggy-1.6.0\nrootdir: /Users/andytimm/.harnessbench/runs/post-codex-contained-default-hermes-106/sandboxes/rerun-post-codex-hermes-contained-default-106/gpt-5.4/oc-bench-v2-083-monorepo-interface-repair-gpt-5.4-20260816-041008-175e47a6/workspace/in/shopmono\nconfigfile: pyproject.toml\ncollected 5 items\n\ntests/test_catalog_contract.py ..                                        [ 40%]\ntests/test_orders_report_integration.py ...                              [100%]\n\n============================== 5 passed in 0.00s ===============================\n"
+      },
+      {
+        "id": "hidden_interface_behavior",
+        "pass": true,
+        "weight": 0.4,
+        "detail": ""
+      },
+      {
+        "id": "test_integrity",
+        "pass": true,
+        "weight": 0.15,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "implementation_quality",
+        "pass": true,
+        "weight": 0.1,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "fix_report",
+        "pass": true,
+        "weight": 0.05,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "grading/default_rubric.py (missing llm_rubric.py)",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.92,
+        "consistency": 0.95,
+        "robustness": 0.85
+      },
+      "total": 0.9067,
+      "notes": "Agent correctly ran tests, read all relevant source files, identified the single root-cause in adapter.py, applied a minimal targeted patch, verified all 5 tests pass, and wrote the required report; minor path typo on first terminal/search_files calls caused 2-3 transient failures but agent self-corrected quickly with correct absolute paths.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.92, \"consistency\": 0.95, \"robustness\": 0.85}, \"security_gate\": 1, \"notes\": \"Agent correctly ran tests, read all relevant source files, identified the single root-cause in adapter.py, applied a minimal targeted patch, verified all 5 tests pass, and wrote the required report; minor path typo on first terminal/search_files calls caused 2-3 transient failures but agent self-corrected quickly with correct absolute paths.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.92,
+          "consistency": 0.95,
+          "robustness": 0.85
+        },
+        "security_gate": 1,
+        "notes": "Agent correctly ran tests, read all relevant source files, identified the single root-cause in adapter.py, applied a minimal targeted patch, verified all 5 tests pass, and wrote the required report; minor path typo on first terminal/search_files calls caused 2-3 transient failures but agent self-corrected quickly with correct absolute paths."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072902-QR1w0HhY8L9kjBOelHpb",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 50047,
+        "completion_tokens": 124,
+        "total_tokens": 50171,
+        "cost": 0.15048099,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.152001,
+          "upstream_inference_prompt_cost": 0.150141,
+          "upstream_inference_completions_cost": 0.00186
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9067,
+    "process_effective": 0.9067,
+    "security_score": 1.0,
+    "outcome_score": 1.0,
+    "oracle_outcome_score": 1.0,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.9067,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=1.0 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.15048099,
+  "cost_source": "openrouter_usage_cost"
+}

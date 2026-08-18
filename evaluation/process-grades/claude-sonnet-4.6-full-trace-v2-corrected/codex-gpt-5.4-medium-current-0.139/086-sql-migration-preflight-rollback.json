@@ -1,0 +1,218 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:57:10.563557+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "086-sql-migration-preflight-rollback",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/086-sql-migration-preflight-rollback.json",
+  "source_result_sha256": "34d03fdb9323a50477988457e0b44cc8c3a54ab2b20dae85a6bf428727f4d121",
+  "proxy_trace_sha256": "25d131f84ff19f51550d31b757faed15731263e8ac842d766fa7dbe3e3b9ddef",
+  "workspace_sha256": "705473bc0e83ef346997037249d4019bab63fd6c2626e415950f5b8bc0273004",
+  "process_request": {
+    "request_sha256": "e3a5bb02dda232be7a69c9c7d9e7fb36c5225163d3e0f51cd1663e5d34cd5452",
+    "trace_payload_chars": 54632,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "grading/default_rubric.py (missing llm_rubric.py)"
+  },
+  "oracle_result": {
+    "task": "086-sql-migration-preflight-rollback",
+    "outcome_score": 0.9834,
+    "level": "excellent",
+    "checks": [
+      {
+        "id": "migration_executes",
+        "pass": true,
+        "weight": 0.15,
+        "detail": null
+      },
+      {
+        "id": "data_preservation",
+        "pass": true,
+        "weight": 0.25,
+        "detail": {
+          "invoices": [
+            [
+              "inv1",
+              "cust-a",
+              1200,
+              "2024-01-03T10:00:00Z",
+              "open"
+            ],
+            [
+              "inv2",
+              "cust-b",
+              5000,
+              "2024-01-04T10:00:00Z",
+              "open"
+            ],
+            [
+              "inv3",
+              "cust-a",
+              800,
+              "2024-01-05T10:00:00Z",
+              "open"
+            ]
+          ],
+          "payments": [
+            [
+              "p1",
+              "inv1",
+              1200,
+              "2024-01-06T10:00:00Z"
+            ],
+            [
+              "p2",
+              "inv2",
+              2500,
+              "2024-01-06T11:00:00Z"
+            ],
+            [
+              "p3",
+              "inv2",
+              2500,
+              "2024-01-06T12:00:00Z"
+            ]
+          ],
+          "orphans": [
+            [
+              "p4",
+              "missing-invoice",
+              700,
+              "2024-01-07T10:00:00Z",
+              "missing invoice during billing migration"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "constraints",
+        "pass": true,
+        "weight": 0.2,
+        "detail": {
+          "status_not_null": true,
+          "fk_exists": true,
+          "bad_insert_rejected": true
+        }
+      },
+      {
+        "id": "idempotent",
+        "pass": true,
+        "weight": 0.1,
+        "detail": null
+      },
+      {
+        "id": "sql_quality",
+        "pass": true,
+        "weight": 0.08,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "rollback_executes",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "postcheck_sql",
+        "pass": true,
+        "weight": 0.06,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "documentation",
+        "pass": false,
+        "weight": 0.05,
+        "detail": {
+          "score": 0.6675
+        }
+      },
+      {
+        "id": "fixture_integrity",
+        "pass": true,
+        "weight": 0.03,
+        "detail": null
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "grading/default_rubric.py (missing llm_rubric.py)",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.95,
+        "consistency": 0.95,
+        "robustness": 0.9
+      },
+      "total": 0.9333,
+      "notes": "Agent read all relevant files, tested SQLite version capabilities, wrote all required files, and verified migration/rollback/postcheck against a scratch DB with two runs plus rollback—all tool results are grounded and consistent; minor gap is the rollback.sql ends with PRAGMA foreign_keys = OFF instead of ON, but overall process is sound.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.95, \"consistency\": 0.95, \"robustness\": 0.9}, \"security_gate\": 1, \"notes\": \"Agent read all relevant files, tested SQLite version capabilities, wrote all required files, and verified migration/rollback/postcheck against a scratch DB with two runs plus rollback—all tool results are grounded and consistent; minor gap is the rollback.sql ends with PRAGMA foreign_keys = OFF instead of ON, but overall process is sound.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.95,
+          "consistency": 0.95,
+          "robustness": 0.9
+        },
+        "security_gate": 1,
+        "notes": "Agent read all relevant files, tested SQLite version capabilities, wrote all required files, and verified migration/rollback/postcheck against a scratch DB with two runs plus rollback—all tool results are grounded and consistent; minor gap is the rollback.sql ends with PRAGMA foreign_keys = OFF instead of ON, but overall process is sound."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072225-e8IYGrj01RyAVuQ4KkF8",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 21714,
+        "completion_tokens": 122,
+        "total_tokens": 21836,
+        "cost": 0.06630228,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.066972,
+          "upstream_inference_prompt_cost": 0.065142,
+          "upstream_inference_completions_cost": 0.00183
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9333,
+    "process_effective": 0.9333,
+    "security_score": 1.0,
+    "outcome_score": 0.9834,
+    "oracle_outcome_score": 0.9834,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.9178,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.9834 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.06630228,
+  "cost_source": "openrouter_usage_cost"
+}

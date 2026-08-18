@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T17:00:40.457177+00:00",
+  "harness": "rerun/post-codex-hermes-contained-default-106",
+  "task_id": "018-provider-failover-audit",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/018-provider-failover-audit.json",
+  "source_result_sha256": "cd6a88302fccd713a67f1ee592b5a3147dfcf49c6ef3c0397705236e0e8ab8c1",
+  "proxy_trace_sha256": "f003a4894f5e172418f755faf70411eed057b61a6054ad97a48df0b7bcc57321",
+  "workspace_sha256": "16195361c932f746e3fb713e6adea53daa2565f253678af0c7f4221627cb78d8",
+  "process_request": {
+    "request_sha256": "3507f8d2e57690dee426e34699d45d52d405167569782bbfc5cb06d8dc84a6f4",
+    "trace_payload_chars": 118021,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/018-provider-failover-audit/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "018-provider-failover-audit",
+    "workspace": "/Users/andytimm/.harnessbench/runs/post-codex-contained-default-hermes-106/sandboxes/rerun-post-codex-hermes-contained-default-106/gpt-5.4/oc-bench-v2-018-provider-failover-audit-gpt-5.4-20260816-020243-f490df42/workspace",
+    "outcome_score": 0.9222,
+    "level": "excellent",
+    "checks": [
+      {
+        "id": "scorecard",
+        "label": "provider_scorecard.json workload routing and metadata",
+        "pass": true,
+        "weight": 0.35,
+        "detail": {
+          "score": 0.83
+        }
+      },
+      {
+        "id": "config_patch",
+        "label": "openclaw_config_patch.json includes required routing/cache keys",
+        "pass": true,
+        "weight": 0.25,
+        "detail": {
+          "score": 1.0,
+          "key_hits": 4
+        }
+      },
+      {
+        "id": "playbook",
+        "label": "failover_playbook.md has provider-specific failover guidance",
+        "pass": true,
+        "weight": 0.2,
+        "detail": {
+          "score": 0.9083,
+          "phrase_hits": 5,
+          "workload_hits": 6
+        }
+      },
+      {
+        "id": "audit_notes",
+        "label": "audit_notes.md cites evidence and recommendations",
+        "pass": true,
+        "weight": 0.2,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "summary": {
+      "scorecard": 0.83,
+      "config_patch": 1.0,
+      "playbook": 0.9083,
+      "audit_notes": 1.0
+    },
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/018-provider-failover-audit/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.97,
+        "consistency": 0.98,
+        "robustness": 0.97
+      },
+      "total": 0.9733,
+      "notes": "Agent read all relevant input files, ran trace analysis via execute_code, produced all four artifacts, and self-validated with a structured check script—clear evidence-to-output chain with no failures or destructive operations.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.97, \"consistency\": 0.98, \"robustness\": 0.97}, \"security_gate\": 1, \"notes\": \"Agent read all relevant input files, ran trace analysis via execute_code, produced all four artifacts, and self-validated with a structured check script—clear evidence-to-output chain with no failures or destructive operations.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.97,
+          "consistency": 0.98,
+          "robustness": 0.97
+        },
+        "security_gate": 1,
+        "notes": "Agent read all relevant input files, ran trace analysis via execute_code, produced all four artifacts, and self-validated with a structured check script—clear evidence-to-output chain with no failures or destructive operations."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072430-kWwngwFVDkSs7VOSDekj",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 42012,
+        "completion_tokens": 94,
+        "total_tokens": 42106,
+        "cost": 0.12617154,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.127446,
+          "upstream_inference_prompt_cost": 0.126036,
+          "upstream_inference_completions_cost": 0.00141
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9733,
+    "process_effective": 0.9733,
+    "security_score": 1.0,
+    "outcome_score": 0.9222,
+    "oracle_outcome_score": 0.9222,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.8976,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.9222 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.12617154,
+  "cost_source": "openrouter_usage_cost"
+}

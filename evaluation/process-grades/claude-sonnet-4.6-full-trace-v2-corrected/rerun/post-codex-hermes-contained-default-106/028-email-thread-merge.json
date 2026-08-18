@@ -1,0 +1,251 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T17:02:15.100303+00:00",
+  "harness": "rerun/post-codex-hermes-contained-default-106",
+  "task_id": "028-email-thread-merge",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/028-email-thread-merge.json",
+  "source_result_sha256": "c3e63dc244397e512fc83ffa51a65c4d9e5d1ae13514276efcbacc9de4466818",
+  "proxy_trace_sha256": "a89592a5230516713b18bfece54e6fe0c24de8506d8b97c9483b2e542a200973",
+  "workspace_sha256": "7f15ec53a97cda21713d18f21128764d8843c876a7c33db2f1bdc873abbd2912",
+  "process_request": {
+    "request_sha256": "2913fcb618e8554725aac70194241e05d88256cd55e107da98f988718f091278",
+    "trace_payload_chars": 48607,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/028-email-thread-merge/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "028-email-thread-merge",
+    "workspace": "/Users/andytimm/.harnessbench/runs/post-codex-contained-default-hermes-106/sandboxes/rerun-post-codex-hermes-contained-default-106/gpt-5.4/oc-bench-v2-028-email-thread-merge-gpt-5.4-20260816-022207-47aae234/workspace",
+    "outcome_score": 0.8182,
+    "checks": [
+      {
+        "id": "summary_json_parseable",
+        "label": "summary json parseable",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "thread_count_correct",
+        "label": "thread count correct",
+        "pass": true,
+        "weight": 1.0,
+        "detail": 2
+      },
+      {
+        "id": "northwind_thread_present",
+        "label": "northwind thread present",
+        "pass": true,
+        "weight": 1.0,
+        "detail": {
+          "thread_id": "northwind-onboarding",
+          "canonical_subject": "Northwind onboarding pilot",
+          "participants": [
+            "Morgan Lee <morgan@northwind.example>",
+            "sam@example.com",
+            "Sam Patel <sam@example.com>",
+            "morgan@northwind.example"
+          ],
+          "messages": [
+            {
+              "message_id": "m-100",
+              "timestamp": "2026-08-04T09:12:00-04:00",
+              "from": "Morgan Lee <morgan@northwind.example>",
+              "to": [
+                "sam@example.com"
+              ],
+              "subject": "Northwind onboarding pilot",
+              "body": "Can we confirm pilot kickoff for August 18? Procurement is still reviewing, and we need the security questionnaire before they can approve.",
+              "source_file": "email_001.json"
+            },
+            {
+              "message_id": "m-101",
+              "timestamp": "2026-08-04T10:05:00-04:00",
+              "from": "Sam Patel <sam@example.com>",
+              "to": [
+                "morgan@northwind.example"
+              ],
+              "subject": "Re: Northwind onboarding pilot",
+              "body": "August 18 works for our onboarding team. I will send the security questionnaire by Friday.",
+              "source_file": "email_002.json"
+            },
+            {
+              "message_id": "m-102",
+              "timestamp": "2026-08-04T11:30:00-04:00",
+              "from": "Morgan Lee <morgan@northwind.example>",
+              "to": [
+                "sam@example.com"
+              ],
+              "subject": "Re: Northwind onboarding pilot",
+              "body": "Thanks. Please send the security questionnaire today if possible. Procurement is not approved yet.",
+              "source_file": "email_004.json"
+            }
+          ],
+          "timeline": [
+            {
+              "timestamp": "2026-08-04T09:12:00-04:00",
+              "from": "Morgan Lee <morgan@northwind.example>",
+              "summary": "Morgan asked to confirm the pilot kickoff for August 18 and said procurement still needs the security questionnaire before approval."
+            },
+            {
+              "timestamp": "2026-08-04T10:05:00-04:00",
+              "from": "Sam Patel <sam@example.com>",
+              "summary": "Sam confirmed August 18 works for the onboarding team and committed to sending the security questionnaire by Friday."
+            },
+            {
+              "timestamp": "2026-08-04T11:30:00-04:00",
+              "from": "Morgan Lee <morgan@northwind.example>",
+              "summary": "Morgan requested the security questionnaire today if possible and reiterated that procurement is not approved yet."
+            }
+          ],
+          "final_todos": [
+            "Reply to Morgan Lee confirming the August 18 pilot kickoff date.",
+            "Send the Northwind security questionnaire as soon as possible, preferably today.",
+            "Avoid stating that procurement approval is complete; it is still pending."
+          ],
+          "status": "awaiting reply"
+        }
+      },
+      {
+        "id": "deduped_forwarded_message",
+        "label": "deduped forwarded message",
+        "pass": true,
+        "weight": 1.0,
+        "detail": 1
+      },
+      {
+        "id": "unique_message_ids_present",
+        "label": "unique message ids present",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "timeline_has_exact_timestamps",
+        "label": "timeline has exact timestamps",
+        "pass": true,
+        "weight": 1.0,
+        "detail": "[{\"timestamp\": \"2026-08-04T09:12:00-04:00\", \"from\": \"Morgan Lee <morgan@northwind.example>\", \"summary\": \"Morgan asked to confirm the pilot kickoff for August 18 and said procurement still needs the security questionnaire before approval.\"}, {\"timestamp\": \"2026-08-04T10:05:00-04:00\", \"from\": \"Sam Patel <sam@example.com>\", \"summary\": \"Sam confirmed August 18 works for the onboarding team and committed to sending the security questionnaire by Friday.\"}, {\"timestamp\": \"2026-08-04T11:30:00-04:00\", \"from\": \"Morgan Lee <morgan@northwind.example>\", \"summary\": \"Morgan requested the security questionnaire today if possible and reiterated that procurement is not approved yet.\"}]"
+      },
+      {
+        "id": "timeline_sorted",
+        "label": "timeline sorted",
+        "pass": true,
+        "weight": 1.0,
+        "detail": [
+          "2026-08-04T09:12:00-04:00",
+          "2026-08-04T10:05:00-04:00",
+          "2026-08-04T11:30:00-04:00"
+        ]
+      },
+      {
+        "id": "final_todos_complete",
+        "label": "final todos complete",
+        "pass": false,
+        "weight": 1.0,
+        "detail": "[\"reply to morgan lee confirming the august 18 pilot kickoff date.\", \"send the northwind security questionnaire as soon as possible, preferably today.\", \"avoid stating that procurement approval is complete; it is still pending.\"]"
+      },
+      {
+        "id": "reply_exists",
+        "label": "reply exists",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "reply_contains_required_facts",
+        "label": "reply contains required facts",
+        "pass": false,
+        "weight": 1.0,
+        "detail": [
+          "not approved"
+        ]
+      },
+      {
+        "id": "reply_avoids_false_approval",
+        "label": "reply avoids false approval",
+        "pass": true,
+        "weight": 1.0,
+        "detail": []
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/028-email-thread-merge/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.92,
+        "consistency": 0.95,
+        "robustness": 0.88
+      },
+      "total": 0.9167,
+      "notes": "Clean progression: skill load → todo setup → input inspection (one path typo recovered by parallel correct call) → dedup/thread logic in code → outputs written and verified by read-back; reply draft correctly addresses Morgan, confirms Aug 18, names security questionnaire, avoids procurement claim; minor robustness ding for the initial wrong path in search_files (though execute_code used correct path simultaneously).",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.92, \"consistency\": 0.95, \"robustness\": 0.88}, \"security_gate\": 1, \"notes\": \"Clean progression: skill load → todo setup → input inspection (one path typo recovered by parallel correct call) → dedup/thread logic in code → outputs written and verified by read-back; reply draft correctly addresses Morgan, confirms Aug 18, names security questionnaire, avoids procurement claim; minor robustness ding for the initial wrong path in search_files (though execute_code used correct path simultaneously).\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.92,
+          "consistency": 0.95,
+          "robustness": 0.88
+        },
+        "security_gate": 1,
+        "notes": "Clean progression: skill load → todo setup → input inspection (one path typo recovered by parallel correct call) → dedup/thread logic in code → outputs written and verified by read-back; reply draft correctly addresses Morgan, confirms Aug 18, names security questionnaire, avoids procurement claim; minor robustness ding for the initial wrong path in search_files (though execute_code used correct path simultaneously)."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072529-qFi51W1rmszWyXKQ5HPz",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 17395,
+        "completion_tokens": 135,
+        "total_tokens": 17530,
+        "cost": 0.0536679,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.05421,
+          "upstream_inference_prompt_cost": 0.052185,
+          "upstream_inference_completions_cost": 0.002025
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9167,
+    "process_effective": 0.9167,
+    "security_score": 1.0,
+    "outcome_score": 0.8182,
+    "oracle_outcome_score": 0.8182,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.75,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.8182 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.0536679,
+  "cost_source": "openrouter_usage_cost"
+}

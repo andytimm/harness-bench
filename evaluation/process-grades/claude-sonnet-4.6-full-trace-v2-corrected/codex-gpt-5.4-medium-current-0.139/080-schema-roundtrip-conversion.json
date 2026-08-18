@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:56:40.868612+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "080-schema-roundtrip-conversion",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/080-schema-roundtrip-conversion.json",
+  "source_result_sha256": "6408f79111470b51815e7a2b47b9c3a0d813f46630bc0e0cd12ba0a879ea321f",
+  "proxy_trace_sha256": "50cc315bc8190d6f45ac4ed5cce82f6e8beb8f1acefba4d29e9a7a86b8e5577a",
+  "workspace_sha256": "6510fa09b46e3d1909e7c809e4c92c20a0950bede0616d09b8db73e1033c793e",
+  "process_request": {
+    "request_sha256": "de0570931da7c37039d398725266a4d499a2435fe79c728df3d2998844b0a84d",
+    "trace_payload_chars": 35021,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "grading/default_rubric.py (missing llm_rubric.py)"
+  },
+  "oracle_result": {
+    "task": "080-schema-roundtrip-conversion",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-080-schema-roundtrip-conversion-gpt-5.4-20260816-001135-14889bc1/workspace",
+    "checks": [
+      {
+        "id": "json_parse",
+        "label": "canonical JSON parses",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "json_exact",
+        "label": "canonical JSON exact",
+        "pass": true,
+        "weight": 6.0,
+        "detail": null
+      },
+      {
+        "id": "type_preservation",
+        "label": "string ids, nulls, arrays preserved",
+        "pass": true,
+        "weight": 2.0,
+        "detail": null
+      },
+      {
+        "id": "yaml_parse",
+        "label": "canonical YAML parses",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "yaml_semantics",
+        "label": "canonical YAML semantics match JSON",
+        "pass": true,
+        "weight": 4.0,
+        "detail": null
+      },
+      {
+        "id": "csv_exact",
+        "label": "canonical CSV exact",
+        "pass": true,
+        "weight": 4.0,
+        "detail": null
+      },
+      {
+        "id": "report_parse",
+        "label": "conversion_report parses",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "report_terms",
+        "label": "report mentions all sources and conflicts",
+        "pass": true,
+        "weight": 2.0,
+        "detail": null
+      },
+      {
+        "id": "conflicts",
+        "label": "expected conflicts reported",
+        "pass": true,
+        "weight": 2.0,
+        "detail": null
+      }
+    ],
+    "outcome_score": 1.0,
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "grading/default_rubric.py (missing llm_rubric.py)",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.95,
+        "consistency": 0.97,
+        "robustness": 1.0
+      },
+      "total": 0.9733,
+      "notes": "Agent read all inputs, ran a single Python script to produce all four outputs, verified each output file, and grounded every claim in actual tool results; no failures or unsafe operations observed.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.95, \"consistency\": 0.97, \"robustness\": 1.0}, \"security_gate\": 1, \"notes\": \"Agent read all inputs, ran a single Python script to produce all four outputs, verified each output file, and grounded every claim in actual tool results; no failures or unsafe operations observed.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.95,
+          "consistency": 0.97,
+          "robustness": 1.0
+        },
+        "security_gate": 1,
+        "notes": "Agent read all inputs, ran a single Python script to produce all four outputs, verified each output file, and grounded every claim in actual tool results; no failures or unsafe operations observed."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072195-VmxkfPPJkUjfxTNfJz3c",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 13945,
+        "completion_tokens": 87,
+        "total_tokens": 14032,
+        "cost": 0.0427086,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.04314,
+          "upstream_inference_prompt_cost": 0.041835,
+          "upstream_inference_completions_cost": 0.001305
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9733,
+    "process_effective": 0.9733,
+    "security_score": 1.0,
+    "outcome_score": 1.0,
+    "oracle_outcome_score": 1.0,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.9733,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=1.0 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.0427086,
+  "cost_source": "openrouter_usage_cost"
+}

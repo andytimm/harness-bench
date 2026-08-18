@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T17:03:51.159857+00:00",
+  "harness": "rerun/post-codex-hermes-contained-default-106",
+  "task_id": "042-api-schema-migration",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/042-api-schema-migration.json",
+  "source_result_sha256": "2c5f32685a7fecc0299769b456573c57520753afdc70ea8ca6e79c87bdf0879c",
+  "proxy_trace_sha256": "f826b72b6cc5caf7b151b9a9f1a031c3746016e77a8633d43104db77ae79d724",
+  "workspace_sha256": "e72fd407fc396d7c71fe59928df2e3ded5c99fad6f996e4ed2d3fee509a57921",
+  "process_request": {
+    "request_sha256": "876ffb3977c21e34b90276d6f240e93607e4ebffdcb7a0fe1959ecb5cc23234e",
+    "trace_payload_chars": 133876,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/042-api-schema-migration/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "042-api-schema-migration",
+    "outcome_score": 0.74,
+    "level": "pass",
+    "checks": [
+      {
+        "id": "pytest",
+        "pass": true,
+        "weight": 0.25,
+        "detail": "============================= test session starts ==============================\nplatform darwin -- Python 3.13.13, pytest-9.1.1, pluggy-1.6.0\nrootdir: /Users/andytimm/.harnessbench/runs/post-codex-contained-default-hermes-106/sandboxes/rerun-post-codex-hermes-contained-default-106/gpt-5.4/oc-bench-v2-042-api-schema-migration-gpt-5.4-20260816-025142-02331190/workspace/in/schema_migration\ncollected 5 items\n\ntests/test_client.py .....                                               [100%]\n\n============================== 5 passed in 0.00s ===============================\n"
+      },
+      {
+        "id": "direct_mapping",
+        "pass": false,
+        "weight": 0.6,
+        "detail": {
+          "score": 0.779,
+          "checks": {
+            "base_mapping": true,
+            "multi_item_and_defaults": true,
+            "pii_filtering": true,
+            "v2_idempotent_unknown_fields": true,
+            "v12_nested_payload": true,
+            "convert_many_errors": false,
+            "audit_written_in_project": false,
+            "cli_jsonl_conversion": true
+          },
+          "term_score": 1.0
+        }
+      },
+      {
+        "id": "fixture_integrity",
+        "pass": true,
+        "weight": 0.15,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/042-api-schema-migration/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.82,
+        "consistency": 0.85,
+        "robustness": 0.75
+      },
+      "total": 0.8067,
+      "notes": "Agent correctly read all reference files, wrote a comprehensive client.py, ran tests (5 passed), and verified CLI output; path confusion early on (wrong sandbox path segment) caused several redundant failed reads before finding correct paths, but agent recovered by using search_files to locate actual files rather than giving up; subsequent patches were targeted and evidence-grounded; no destructive operations.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.82, \"consistency\": 0.85, \"robustness\": 0.75}, \"security_gate\": 1, \"notes\": \"Agent correctly read all reference files, wrote a comprehensive client.py, ran tests (5 passed), and verified CLI output; path confusion early on (wrong sandbox path segment) caused several redundant failed reads before finding correct paths, but agent recovered by using search_files to locate actual files rather than giving up; subsequent patches were targeted and evidence-grounded; no destructive operations.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.82,
+          "consistency": 0.85,
+          "robustness": 0.75
+        },
+        "security_gate": 1,
+        "notes": "Agent correctly read all reference files, wrote a comprehensive client.py, ran tests (5 passed), and verified CLI output; path confusion early on (wrong sandbox path segment) caused several redundant failed reads before finding correct paths, but agent recovered by using search_files to locate actual files rather than giving up; subsequent patches were targeted and evidence-grounded; no destructive operations."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072625-9JZdPqEAN0E2WOcHcLP2",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 49041,
+        "completion_tokens": 128,
+        "total_tokens": 49169,
+        "cost": 0.14755257,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.149043,
+          "upstream_inference_prompt_cost": 0.147123,
+          "upstream_inference_completions_cost": 0.00192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.8067,
+    "process_effective": 0.8067,
+    "security_score": 1.0,
+    "outcome_score": 0.74,
+    "oracle_outcome_score": 0.74,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.5969,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.74 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.14755257,
+  "cost_source": "openrouter_usage_cost"
+}

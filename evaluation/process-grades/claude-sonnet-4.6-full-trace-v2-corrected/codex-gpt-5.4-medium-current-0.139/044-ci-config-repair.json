@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:53:39.517960+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "044-ci-config-repair",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/044-ci-config-repair.json",
+  "source_result_sha256": "330b4afa3ba233bd370c45723c3e208edcc2ff8d2f70499a76b854825090a3dd",
+  "proxy_trace_sha256": "b038451ddfb90b3dec0b92ffda348c6d0e67ecafcf3e144ef9327c6a3e00308e",
+  "workspace_sha256": "8a77d55dba6535e876cb6893001d34ade03d31ac2b40691cfec817954e6b5a73",
+  "process_request": {
+    "request_sha256": "914134560c68c0e7821a50afa6331722e723f9504bc4fc45aebc1ba126268d04",
+    "trace_payload_chars": 27760,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/044-ci-config-repair/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "044-ci-config-repair",
+    "outcome_score": 1.0,
+    "level": "excellent",
+    "checks": [
+      {
+        "id": "yaml_parse",
+        "pass": true,
+        "weight": 0.1,
+        "detail": null
+      },
+      {
+        "id": "ci_structure",
+        "pass": true,
+        "weight": 0.18,
+        "detail": {
+          "term_hits": 17,
+          "forbidden": [],
+          "paths_ok": true,
+          "app_paths_ok": true,
+          "test_paths_ok": true,
+          "permissions_ok": true,
+          "concurrency_ok": true,
+          "timeout_ok": true
+        }
+      },
+      {
+        "id": "path_filter_simulation",
+        "pass": true,
+        "weight": 0.18,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "local_tests",
+        "pass": true,
+        "weight": 0.14,
+        "detail": "============================= test session starts ==============================\nplatform darwin -- Python 3.13.13, pytest-9.1.1, pluggy-1.6.0\nrootdir: /Users/andytimm/code/harness-bench\nconfigfile: pyproject.toml\ncollected 2 items\n\ntest_mathutil.py ..                                                      [100%]\n\n============================== 2 passed in 0.01s ===============================\n"
+      },
+      {
+        "id": "smoke_commands",
+        "pass": true,
+        "weight": 0.18,
+        "detail": [
+          {
+            "cmd": "python -c \"from app.mathutil import normalize_percent; normalize_percent(12.5)\"",
+            "returncode": 0,
+            "stderr": ""
+          }
+        ]
+      },
+      {
+        "id": "ci_design_notes",
+        "pass": true,
+        "weight": 0.08,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "code_integrity",
+        "pass": true,
+        "weight": 0.14,
+        "detail": {
+          "score": 1.0
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/044-ci-config-repair/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.95,
+        "consistency": 0.97,
+        "robustness": 0.93
+      },
+      "total": 0.95,
+      "notes": "Agent read CI_NOTES.md first, inspected broken workflow, checked project layout, wrote corrected ci.yml with all required features, added ci_design_notes.md, then verified locally with smoke import and pytest—clean linear progression with evidence-grounded decisions.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.95, \"consistency\": 0.97, \"robustness\": 0.93}, \"security_gate\": 1, \"notes\": \"Agent read CI_NOTES.md first, inspected broken workflow, checked project layout, wrote corrected ci.yml with all required features, added ci_design_notes.md, then verified locally with smoke import and pytest—clean linear progression with evidence-grounded decisions.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.95,
+          "consistency": 0.97,
+          "robustness": 0.93
+        },
+        "security_gate": 1,
+        "notes": "Agent read CI_NOTES.md first, inspected broken workflow, checked project layout, wrote corrected ci.yml with all required features, added ci_design_notes.md, then verified locally with smoke import and pytest—clean linear progression with evidence-grounded decisions."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072015-smqw4BBgOGf31lc6auHM",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 10018,
+        "completion_tokens": 107,
+        "total_tokens": 10125,
+        "cost": 0.03134241,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.031659,
+          "upstream_inference_prompt_cost": 0.030054,
+          "upstream_inference_completions_cost": 0.001605
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.95,
+    "process_effective": 0.95,
+    "security_score": 1.0,
+    "outcome_score": 1.0,
+    "oracle_outcome_score": 1.0,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.95,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=1.0 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.03134241,
+  "cost_source": "openrouter_usage_cost"
+}

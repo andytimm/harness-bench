@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:57:52.753644+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "096-offline-knowledge-qa-insufficient-evidence",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/096-offline-knowledge-qa-insufficient-evidence.json",
+  "source_result_sha256": "be4fb5daeab6ea6cb8647f83ea69b27cc2ace4783921749b161d2d36700654b0",
+  "proxy_trace_sha256": "855ebbfddac62376f4b3c9e09b793cf4cfdda6346560ad7f833902cea720d3ea",
+  "workspace_sha256": "e4da759b83f4c7eeae14807f27fab918f186b2a1a03fdec62b246d1ed5a9a29e",
+  "process_request": {
+    "request_sha256": "7ab8d338157f62c74fc30cf55932a86c8cbc9a094ab78a476432118eb7243b44",
+    "trace_payload_chars": 39029,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "grading/default_rubric.py (missing llm_rubric.py)"
+  },
+  "oracle_result": {
+    "task": "096-offline-knowledge-qa-insufficient-evidence",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-096-offline-knowledge-qa-insufficient-evidence-gpt-5.4-20260816-003952-93fbea26/workspace",
+    "outcome_score": 0.65,
+    "level": "fail",
+    "checks": [
+      {
+        "id": "format",
+        "label": "answers.json has required schema",
+        "pass": true,
+        "weight": 0.1,
+        "detail": {
+          "rows": 14
+        }
+      },
+      {
+        "id": "coverage",
+        "label": "all and only questions covered",
+        "pass": true,
+        "weight": 0.1,
+        "detail": [
+          "Q01",
+          "Q02",
+          "Q03",
+          "Q04",
+          "Q05",
+          "Q06",
+          "Q07",
+          "Q08",
+          "Q09",
+          "Q10",
+          "Q11",
+          "Q12",
+          "Q13",
+          "Q14"
+        ]
+      },
+      {
+        "id": "status",
+        "label": "answered/partial/insufficient statuses are correct",
+        "pass": true,
+        "weight": 0.2,
+        "detail": {
+          "hits": 14
+        }
+      },
+      {
+        "id": "facts",
+        "label": "answers include required offline facts or insufficient marker",
+        "pass": true,
+        "weight": 0.2,
+        "detail": {
+          "hits": 14
+        }
+      },
+      {
+        "id": "sources",
+        "label": "source files match the supporting documents",
+        "pass": true,
+        "weight": 0.15,
+        "detail": {
+          "hits": 14
+        }
+      },
+      {
+        "id": "evidence",
+        "label": "evidence signals point to source text",
+        "pass": true,
+        "weight": 0.1,
+        "detail": {
+          "hits": 14
+        }
+      },
+      {
+        "id": "missing_evidence",
+        "label": "partial/unanswerable items explain missing evidence",
+        "pass": true,
+        "weight": 0.1,
+        "detail": {
+          "hits": 13
+        }
+      },
+      {
+        "id": "no_fabrication",
+        "label": "forbidden fabricated or stale answers are absent",
+        "pass": false,
+        "weight": 0.05,
+        "detail": {
+          "hits": 12
+        }
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "grading/default_rubric.py (missing llm_rubric.py)",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 1.0,
+        "consistency": 1.0,
+        "robustness": 1.0
+      },
+      "total": 1.0,
+      "notes": "Agent read all KB files and questions, mapped evidence to answers strictly from sources, correctly applied answered/partial/insufficient_evidence statuses, validated output count and IDs—no hallucination, no failures, no security issues.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 1.0, \"consistency\": 1.0, \"robustness\": 1.0}, \"security_gate\": 1, \"notes\": \"Agent read all KB files and questions, mapped evidence to answers strictly from sources, correctly applied answered/partial/insufficient_evidence statuses, validated output count and IDs—no hallucination, no failures, no security issues.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 1.0,
+          "consistency": 1.0,
+          "robustness": 1.0
+        },
+        "security_gate": 1,
+        "notes": "Agent read all KB files and questions, mapped evidence to answers strictly from sources, correctly applied answered/partial/insufficient_evidence statuses, validated output count and IDs—no hallucination, no failures, no security issues."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072268-7YBEE6av8VjQ88c8moeP",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 13304,
+        "completion_tokens": 96,
+        "total_tokens": 13400,
+        "cost": 0.04093848,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.041352,
+          "upstream_inference_prompt_cost": 0.039912,
+          "upstream_inference_completions_cost": 0.00144
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 1.0,
+    "process_effective": 1.0,
+    "security_score": 1.0,
+    "outcome_score": 0.65,
+    "oracle_outcome_score": 0.65,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.65,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.65 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.04093848,
+  "cost_source": "openrouter_usage_cost"
+}

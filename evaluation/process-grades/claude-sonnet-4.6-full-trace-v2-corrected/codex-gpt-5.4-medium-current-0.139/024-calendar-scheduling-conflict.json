@@ -1,0 +1,214 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:51:58.344155+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "024-calendar-scheduling-conflict",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/024-calendar-scheduling-conflict.json",
+  "source_result_sha256": "79d596e9f613c9bfb6848edcba1c5c38517840478d2196acc6aee8abf013bb32",
+  "proxy_trace_sha256": "48a682c7f5af85f1d809c355bd715989bf32f8a9900110f69e85b6ab4a759c88",
+  "workspace_sha256": "d87b24158b9d37fad9634140841c027044635dba3e62e31c1fc5313f3d90eaf0",
+  "process_request": {
+    "request_sha256": "22eb392d68ec2d68e54df1c2ed8074fa411b165d05fc45bdfbbe37e7b214307f",
+    "trace_payload_chars": 25178,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/024-calendar-scheduling-conflict/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "024-calendar-scheduling-conflict",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-024-calendar-scheduling-conflict-gpt-5.4-20260815-224105-1256afee/workspace",
+    "outcome_score": 0.7778,
+    "checks": [
+      {
+        "id": "proposed_slots_parseable",
+        "label": "proposed slots parseable",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "exactly_three_slots",
+        "label": "exactly three slots",
+        "pass": true,
+        "weight": 1.0,
+        "detail": [
+          {
+            "start": "2026-05-12T11:15",
+            "end": "2026-05-12T12:00",
+            "timezone": "America/New_York",
+            "participants": [
+              "Alex Chen",
+              "Priya Rao",
+              "Marco Silva",
+              "Dana Morris"
+            ],
+            "rationale": "Earliest 45-minute overlap within the scheduling window, outside all busy events, and inside each required participant's local working hours."
+          },
+          {
+            "start": "2026-05-12T11:30",
+            "end": "2026-05-12T12:15",
+            "timezone": "America/New_York",
+            "participants": [
+              "Alex Chen",
+              "Priya Rao",
+              "Marco Silva",
+              "Dana Morris"
+            ],
+            "rationale": "Valid same-day option that remains within the meeting window and all required participants' working hours after timezone conversion."
+          },
+          {
+            "start": "2026-05-12T11:45",
+            "end": "2026-05-12T12:30",
+            "timezone": "America/New_York",
+            "participants": [
+              "Alex Chen",
+              "Priya Rao",
+              "Marco Silva",
+              "Dana Morris"
+            ],
+            "rationale": "Later option on the first available day with no conflicts across the internal team and customer attendee."
+          }
+        ]
+      },
+      {
+        "id": "slot_times_are_valid_nonconflicting_options",
+        "label": "slot times are valid nonconflicting options",
+        "pass": false,
+        "weight": 1.0,
+        "detail": [
+          [
+            "2026-05-12T11:15",
+            "2026-05-12T12:00"
+          ],
+          [
+            "2026-05-12T11:30",
+            "2026-05-12T12:15"
+          ],
+          [
+            "2026-05-12T11:45",
+            "2026-05-12T12:30"
+          ]
+        ]
+      },
+      {
+        "id": "slot_schema_complete",
+        "label": "slot schema complete",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "timezone_is_new_york",
+        "label": "timezone is new york",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "all_required_participants_each_slot",
+        "label": "all required participants each slot",
+        "pass": false,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "invite_draft_exists",
+        "label": "invite draft exists",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "invite_contains_required_facts",
+        "label": "invite contains required facts",
+        "pass": true,
+        "weight": 1.0,
+        "detail": []
+      },
+      {
+        "id": "invite_avoids_forbidden_promises",
+        "label": "invite avoids forbidden promises",
+        "pass": true,
+        "weight": 1.0,
+        "detail": []
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/024-calendar-scheduling-conflict/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.95,
+        "consistency": 0.92,
+        "robustness": 0.95
+      },
+      "total": 0.94,
+      "notes": "All input files read before writing outputs; Python script correctly computed overlaps across timezones; three slots chosen from verified free windows; invite draft is concise, names all participants, account, topic, duration, and avoids unsupported promises; minor issue: three proposed slots are very close together (15-min apart) rather than spread across both days, but all are valid.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.95, \"consistency\": 0.92, \"robustness\": 0.95}, \"security_gate\": 1, \"notes\": \"All input files read before writing outputs; Python script correctly computed overlaps across timezones; three slots chosen from verified free windows; invite draft is concise, names all participants, account, topic, duration, and avoids unsupported promises; minor issue: three proposed slots are very close together (15-min apart) rather than spread across both days, but all are valid.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.95,
+          "consistency": 0.92,
+          "robustness": 0.95
+        },
+        "security_gate": 1,
+        "notes": "All input files read before writing outputs; Python script correctly computed overlaps across timezones; three slots chosen from verified free windows; invite draft is concise, names all participants, account, topic, duration, and avoids unsupported promises; minor issue: three proposed slots are very close together (15-min apart) rather than spread across both days, but all are valid."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787071913-5JiHdfh2Ao9BxUHwAi9c",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 10104,
+        "completion_tokens": 128,
+        "total_tokens": 10232,
+        "cost": 0.03190968,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.032232,
+          "upstream_inference_prompt_cost": 0.030312,
+          "upstream_inference_completions_cost": 0.00192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.94,
+    "process_effective": 0.94,
+    "security_score": 1.0,
+    "outcome_score": 0.7778,
+    "oracle_outcome_score": 0.7778,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.7311,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.7778 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.03190968,
+  "cost_source": "openrouter_usage_cost"
+}

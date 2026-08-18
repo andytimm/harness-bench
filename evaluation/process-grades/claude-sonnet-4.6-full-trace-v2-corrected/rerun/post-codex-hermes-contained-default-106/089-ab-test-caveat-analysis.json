@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T17:08:59.072760+00:00",
+  "harness": "rerun/post-codex-hermes-contained-default-106",
+  "task_id": "089-ab-test-caveat-analysis",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/rerun/post-codex-hermes-contained-default-106/gpt-5.4/089-ab-test-caveat-analysis.json",
+  "source_result_sha256": "1a81409ad76df3a47a4874f37c88091e6761d4ba8d7eb12fe23773e8c7f604d4",
+  "proxy_trace_sha256": "68272dad5cbc745768bf244363b46ccc70fb39d9ad78b0a080765cdf73a1c4cb",
+  "workspace_sha256": "425aa96a5dfb3293ff3633e4976bac325828e2e2270f8572cf9abf16e2237e30",
+  "process_request": {
+    "request_sha256": "324574e79ccd237db124dbaeae0fecec5bc3a67f50dfcce9c90e5c1231bcba09",
+    "trace_payload_chars": 36041,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/089-ab-test-caveat-analysis/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "089-ab-test-caveat-analysis",
+    "workspace": "/Users/andytimm/.harnessbench/runs/post-codex-contained-default-hermes-106/sandboxes/rerun-post-codex-hermes-contained-default-106/gpt-5.4/oc-bench-v2-089-ab-test-caveat-analysis-gpt-5.4-20260816-042531-3086a7eb/workspace",
+    "checks": [
+      {
+        "id": "fixture_present_experiment_cells.csv",
+        "pass": true,
+        "weight": 0.02,
+        "detail": null
+      },
+      {
+        "id": "fixture_present_exclusions.csv",
+        "pass": true,
+        "weight": 0.02,
+        "detail": null
+      },
+      {
+        "id": "fixture_present_analysis_plan.md",
+        "pass": true,
+        "weight": 0.02,
+        "detail": null
+      },
+      {
+        "id": "variant_metrics_exists",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "variant_header",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "variants_once",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "variant_counts",
+        "pass": false,
+        "weight": 0.06,
+        "detail": "got [{'variant': 'A', 'eligible_users': '1198', 'conversions': '95', 'conversion_rate': '0.0793', 'refund_rate': '0.0632', 'revenue_per_eligible_user': '12.0200'}, {'variant': 'B', 'eligible_users': '1177', 'conversions': '131', 'conversion_rate': '0.1113', 'refund_rate': '0.0763', 'revenue_per_eligible_user': '17.4953'}]"
+      },
+      {
+        "id": "variant_calculations",
+        "pass": true,
+        "weight": 0.18,
+        "detail": null
+      },
+      {
+        "id": "summary_exists",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "summary_variants_alpha",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      },
+      {
+        "id": "summary_stats",
+        "pass": true,
+        "weight": 0.22,
+        "detail": null
+      },
+      {
+        "id": "summary_significant_launch",
+        "pass": true,
+        "weight": 0.08,
+        "detail": null
+      },
+      {
+        "id": "ledger_exists",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "ledger_header",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "ledger_exact",
+        "pass": true,
+        "weight": 0.14,
+        "detail": null
+      },
+      {
+        "id": "recommendation_exists",
+        "pass": true,
+        "weight": 0.04,
+        "detail": null
+      },
+      {
+        "id": "recommendation_mentions_stats",
+        "pass": true,
+        "weight": 0.05,
+        "detail": null
+      },
+      {
+        "id": "recommendation_caveats",
+        "pass": true,
+        "weight": 0.05,
+        "detail": null
+      }
+    ],
+    "outcome_score": 0.9524,
+    "score": 0.9524,
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/089-ab-test-caveat-analysis/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.92,
+        "consistency": 0.95,
+        "robustness": 0.88
+      },
+      "total": 0.9167,
+      "notes": "Agent read all local inputs, applied exclusions correctly, computed z-test and metrics, and wrote all four required output files with correct headers and required caveats; one minor path typo caused a transient ENOENT on experiment_cells.csv but was recovered immediately with the correct path.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.92, \"consistency\": 0.95, \"robustness\": 0.88}, \"security_gate\": 1, \"notes\": \"Agent read all local inputs, applied exclusions correctly, computed z-test and metrics, and wrote all four required output files with correct headers and required caveats; one minor path typo caused a transient ENOENT on experiment_cells.csv but was recovered immediately with the correct path.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.92,
+          "consistency": 0.95,
+          "robustness": 0.88
+        },
+        "security_gate": 1,
+        "notes": "Agent read all local inputs, applied exclusions correctly, computed z-test and metrics, and wrote all four required output files with correct headers and required caveats; one minor path typo caused a transient ENOENT on experiment_cells.csv but was recovered immediately with the correct path."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072934-733pjXz66zXwJceF0EY9",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 15006,
+        "completion_tokens": 111,
+        "total_tokens": 15117,
+        "cost": 0.04621617,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.046683,
+          "upstream_inference_prompt_cost": 0.045018,
+          "upstream_inference_completions_cost": 0.001665
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9167,
+    "process_effective": 0.9167,
+    "security_score": 1.0,
+    "outcome_score": 0.9524,
+    "oracle_outcome_score": 0.9524,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.873,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.9524 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.04621617,
+  "cost_source": "openrouter_usage_cost"
+}

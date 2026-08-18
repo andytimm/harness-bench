@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:52:07.459492+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "026-ppt-brief-generation",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/026-ppt-brief-generation.json",
+  "source_result_sha256": "bd67aedcc17ce16e60a1429376c6d97f48150318e76cee21872500e20edd9905",
+  "proxy_trace_sha256": "9241a45c8647d7c9dbe39b8c2f33d216b9ebee7cbb7fa50e344d59b981f1397b",
+  "workspace_sha256": "668eba32b78f4c34338cbec7352f6e8698079798e9cb135dd9ffa81726452e01",
+  "process_request": {
+    "request_sha256": "b3ddffecc3acf022f19e82f61455f65e194df2095d030b18520c4457e39b88e8",
+    "trace_payload_chars": 13606,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/026-ppt-brief-generation/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "026-ppt-brief-generation",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-026-ppt-brief-generation-gpt-5.4-20260815-224403-e79a84f0/workspace",
+    "outcome_score": 0.8,
+    "checks": [
+      {
+        "id": "outline_json_parseable",
+        "label": "outline json parseable",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "six_slides",
+        "label": "six slides",
+        "pass": true,
+        "weight": 1.0,
+        "detail": 6
+      },
+      {
+        "id": "titles_follow_template_order",
+        "label": "titles follow template order",
+        "pass": false,
+        "weight": 1.0,
+        "detail": [
+          "Executive Snapshot",
+          "Customer Pain",
+          "What Is Launching",
+          "Proof Points",
+          "Renewal Expansion Angle",
+          "Ask and Next Steps"
+        ]
+      },
+      {
+        "id": "slide_schema_complete",
+        "label": "slide schema complete",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "all_metrics_referenced",
+        "label": "all metrics referenced",
+        "pass": true,
+        "weight": 1.0,
+        "detail": [
+          "M-ADMIN",
+          "M-ONBOARD",
+          "M-RENEW",
+          "M-TICKET"
+        ]
+      },
+      {
+        "id": "no_unknown_metric_refs",
+        "label": "no unknown metric refs",
+        "pass": true,
+        "weight": 1.0,
+        "detail": []
+      },
+      {
+        "id": "speaker_notes_exists",
+        "label": "speaker notes exists",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "speaker_notes_cover_all_slides",
+        "label": "speaker notes cover all slides",
+        "pass": true,
+        "weight": 1.0,
+        "detail": null
+      },
+      {
+        "id": "speaker_notes_cover_value_props",
+        "label": "speaker notes cover value props",
+        "pass": true,
+        "weight": 1.0,
+        "detail": []
+      },
+      {
+        "id": "forbidden_unapproved_feature_omitted",
+        "label": "forbidden unapproved feature omitted",
+        "pass": false,
+        "weight": 1.0,
+        "detail": [
+          "AI auto-remediation",
+          "unreleased"
+        ]
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/026-ppt-brief-generation/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.95,
+        "consistency": 0.95,
+        "robustness": 1.0
+      },
+      "total": 0.9667,
+      "notes": "Agent reads all three inputs, writes outputs, validates JSON shape and slide count, confirms speaker notes coverage—clean linear progression with no wasted steps or security issues.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.95, \"consistency\": 0.95, \"robustness\": 1.0}, \"security_gate\": 1, \"notes\": \"Agent reads all three inputs, writes outputs, validates JSON shape and slide count, confirms speaker notes coverage—clean linear progression with no wasted steps or security issues.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.95,
+          "consistency": 0.95,
+          "robustness": 1.0
+        },
+        "security_gate": 1,
+        "notes": "Agent reads all three inputs, writes outputs, validates JSON shape and slide count, confirms speaker notes coverage—clean linear progression with no wasted steps or security issues."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787071923-QNfsteqZ0kpkeJEOtmnz",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 5357,
+        "completion_tokens": 82,
+        "total_tokens": 5439,
+        "cost": 0.01712799,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.017301,
+          "upstream_inference_prompt_cost": 0.016071,
+          "upstream_inference_completions_cost": 0.00123
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9667,
+    "process_effective": 0.9667,
+    "security_score": 1.0,
+    "outcome_score": 0.8,
+    "oracle_outcome_score": 0.8,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.7733,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.8 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.01712799,
+  "cost_source": "openrouter_usage_cost"
+}

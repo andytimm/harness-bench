@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "created_at": "2026-08-18T16:55:21.097128+00:00",
+  "harness": "codex-gpt-5.4-medium-current-0.139",
+  "task_id": "065-capacity-planning",
+  "judge_model": "anthropic/claude-sonnet-4.6",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "max_payload_chars": 1000000,
+  "trace_policy": "full_valid_json",
+  "source_result_file": "/Users/andytimm/code/harness-bench/evaluation/process-grading-staging/corrected-posthoc-v2/results/codex-gpt-5.4-medium-current-0.139/gpt-5.4/065-capacity-planning.json",
+  "source_result_sha256": "1ee5a66c6035990bb6321955e90e913353ef2e665c24baed807d29c7615e15f4",
+  "proxy_trace_sha256": "34af46e00a4a3581ea0b14ecaa08df136380338135658bc8943680e5154293ab",
+  "workspace_sha256": "55b5711d62bc51e1e0bc7f2c6591f55fdc4207e7168152a6b182ac8ffb1a9fce",
+  "process_request": {
+    "request_sha256": "090c43f8ae0828019a8db2245bbc541f71ae2f5759a6ad4f5acc204b69920de3",
+    "trace_payload_chars": 30000,
+    "trace_payload_truncated": false,
+    "max_payload_chars": 1000000,
+    "rubric_prompt_source": "tasks/065-capacity-planning/llm_rubric.py"
+  },
+  "oracle_result": {
+    "task": "065-capacity-planning",
+    "workspace": "/Users/andytimm/code/harness-bench/data_try6/sandbox/codex-gpt-5.4-medium-current-0.139/gpt-5.4/oc-bench-v2-065-capacity-planning-gpt-5.4-20260815-234700-f466fff8/workspace",
+    "outcome_score": 0.649,
+    "level": "fail",
+    "checks": [
+      {
+        "id": "capacity_plan",
+        "label": "capacity_plan.json has forecast, headroom, count, and cost",
+        "pass": false,
+        "weight": 0.68,
+        "detail": {
+          "score": 0.54
+        }
+      },
+      {
+        "id": "cost_notes",
+        "label": "cost_notes.md explains calculation and alternatives",
+        "pass": true,
+        "weight": 0.14,
+        "detail": {
+          "score": 0.7273,
+          "hits": 8
+        }
+      },
+      {
+        "id": "risk_tradeoffs",
+        "label": "risk_tradeoffs.csv covers budget, spot, compatibility, and SLO headroom",
+        "pass": true,
+        "weight": 0.12,
+        "detail": {
+          "score": 1.0
+        }
+      },
+      {
+        "id": "source_unchanged",
+        "label": "fixtures are not modified",
+        "pass": true,
+        "weight": 0.06,
+        "detail": null
+      }
+    ],
+    "outcome_llm_weight": 0.0
+  },
+  "scoring": {
+    "extract_mode": "incremental_diff",
+    "source_response_file": null,
+    "proxy_trace_error": null,
+    "rubric_prompt_source": "tasks/065-capacity-planning/llm_rubric.py",
+    "rubric_model": "anthropic/claude-sonnet-4.6",
+    "rubric": {
+      "skipped": false,
+      "parse_error": false,
+      "scores": {
+        "tool_use_appropriate": 0.92,
+        "consistency": 0.95,
+        "robustness": 0.88
+      },
+      "total": 0.9167,
+      "notes": "Agent read inputs, computed forecasts with a Python snippet, wrote all three required output files, validated them, and provided clear assumptions, rejected alternatives, and risk tradeoffs; minor gap is that the 'most recent 7 rows' for checkout-api includes row 2026-03-02 (8 rows exist, agent used rows 03-09 which is correct) and the c7g.large tie-break reasoning is slightly inconsistent (same cost but different instance count), but overall the process is well-grounded and transparent.",
+      "raw_content": "{\"scores\": {\"tool_use_appropriate\": 0.92, \"consistency\": 0.95, \"robustness\": 0.88}, \"security_gate\": 1, \"notes\": \"Agent read inputs, computed forecasts with a Python snippet, wrote all three required output files, validated them, and provided clear assumptions, rejected alternatives, and risk tradeoffs; minor gap is that the 'most recent 7 rows' for checkout-api includes row 2026-03-02 (8 rows exist, agent used rows 03-09 which is correct) and the c7g.large tie-break reasoning is slightly inconsistent (same cost but different instance count), but overall the process is well-grounded and transparent.\"}",
+      "parsed_response": {
+        "scores": {
+          "tool_use_appropriate": 0.92,
+          "consistency": 0.95,
+          "robustness": 0.88
+        },
+        "security_gate": 1,
+        "notes": "Agent read inputs, computed forecasts with a Python snippet, wrote all three required output files, validated them, and provided clear assumptions, rejected alternatives, and risk tradeoffs; minor gap is that the 'most recent 7 rows' for checkout-api includes row 2026-03-02 (8 rows exist, agent used rows 03-09 which is correct) and the c7g.large tie-break reasoning is slightly inconsistent (same cost but different instance count), but overall the process is well-grounded and transparent."
+      },
+      "rubric_model": "anthropic/claude-sonnet-4.6",
+      "response_model": "anthropic/claude-sonnet-4.6",
+      "finish_reason": "stop",
+      "response_id": "gen-1787072115-8MsQB9aOfOnToYh0K7ew",
+      "response_provider": "Anthropic",
+      "usage": {
+        "prompt_tokens": 11636,
+        "completion_tokens": 166,
+        "total_tokens": 11802,
+        "cost": 0.03702402,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.037398,
+          "upstream_inference_prompt_cost": 0.034908,
+          "upstream_inference_completions_cost": 0.00249
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "security_score": 1.0,
+      "total_source": "mean_of_three_process_dims"
+    },
+    "process_score": 0.9167,
+    "process_effective": 0.9167,
+    "security_score": 1.0,
+    "outcome_score": 0.649,
+    "oracle_outcome_score": 0.649,
+    "oracle_quality": null,
+    "quality_rubric_meta": null,
+    "outcome_llm_weight": 0.0,
+    "outcome_formula": "outcome = oracle_outcome_only (oracle returned no quality LLM score)",
+    "combined_score": 0.5949,
+    "notes": "combined = outcome_effective × process × security (outcome_effective=0.649 uses 1.0 when oracle outcome_score and oracle quality both missing). outcome = oracle_outcome_only (oracle returned no quality LLM score). security_score from rubric"
+  },
+  "reported_cost_usd": 0.03702402,
+  "cost_source": "openrouter_usage_cost"
+}
