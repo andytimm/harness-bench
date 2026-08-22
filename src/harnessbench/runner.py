@@ -243,86 +243,87 @@ def _create_sandbox_dir(
     raise OSError("could not create unique sandbox directory under work_root")
 
 def _collect_hermes_usage_summary(db_file: Path, session_id: str, session_root: Path) -> dict[str, Any]:
-    """从 Hermes SQLite 数据库收集 usage 信息"""
+    """Collect all task-local Hermes usage from its isolated SQLite database.
+
+    Main-loop counters live on ``sessions`` rows. Auxiliary model work such as
+    compression and title generation is recorded only in ``session_model_usage``
+    rows whose task is non-empty, so include those exactly once as well.
+    """
+    import sqlite3
+
+    token_fields = (
+        "input_tokens", "output_tokens", "cache_read_tokens",
+        "cache_write_tokens", "reasoning_tokens", "api_call_count",
+    )
     try:
-        import sqlite3
-    except ImportError:
+        connection = sqlite3.connect(f"file:{db_file}?mode=ro", uri=True)
+        connection.row_factory = sqlite3.Row
+        primary = connection.execute(
+            "SELECT * FROM sessions WHERE id = ?", (session_id,)
+        ).fetchone()
+        if primary is None:
+            raise sqlite3.DatabaseError(f"Hermes session {session_id!r} is absent")
+        sessions = connection.execute("SELECT * FROM sessions ORDER BY started_at, id").fetchall()
+        try:
+            auxiliary = connection.execute(
+                "SELECT * FROM session_model_usage WHERE COALESCE(task, '') <> '' "
+                "ORDER BY first_seen, session_id, task"
+            ).fetchall()
+        except sqlite3.OperationalError:
+            auxiliary = []
+        connection.close()
+
+        totals = {field: 0 for field in token_fields}
+        for record in [*sessions, *auxiliary]:
+            for field in token_fields:
+                totals[field] += int(record[field] or 0)
+        providers = list(dict.fromkeys(
+            str(record["billing_provider"] or "hermes") for record in [*sessions, *auxiliary]
+        ))
+        models = list(dict.fromkeys(
+            str(record["model"] or "unknown") for record in [*sessions, *auxiliary]
+        ))
+        billing_modes = list(dict.fromkeys(
+            str(record["billing_mode"] or "") for record in [*sessions, *auxiliary]
+            if str(record["billing_mode"] or "")
+        ))
+        aggregate_total = (
+            totals["input_tokens"] + totals["output_tokens"]
+            + totals["cache_read_tokens"] + totals["cache_write_tokens"]
+        )
         return {
-            "available": False,
-            "reason": "sqlite3 module not available",
-            "session_id": session_id,
-            "usage_root": str(session_root),
-            "database_file": str(db_file),
-        }
-    
-    try:
-        conn = sqlite3.connect(db_file)
-        cursor = conn.cursor()
-        
-        # 查询最近创建的会话
-        cursor.execute(
-            "SELECT id, title, started_at, model, billing_provider, input_tokens, output_tokens, message_count FROM sessions ORDER BY started_at DESC LIMIT 1"
-        )
-        latest_session = cursor.fetchone()
-        
-        if not latest_session:
-            return {
-                "available": False,
-                "reason": "Hermes database has no sessions",
-                "session_id": session_id,
-                "usage_root": str(session_root),
-                "database_file": str(db_file),
-            }
-        
-        # 使用数据库中的实际会话ID
-        session_id_in_db = latest_session[0]  # 数据库中的ID
-        
-        # 从 sessions 表获取 token 统计
-        input_tokens = latest_session[5] or 0  # input_tokens
-        output_tokens = latest_session[6] or 0  # output_tokens
-        total_tokens = input_tokens + output_tokens
-        
-        # 查询该会话的所有消息
-        cursor.execute(
-            "SELECT role, content, token_count FROM messages WHERE session_id = ? ORDER BY timestamp",
-            (session_id_in_db,)
-        )
-        messages = cursor.fetchall()
-        
-        # 如果 sessions 表没有 token 统计，尝试从 messages 表计算
-        if input_tokens == 0 and output_tokens == 0:
-            for role, content, token_count in messages:
-                if token_count is not None:
-                    total_tokens += int(token_count)
-                    if role == "user":
-                        input_tokens += int(token_count)
-                    elif role == "assistant":
-                        output_tokens += int(token_count)
-        
-        # 收集 usage 信息
-        summary: dict[str, Any] = {
             "available": True,
             "source": "hermes_sqlite",
-            "session_id": session_id_in_db,  # 数据库中的实际ID
-            "original_session_id": session_id,  # HarnessBench生成的ID
+            "session_id": session_id,
+            "session_ids": [str(record["id"]) for record in sessions],
+            "session_count": len(sessions),
+            "auxiliary_usage_rows": len(auxiliary),
             "usage_root": str(session_root),
             "database_file": str(db_file),
-            "message_count": len(messages),
-            "usage_message_count": len(messages),
-            "input_tokens": input_tokens,
-            "output_tokens": output_tokens,
-            "total_tokens": total_tokens,
-            "providers": [latest_session[4] or "hermes"],  # billing_provider
-            "models": [latest_session[3] or "unknown"],    # model
+            "message_count": sum(int(record["message_count"] or 0) for record in sessions),
+            "tool_call_count": sum(int(record["tool_call_count"] or 0) for record in sessions),
+            "usage_message_count": totals["api_call_count"],
+            "request_count": totals["api_call_count"],
+            "input_tokens": totals["input_tokens"],
+            "output_tokens": totals["output_tokens"],
+            "cache_read_tokens": totals["cache_read_tokens"],
+            "cache_write_tokens": totals["cache_write_tokens"],
+            "reasoning_tokens": totals["reasoning_tokens"],
+            # Reasoning tokens are a subset of output and are not added twice.
+            "total_tokens": aggregate_total,
+            "providers": providers,
+            "models": models,
+            "billing_mode": billing_modes[0] if len(billing_modes) == 1 else None,
+            "billing_modes": billing_modes,
+            "estimated_cost_usd": sum(float(record["estimated_cost_usd"] or 0) for record in [*sessions, *auxiliary]),
+            "actual_cost_usd": sum(float(record["actual_cost_usd"] or 0) for record in [*sessions, *auxiliary]),
+            "cost_status": primary["cost_status"],
+            "end_reason": primary["end_reason"],
         }
-        
-        conn.close()
-        return summary
-        
-    except sqlite3.Error as e:
+    except sqlite3.Error as exc:
         return {
             "available": False,
-            "reason": f"Hermes database error: {str(e)}",
+            "reason": f"Hermes database error: {exc}",
             "session_id": session_id,
             "usage_root": str(session_root),
             "database_file": str(db_file),
@@ -348,11 +349,18 @@ def _collect_usage_summary(adapter_result: Any, session_id: str) -> dict[str, An
 
     session_root = Path(usage_root_raw)
 
-    # 检查是否是 Hermes SQLite 数据库
     db_file = session_root / "state.db"
-    if db_file.exists():
-        # Hermes 使用 SQLite，调用专门的函数处理
-        return _collect_hermes_usage_summary(db_file, session_id, session_root)
+    if metadata.get("usage_source") == "hermes_sqlite":
+        hermes_session_id = str(metadata.get("hermes_session_id") or "").strip()
+        if not hermes_session_id:
+            return {
+                "available": False,
+                "reason": "Hermes adapter metadata has no native session id",
+                "session_id": session_id,
+                "usage_root": str(session_root),
+                "database_file": str(db_file),
+            }
+        return _collect_hermes_usage_summary(db_file, hermes_session_id, session_root)
     
     candidates = [
         session_root / "agents" / "main" / "sessions" / f"{session_id}.jsonl",
@@ -474,7 +482,17 @@ def _collect_proxy_usage_summary(log_file: Path, session_id: str) -> dict[str, A
             row = json.loads(line)
         except json.JSONDecodeError:
             continue
-        summary["request_count"] += 1
+        # Most proxy rows represent one model request. Native adapters may only
+        # expose aggregate turn usage; their explicit call_count preserves the
+        # exact underlying model-call count without duplicating token totals.
+        raw_call_count = row.get("call_count", 1)
+        try:
+            call_count = int(raw_call_count)
+        except (TypeError, ValueError):
+            return {"available": False, "reason": "invalid proxy call_count", "session_id": session_id, "log_file": str(log_file)}
+        if isinstance(raw_call_count, bool) or not 1 <= call_count <= 10_000:
+            return {"available": False, "reason": "proxy call_count out of bounds", "session_id": session_id, "log_file": str(log_file)}
+        summary["request_count"] += call_count
         summary["input_tokens"] += int(row.get("input_tokens", 0) or 0)
         summary["output_tokens"] += int(row.get("output_tokens", 0) or 0)
         summary["cache_read_tokens"] += int(row.get("cache_read_tokens", 0) or 0)
@@ -499,6 +517,11 @@ def _collect_proxy_usage_summary(log_file: Path, session_id: str) -> dict[str, A
     summary["models"] = sorted(models)
     return summary
 
+
+
+def _proxy_usage_integrity_failure(summary: dict[str, Any]) -> bool:
+    reason = str(summary.get("reason") or "")
+    return reason.startswith(("invalid proxy call_count", "proxy call_count out of bounds"))
 
 def run_task(app: AppConfig, task: TaskSpec, model_id: str, model_cfg: dict[str, Any], mode: str, keep_workspace: bool = True) -> TaskRunResult:
     t_run_start = time.perf_counter()
@@ -574,7 +597,9 @@ def run_task(app: AppConfig, task: TaskSpec, model_id: str, model_cfg: dict[str,
 
     assert adapter_result is not None
     usage_summary = _collect_proxy_usage_summary(proxy_log, session_id)
-    if not usage_summary.get("available"):
+    # Invalid aggregate call counts are integrity failures, not an invitation to
+    # silently hide the proxy error behind a native-session fallback.
+    if not usage_summary.get("available") and not _proxy_usage_integrity_failure(usage_summary):
         usage_summary = _collect_usage_summary(adapter_result, session_id)
     oracle_result = run_oracle(task, workspace)
 

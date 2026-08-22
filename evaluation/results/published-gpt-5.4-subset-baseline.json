@@ -1,0 +1,2701 @@
+{
+  "source_url": "https://www.harness-bench.ai/assets/leaderboard_scores.json",
+  "source_generated_at": "2026-05-20T07:25:34.814316+00:00",
+  "retrieved_at": "2026-08-15T15:31:35.036948+00:00",
+  "source_run_count": 5194,
+  "model": "gpt-5.4",
+  "selection_rule": [
+    "Data, BI & Finance Analytics",
+    "Long-running Autonomy & State Adaptation",
+    "Software Engineering & Codebase Maintenance"
+  ],
+  "task_ids": [
+    "007-session-memory",
+    "009-git-pr-merge",
+    "011-code-debug",
+    "014-task-decomposition",
+    "016-code-repair-pytest",
+    "017-db-doc-consistency",
+    "018-provider-failover-audit",
+    "039-repo-architecture-map",
+    "040-test-coverage-fill",
+    "041-frontend-state-bug",
+    "042-api-schema-migration",
+    "043-db-migration-safety",
+    "044-ci-config-repair",
+    "045-dependency-upgrade-compat",
+    "046-performance-regression",
+    "047-code-review-risk-report",
+    "048-release-note-changelog",
+    "049-excel-like-cleaning",
+    "050-multitable-join-analysis",
+    "051-sql-query-report",
+    "052-metric-definition-audit",
+    "053-anomalous-transaction-detect",
+    "054-budget-variance-analysis",
+    "055-funnel-dropoff-analysis",
+    "056-inventory-forecast",
+    "057-interruption-resume",
+    "058-multiday-project-state",
+    "059-event-update-replan",
+    "060-task-cancellation-cleanup",
+    "061-periodic-status-rollup",
+    "082-compose-config-repair",
+    "083-monorepo-interface-repair",
+    "084-js-state-type-bug",
+    "085-flaky-test-root-cause",
+    "086-sql-migration-preflight-rollback",
+    "087-cli-parser-bug-tests",
+    "088-api-contract-mock-client-compat",
+    "089-ab-test-caveat-analysis",
+    "090-timeseries-anomaly-attribution",
+    "091-financial-close-reconciliation",
+    "092-schema-drift-audit",
+    "093-jsonl-sessionization-analysis",
+    "094-metric-definition-migration-diff",
+    "103-policy-update-replan-diff",
+    "104-async-ops-window-rollup",
+    "105-partial-batch-resume-ledger",
+    "106-release-approval-gate-plan"
+  ],
+  "notes": [
+    "Rows copied without score transformation from the authors' public leaderboard_scores.json.",
+    "The source does not retain model reasoning effort, harness versions, benchmark git SHA, per-task usage, or raw trajectories.",
+    "The pinned released Codex configuration uses medium reasoning, but this does not prove the published Codex runs used that setting."
+  ],
+  "runs": [
+    {
+      "task_id": "007-session-memory",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.25,
+      "process": 0.8,
+      "combined": 0.2
+    },
+    {
+      "task_id": "009-git-pr-merge",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.8,
+      "combined": 0.8
+    },
+    {
+      "task_id": "011-code-debug",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.8575,
+      "process": 0.7667,
+      "combined": 0.6574
+    },
+    {
+      "task_id": "014-task-decomposition",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.86,
+      "process": 0.9333,
+      "combined": 0.8027
+    },
+    {
+      "task_id": "016-code-repair-pytest",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "017-db-doc-consistency",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9167,
+      "combined": 0.9167
+    },
+    {
+      "task_id": "018-provider-failover-audit",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.9693,
+      "process": 0.9,
+      "combined": 0.8724
+    },
+    {
+      "task_id": "039-repo-architecture-map",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.9593,
+      "process": 0.9,
+      "combined": 0.8634
+    },
+    {
+      "task_id": "040-test-coverage-fill",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9333,
+      "combined": 0.9333
+    },
+    {
+      "task_id": "041-frontend-state-bug",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.9925,
+      "process": 0.85,
+      "combined": 0.8436
+    },
+    {
+      "task_id": "042-api-schema-migration",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.74,
+      "process": null,
+      "combined": 0.74
+    },
+    {
+      "task_id": "043-db-migration-safety",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.987,
+      "process": 0.8167,
+      "combined": 0.8061
+    },
+    {
+      "task_id": "044-ci-config-repair",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9,
+      "combined": 0.9
+    },
+    {
+      "task_id": "045-dependency-upgrade-compat",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.9649,
+      "process": 0.8833,
+      "combined": 0.8523
+    },
+    {
+      "task_id": "046-performance-regression",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.75,
+      "combined": 0.75
+    },
+    {
+      "task_id": "047-code-review-risk-report",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.5765,
+      "process": 0.95,
+      "combined": 0.5477
+    },
+    {
+      "task_id": "048-release-note-changelog",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.9685,
+      "process": 1.0,
+      "combined": 0.9685
+    },
+    {
+      "task_id": "049-excel-like-cleaning",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9333,
+      "combined": 0.9333
+    },
+    {
+      "task_id": "050-multitable-join-analysis",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9333,
+      "combined": 0.9333
+    },
+    {
+      "task_id": "051-sql-query-report",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.7833,
+      "combined": 0.7833
+    },
+    {
+      "task_id": "052-metric-definition-audit",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.69,
+      "process": 0.9667,
+      "combined": 0.667
+    },
+    {
+      "task_id": "053-anomalous-transaction-detect",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.9786,
+      "process": 0.9167,
+      "combined": 0.8971
+    },
+    {
+      "task_id": "054-budget-variance-analysis",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "055-funnel-dropoff-analysis",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.9563,
+      "process": 0.9833,
+      "combined": 0.9404
+    },
+    {
+      "task_id": "056-inventory-forecast",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.69,
+      "process": 0.9833,
+      "combined": 0.6785
+    },
+    {
+      "task_id": "057-interruption-resume",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.6923,
+      "process": 0.8333,
+      "combined": 0.5769
+    },
+    {
+      "task_id": "058-multiday-project-state",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.9375,
+      "process": 0.9,
+      "combined": 0.8438
+    },
+    {
+      "task_id": "059-event-update-replan",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9233,
+      "combined": 0.9233
+    },
+    {
+      "task_id": "060-task-cancellation-cleanup",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.84,
+      "combined": 0.84
+    },
+    {
+      "task_id": "061-periodic-status-rollup",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9,
+      "combined": 0.9
+    },
+    {
+      "task_id": "082-compose-config-repair",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "083-monorepo-interface-repair",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": null,
+      "combined": 1.0
+    },
+    {
+      "task_id": "084-js-state-type-bug",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.8833,
+      "combined": 0.8833
+    },
+    {
+      "task_id": "085-flaky-test-root-cause",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9833,
+      "combined": 0.9833
+    },
+    {
+      "task_id": "086-sql-migration-preflight-rollback",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.9889,
+      "process": 0.9733,
+      "combined": 0.9625
+    },
+    {
+      "task_id": "087-cli-parser-bug-tests",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.8821,
+      "process": 0.98,
+      "combined": 0.8645
+    },
+    {
+      "task_id": "088-api-contract-mock-client-compat",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.6,
+      "process": null,
+      "combined": 0.6
+    },
+    {
+      "task_id": "089-ab-test-caveat-analysis",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.9524,
+      "process": 0.9333,
+      "combined": 0.8889
+    },
+    {
+      "task_id": "090-timeseries-anomaly-attribution",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.6271,
+      "process": 1.0,
+      "combined": 0.6271
+    },
+    {
+      "task_id": "091-financial-close-reconciliation",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.8852,
+      "process": 0.9267,
+      "combined": 0.8203
+    },
+    {
+      "task_id": "092-schema-drift-audit",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.74,
+      "process": 0.95,
+      "combined": 0.703
+    },
+    {
+      "task_id": "093-jsonl-sessionization-analysis",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.5429,
+      "process": null,
+      "combined": 0.5429
+    },
+    {
+      "task_id": "094-metric-definition-migration-diff",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.78,
+      "process": 0.85,
+      "combined": 0.663
+    },
+    {
+      "task_id": "103-policy-update-replan-diff",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.985,
+      "process": 0.9,
+      "combined": 0.8865
+    },
+    {
+      "task_id": "104-async-ops-window-rollup",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.8875,
+      "process": 0.94,
+      "combined": 0.8342
+    },
+    {
+      "task_id": "105-partial-batch-resume-ledger",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.9325,
+      "process": 0.9,
+      "combined": 0.8393
+    },
+    {
+      "task_id": "106-release-approval-gate-plan",
+      "harness": "codex",
+      "model": "gpt-5.4",
+      "completion": 0.8636,
+      "process": null,
+      "combined": 0.8636
+    },
+    {
+      "task_id": "007-session-memory",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "082-compose-config-repair",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9,
+      "combined": 0.9
+    },
+    {
+      "task_id": "083-monorepo-interface-repair",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9333,
+      "combined": 0.9333
+    },
+    {
+      "task_id": "084-js-state-type-bug",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.6333,
+      "combined": 0.6333
+    },
+    {
+      "task_id": "085-flaky-test-root-cause",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9667,
+      "combined": 0.9667
+    },
+    {
+      "task_id": "086-sql-migration-preflight-rollback",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.1489,
+      "process": 0.9,
+      "combined": 0.134
+    },
+    {
+      "task_id": "087-cli-parser-bug-tests",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.8679,
+      "process": 0.9267,
+      "combined": 0.8043
+    },
+    {
+      "task_id": "088-api-contract-mock-client-compat",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.6,
+      "process": 0.8267,
+      "combined": 0.496
+    },
+    {
+      "task_id": "089-ab-test-caveat-analysis",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.9524,
+      "process": 0.9167,
+      "combined": 0.873
+    },
+    {
+      "task_id": "009-git-pr-merge",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "090-timeseries-anomaly-attribution",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.6271,
+      "process": 1.0,
+      "combined": 0.6271
+    },
+    {
+      "task_id": "091-financial-close-reconciliation",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.4918,
+      "process": 0.9,
+      "combined": 0.4426
+    },
+    {
+      "task_id": "092-schema-drift-audit",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.6783,
+      "process": 0.9,
+      "combined": 0.6105
+    },
+    {
+      "task_id": "093-jsonl-sessionization-analysis",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.6245,
+      "process": 0.8667,
+      "combined": 0.5412
+    },
+    {
+      "task_id": "094-metric-definition-migration-diff",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.78,
+      "process": 0.9333,
+      "combined": 0.728
+    },
+    {
+      "task_id": "103-policy-update-replan-diff",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.685,
+      "process": 0.8833,
+      "combined": 0.6051
+    },
+    {
+      "task_id": "104-async-ops-window-rollup",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.8875,
+      "process": 0.9,
+      "combined": 0.7987
+    },
+    {
+      "task_id": "105-partial-batch-resume-ledger",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.65,
+      "process": null,
+      "combined": 0.65
+    },
+    {
+      "task_id": "106-release-approval-gate-plan",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.4675,
+      "process": 0.97,
+      "combined": 0.4535
+    },
+    {
+      "task_id": "011-code-debug",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.865,
+      "process": 0.9333,
+      "combined": 0.8073
+    },
+    {
+      "task_id": "014-task-decomposition",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.86,
+      "process": 0.85,
+      "combined": 0.731
+    },
+    {
+      "task_id": "016-code-repair-pytest",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "017-db-doc-consistency",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.9816,
+      "process": 0.8333,
+      "combined": 0.818
+    },
+    {
+      "task_id": "018-provider-failover-audit",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.9693,
+      "process": 0.94,
+      "combined": 0.9111
+    },
+    {
+      "task_id": "039-repo-architecture-map",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.9865,
+      "process": 0.8833,
+      "combined": 0.8714
+    },
+    {
+      "task_id": "040-test-coverage-fill",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.8,
+      "combined": 0.8
+    },
+    {
+      "task_id": "041-frontend-state-bug",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.9962,
+      "process": 0.95,
+      "combined": 0.9464
+    },
+    {
+      "task_id": "042-api-schema-migration",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.74,
+      "process": null,
+      "combined": 0.74
+    },
+    {
+      "task_id": "043-db-migration-safety",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.262,
+      "process": 0.8,
+      "combined": 0.2096
+    },
+    {
+      "task_id": "044-ci-config-repair",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.9926,
+      "process": 0.85,
+      "combined": 0.8437
+    },
+    {
+      "task_id": "045-dependency-upgrade-compat",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.99,
+      "process": 0.85,
+      "combined": 0.8415
+    },
+    {
+      "task_id": "046-performance-regression",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.95,
+      "combined": 0.95
+    },
+    {
+      "task_id": "047-code-review-risk-report",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.5814,
+      "process": 0.75,
+      "combined": 0.4361
+    },
+    {
+      "task_id": "048-release-note-changelog",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.6663,
+      "process": 0.88,
+      "combined": 0.5863
+    },
+    {
+      "task_id": "049-excel-like-cleaning",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.9186,
+      "process": 0.75,
+      "combined": 0.6889
+    },
+    {
+      "task_id": "050-multitable-join-analysis",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.6833,
+      "combined": 0.6833
+    },
+    {
+      "task_id": "051-sql-query-report",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.7667,
+      "combined": 0.7667
+    },
+    {
+      "task_id": "052-metric-definition-audit",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.6118,
+      "process": 0.85,
+      "combined": 0.52
+    },
+    {
+      "task_id": "053-anomalous-transaction-detect",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.9786,
+      "process": 0.8333,
+      "combined": 0.8155
+    },
+    {
+      "task_id": "054-budget-variance-analysis",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9667,
+      "combined": 0.9667
+    },
+    {
+      "task_id": "055-funnel-dropoff-analysis",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.9836,
+      "process": null,
+      "combined": 0.9836
+    },
+    {
+      "task_id": "056-inventory-forecast",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.69,
+      "process": null,
+      "combined": 0.69
+    },
+    {
+      "task_id": "057-interruption-resume",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.8077,
+      "process": 0.9333,
+      "combined": 0.7539
+    },
+    {
+      "task_id": "058-multiday-project-state",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.9375,
+      "process": 0.8333,
+      "combined": 0.7812
+    },
+    {
+      "task_id": "059-event-update-replan",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": null,
+      "combined": 1.0
+    },
+    {
+      "task_id": "060-task-cancellation-cleanup",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.8182,
+      "process": null,
+      "combined": 0.8182
+    },
+    {
+      "task_id": "061-periodic-status-rollup",
+      "harness": "hermes",
+      "model": "gpt-5.4",
+      "completion": 0.8182,
+      "process": null,
+      "combined": 0.8182
+    },
+    {
+      "task_id": "007-session-memory",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "009-git-pr-merge",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9667,
+      "combined": 0.9667
+    },
+    {
+      "task_id": "011-code-debug",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.865,
+      "process": 0.9167,
+      "combined": 0.7929
+    },
+    {
+      "task_id": "014-task-decomposition",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.7788,
+      "process": 0.9167,
+      "combined": 0.7139
+    },
+    {
+      "task_id": "016-code-repair-pytest",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": null,
+      "combined": 1.0
+    },
+    {
+      "task_id": "017-db-doc-consistency",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.8,
+      "combined": 0.8
+    },
+    {
+      "task_id": "018-provider-failover-audit",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.9693,
+      "process": 0.9,
+      "combined": 0.8724
+    },
+    {
+      "task_id": "039-repo-architecture-map",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.9485,
+      "process": 0.6833,
+      "combined": 0.6481
+    },
+    {
+      "task_id": "040-test-coverage-fill",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.85,
+      "combined": 0.85
+    },
+    {
+      "task_id": "041-frontend-state-bug",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.5962,
+      "process": null,
+      "combined": 0.5962
+    },
+    {
+      "task_id": "042-api-schema-migration",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.4,
+      "process": 0.8767,
+      "combined": 0.3507
+    },
+    {
+      "task_id": "043-db-migration-safety",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.987,
+      "process": 0.6633,
+      "combined": 0.6547
+    },
+    {
+      "task_id": "044-ci-config-repair",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9,
+      "combined": 0.9
+    },
+    {
+      "task_id": "045-dependency-upgrade-compat",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.8717,
+      "process": null,
+      "combined": 0.8717
+    },
+    {
+      "task_id": "046-performance-regression",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9467,
+      "combined": 0.9467
+    },
+    {
+      "task_id": "047-code-review-risk-report",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.7367,
+      "process": 0.8667,
+      "combined": 0.6385
+    },
+    {
+      "task_id": "048-release-note-changelog",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.9294,
+      "process": 1.0,
+      "combined": 0.9294
+    },
+    {
+      "task_id": "049-excel-like-cleaning",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.9186,
+      "process": null,
+      "combined": 0.9186
+    },
+    {
+      "task_id": "050-multitable-join-analysis",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.8667,
+      "combined": 0.8667
+    },
+    {
+      "task_id": "051-sql-query-report",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "052-metric-definition-audit",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.69,
+      "process": 0.8167,
+      "combined": 0.5635
+    },
+    {
+      "task_id": "053-anomalous-transaction-detect",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.9786,
+      "process": 0.9,
+      "combined": 0.8807
+    },
+    {
+      "task_id": "054-budget-variance-analysis",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.69,
+      "process": 0.85,
+      "combined": 0.5865
+    },
+    {
+      "task_id": "055-funnel-dropoff-analysis",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.9836,
+      "process": 0.7667,
+      "combined": 0.7541
+    },
+    {
+      "task_id": "056-inventory-forecast",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.69,
+      "process": 0.65,
+      "combined": 0.4485
+    },
+    {
+      "task_id": "057-interruption-resume",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.7308,
+      "process": 0.85,
+      "combined": 0.6212
+    },
+    {
+      "task_id": "058-multiday-project-state",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.8594,
+      "process": 0.8233,
+      "combined": 0.7076
+    },
+    {
+      "task_id": "059-event-update-replan",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.7633,
+      "combined": 0.7633
+    },
+    {
+      "task_id": "060-task-cancellation-cleanup",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.8,
+      "combined": 0.8
+    },
+    {
+      "task_id": "061-periodic-status-rollup",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9333,
+      "combined": 0.9333
+    },
+    {
+      "task_id": "082-compose-config-repair",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9167,
+      "combined": 0.9167
+    },
+    {
+      "task_id": "083-monorepo-interface-repair",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": null,
+      "combined": 1.0
+    },
+    {
+      "task_id": "084-js-state-type-bug",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "085-flaky-test-root-cause",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9167,
+      "combined": 0.9167
+    },
+    {
+      "task_id": "086-sql-migration-preflight-rollback",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.7,
+      "process": 0.9,
+      "combined": 0.63
+    },
+    {
+      "task_id": "087-cli-parser-bug-tests",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.8821,
+      "process": 0.95,
+      "combined": 0.838
+    },
+    {
+      "task_id": "088-api-contract-mock-client-compat",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.6,
+      "process": 0.9667,
+      "combined": 0.58
+    },
+    {
+      "task_id": "089-ab-test-caveat-analysis",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "090-timeseries-anomaly-attribution",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.5424,
+      "process": 1.0,
+      "combined": 0.5424
+    },
+    {
+      "task_id": "091-financial-close-reconciliation",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.5246,
+      "process": 0.9333,
+      "combined": 0.4896
+    },
+    {
+      "task_id": "092-schema-drift-audit",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.3391,
+      "process": 0.4667,
+      "combined": 0.1582
+    },
+    {
+      "task_id": "093-jsonl-sessionization-analysis",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.6898,
+      "process": null,
+      "combined": 0.6898
+    },
+    {
+      "task_id": "094-metric-definition-migration-diff",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.74,
+      "process": 1.0,
+      "combined": 0.74
+    },
+    {
+      "task_id": "103-policy-update-replan-diff",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.685,
+      "process": 0.8767,
+      "combined": 0.6005
+    },
+    {
+      "task_id": "104-async-ops-window-rollup",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.8675,
+      "process": 0.85,
+      "combined": 0.7374
+    },
+    {
+      "task_id": "105-partial-batch-resume-ledger",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.5225,
+      "process": 0.8333,
+      "combined": 0.4354
+    },
+    {
+      "task_id": "106-release-approval-gate-plan",
+      "harness": "moltis-local",
+      "model": "gpt-5.4",
+      "completion": 0.4975,
+      "process": 0.9633,
+      "combined": 0.4793
+    },
+    {
+      "task_id": "007-session-memory",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "009-git-pr-merge",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9833,
+      "combined": 0.9833
+    },
+    {
+      "task_id": "011-code-debug",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.865,
+      "process": 0.9667,
+      "combined": 0.8362
+    },
+    {
+      "task_id": "014-task-decomposition",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.81,
+      "process": 0.9333,
+      "combined": 0.756
+    },
+    {
+      "task_id": "016-code-repair-pytest",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "017-db-doc-consistency",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.875,
+      "process": null,
+      "combined": 0.875
+    },
+    {
+      "task_id": "018-provider-failover-audit",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.9693,
+      "process": 0.9067,
+      "combined": 0.8788
+    },
+    {
+      "task_id": "039-repo-architecture-map",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.9488,
+      "process": 0.9333,
+      "combined": 0.8855
+    },
+    {
+      "task_id": "040-test-coverage-fill",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.8,
+      "combined": 0.8
+    },
+    {
+      "task_id": "041-frontend-state-bug",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.9962,
+      "process": 0.9633,
+      "combined": 0.9597
+    },
+    {
+      "task_id": "042-api-schema-migration",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.74,
+      "process": 0.8,
+      "combined": 0.592
+    },
+    {
+      "task_id": "043-db-migration-safety",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.262,
+      "process": 1.0,
+      "combined": 0.262
+    },
+    {
+      "task_id": "044-ci-config-repair",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "045-dependency-upgrade-compat",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.99,
+      "process": 0.95,
+      "combined": 0.9405
+    },
+    {
+      "task_id": "046-performance-regression",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9667,
+      "combined": 0.9667
+    },
+    {
+      "task_id": "047-code-review-risk-report",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.6199,
+      "process": 1.0,
+      "combined": 0.6199
+    },
+    {
+      "task_id": "048-release-note-changelog",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.9842,
+      "process": null,
+      "combined": 0.9842
+    },
+    {
+      "task_id": "049-excel-like-cleaning",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.9186,
+      "process": null,
+      "combined": 0.9186
+    },
+    {
+      "task_id": "050-multitable-join-analysis",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9667,
+      "combined": 0.9667
+    },
+    {
+      "task_id": "051-sql-query-report",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9633,
+      "combined": 0.9633
+    },
+    {
+      "task_id": "052-metric-definition-audit",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.6824,
+      "process": 0.9333,
+      "combined": 0.6369
+    },
+    {
+      "task_id": "053-anomalous-transaction-detect",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.9786,
+      "process": 1.0,
+      "combined": 0.9786
+    },
+    {
+      "task_id": "054-budget-variance-analysis",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9333,
+      "combined": 0.9333
+    },
+    {
+      "task_id": "055-funnel-dropoff-analysis",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.9836,
+      "process": 0.9167,
+      "combined": 0.9016
+    },
+    {
+      "task_id": "056-inventory-forecast",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.69,
+      "process": 1.0,
+      "combined": 0.69
+    },
+    {
+      "task_id": "057-interruption-resume",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.8077,
+      "process": 0.95,
+      "combined": 0.7673
+    },
+    {
+      "task_id": "058-multiday-project-state",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.8594,
+      "process": 0.9,
+      "combined": 0.7735
+    },
+    {
+      "task_id": "059-event-update-replan",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.5,
+      "process": 0.9833,
+      "combined": 0.4917
+    },
+    {
+      "task_id": "060-task-cancellation-cleanup",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.8667,
+      "combined": 0.8667
+    },
+    {
+      "task_id": "061-periodic-status-rollup",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9,
+      "combined": 0.9
+    },
+    {
+      "task_id": "082-compose-config-repair",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.99,
+      "process": 0.9333,
+      "combined": 0.924
+    },
+    {
+      "task_id": "083-monorepo-interface-repair",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "084-js-state-type-bug",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "085-flaky-test-root-cause",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "086-sql-migration-preflight-rollback",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.7,
+      "process": 1.0,
+      "combined": 0.7
+    },
+    {
+      "task_id": "087-cli-parser-bug-tests",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.8821,
+      "process": 1.0,
+      "combined": 0.8821
+    },
+    {
+      "task_id": "088-api-contract-mock-client-compat",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.6,
+      "process": 0.9333,
+      "combined": 0.56
+    },
+    {
+      "task_id": "089-ab-test-caveat-analysis",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.9524,
+      "process": 0.9833,
+      "combined": 0.9365
+    },
+    {
+      "task_id": "090-timeseries-anomaly-attribution",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": null,
+      "combined": 1.0
+    },
+    {
+      "task_id": "091-financial-close-reconciliation",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.5902,
+      "process": 0.9333,
+      "combined": 0.5509
+    },
+    {
+      "task_id": "092-schema-drift-audit",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.74,
+      "process": null,
+      "combined": 0.74
+    },
+    {
+      "task_id": "093-jsonl-sessionization-analysis",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.6898,
+      "process": null,
+      "combined": 0.6898
+    },
+    {
+      "task_id": "094-metric-definition-migration-diff",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.74,
+      "process": null,
+      "combined": 0.74
+    },
+    {
+      "task_id": "103-policy-update-replan-diff",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9333,
+      "combined": 0.9333
+    },
+    {
+      "task_id": "104-async-ops-window-rollup",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.8675,
+      "process": 0.75,
+      "combined": 0.6506
+    },
+    {
+      "task_id": "105-partial-batch-resume-ledger",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.4831,
+      "process": 1.0,
+      "combined": 0.4831
+    },
+    {
+      "task_id": "106-release-approval-gate-plan",
+      "harness": "nanobot",
+      "model": "gpt-5.4",
+      "completion": 0.8489,
+      "process": 1.0,
+      "combined": 0.8489
+    },
+    {
+      "task_id": "007-session-memory",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.25,
+      "process": 0.5333,
+      "combined": 0.1333
+    },
+    {
+      "task_id": "082-compose-config-repair",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.6964,
+      "process": 0.775,
+      "combined": 0.5397
+    },
+    {
+      "task_id": "083-monorepo-interface-repair",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9,
+      "combined": 0.9
+    },
+    {
+      "task_id": "084-js-state-type-bug",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "085-flaky-test-root-cause",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9125,
+      "combined": 0.9125
+    },
+    {
+      "task_id": "086-sql-migration-preflight-rollback",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.7,
+      "process": 0.925,
+      "combined": 0.6475
+    },
+    {
+      "task_id": "087-cli-parser-bug-tests",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.8821,
+      "process": 0.675,
+      "combined": 0.5954
+    },
+    {
+      "task_id": "088-api-contract-mock-client-compat",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.6,
+      "process": 0.875,
+      "combined": 0.525
+    },
+    {
+      "task_id": "089-ab-test-caveat-analysis",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.6349,
+      "process": 0.7625,
+      "combined": 0.4841
+    },
+    {
+      "task_id": "009-git-pr-merge",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.95,
+      "combined": 0.95
+    },
+    {
+      "task_id": "090-timeseries-anomaly-attribution",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.4407,
+      "process": 0.97,
+      "combined": 0.4275
+    },
+    {
+      "task_id": "091-financial-close-reconciliation",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.4754,
+      "process": 0.9,
+      "combined": 0.4279
+    },
+    {
+      "task_id": "093-jsonl-sessionization-analysis",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.5265,
+      "process": 0.8067,
+      "combined": 0.4247
+    },
+    {
+      "task_id": "094-metric-definition-migration-diff",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.7391,
+      "process": 0.9,
+      "combined": 0.6652
+    },
+    {
+      "task_id": "103-policy-update-replan-diff",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.6,
+      "process": 0.8,
+      "combined": 0.48
+    },
+    {
+      "task_id": "104-async-ops-window-rollup",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.8675,
+      "process": 0.85,
+      "combined": 0.7374
+    },
+    {
+      "task_id": "105-partial-batch-resume-ledger",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.5444,
+      "process": 0.8667,
+      "combined": 0.4718
+    },
+    {
+      "task_id": "106-release-approval-gate-plan",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.4525,
+      "process": 0.9833,
+      "combined": 0.4449
+    },
+    {
+      "task_id": "011-code-debug",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.8575,
+      "process": 1.0,
+      "combined": 0.8575
+    },
+    {
+      "task_id": "014-task-decomposition",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.7788,
+      "process": 0.9,
+      "combined": 0.7009
+    },
+    {
+      "task_id": "016-code-repair-pytest",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.9,
+      "process": 0.9667,
+      "combined": 0.87
+    },
+    {
+      "task_id": "017-db-doc-consistency",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.9682,
+      "process": 0.9167,
+      "combined": 0.8875
+    },
+    {
+      "task_id": "018-provider-failover-audit",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.9693,
+      "process": 0.9233,
+      "combined": 0.895
+    },
+    {
+      "task_id": "039-repo-architecture-map",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.9544,
+      "process": 0.8,
+      "combined": 0.7635
+    },
+    {
+      "task_id": "040-test-coverage-fill",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9,
+      "combined": 0.9
+    },
+    {
+      "task_id": "041-frontend-state-bug",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.5962,
+      "process": 0.9667,
+      "combined": 0.5763
+    },
+    {
+      "task_id": "042-api-schema-migration",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.74,
+      "process": null,
+      "combined": 0.74
+    },
+    {
+      "task_id": "043-db-migration-safety",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.979,
+      "process": 0.9667,
+      "combined": 0.9464
+    },
+    {
+      "task_id": "044-ci-config-repair",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.72,
+      "process": 0.9,
+      "combined": 0.648
+    },
+    {
+      "task_id": "045-dependency-upgrade-compat",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.99,
+      "process": 0.9,
+      "combined": 0.891
+    },
+    {
+      "task_id": "046-performance-regression",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "047-code-review-risk-report",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.7381,
+      "process": 0.9667,
+      "combined": 0.7135
+    },
+    {
+      "task_id": "048-release-note-changelog",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9667,
+      "combined": 0.9667
+    },
+    {
+      "task_id": "049-excel-like-cleaning",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.6337,
+      "process": 0.5833,
+      "combined": 0.3696
+    },
+    {
+      "task_id": "050-multitable-join-analysis",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.69,
+      "process": 0.5167,
+      "combined": 0.3565
+    },
+    {
+      "task_id": "051-sql-query-report",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.69,
+      "process": 0.0,
+      "combined": 0.0
+    },
+    {
+      "task_id": "052-metric-definition-audit",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.6032,
+      "process": 0.4333,
+      "combined": 0.2614
+    },
+    {
+      "task_id": "053-anomalous-transaction-detect",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.5294,
+      "process": 0.7667,
+      "combined": 0.4059
+    },
+    {
+      "task_id": "054-budget-variance-analysis",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.8667,
+      "combined": 0.8667
+    },
+    {
+      "task_id": "055-funnel-dropoff-analysis",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.8415,
+      "process": 0.4333,
+      "combined": 0.3646
+    },
+    {
+      "task_id": "056-inventory-forecast",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.69,
+      "process": 1.0,
+      "combined": 0.69
+    },
+    {
+      "task_id": "057-interruption-resume",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.6923,
+      "process": 0.9667,
+      "combined": 0.6692
+    },
+    {
+      "task_id": "058-multiday-project-state",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.8594,
+      "process": 1.0,
+      "combined": 0.8594
+    },
+    {
+      "task_id": "059-event-update-replan",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.5,
+      "process": 0.6667,
+      "combined": 0.3333
+    },
+    {
+      "task_id": "060-task-cancellation-cleanup",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.8182,
+      "process": 0.7833,
+      "combined": 0.6409
+    },
+    {
+      "task_id": "061-periodic-status-rollup",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.8636,
+      "process": 1.0,
+      "combined": 0.8636
+    },
+    {
+      "task_id": "092-schema-drift-audit",
+      "harness": "nullclaw",
+      "model": "gpt-5.4",
+      "completion": 0.4783,
+      "process": 0.9,
+      "combined": 0.4305
+    },
+    {
+      "task_id": "007-session-memory",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "009-git-pr-merge",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "011-code-debug",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.865,
+      "process": 0.8433,
+      "combined": 0.7295
+    },
+    {
+      "task_id": "014-task-decomposition",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.81,
+      "process": 0.85,
+      "combined": 0.6885
+    },
+    {
+      "task_id": "016-code-repair-pytest",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.8333,
+      "combined": 0.8333
+    },
+    {
+      "task_id": "017-db-doc-consistency",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.8333,
+      "combined": 0.8333
+    },
+    {
+      "task_id": "018-provider-failover-audit",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.0,
+      "process": null,
+      "combined": 0.0
+    },
+    {
+      "task_id": "039-repo-architecture-map",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.12,
+      "process": 0.3667,
+      "combined": 0.044
+    },
+    {
+      "task_id": "040-test-coverage-fill",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.7,
+      "combined": 0.7
+    },
+    {
+      "task_id": "041-frontend-state-bug",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.5962,
+      "process": 0.9333,
+      "combined": 0.5565
+    },
+    {
+      "task_id": "042-api-schema-migration",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.74,
+      "process": 0.6733,
+      "combined": 0.4983
+    },
+    {
+      "task_id": "043-db-migration-safety",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.917,
+      "process": 0.8833,
+      "combined": 0.81
+    },
+    {
+      "task_id": "044-ci-config-repair",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.7667,
+      "combined": 0.7667
+    },
+    {
+      "task_id": "045-dependency-upgrade-compat",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.99,
+      "process": 0.8233,
+      "combined": 0.8151
+    },
+    {
+      "task_id": "046-performance-regression",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9,
+      "combined": 0.9
+    },
+    {
+      "task_id": "047-code-review-risk-report",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.5789,
+      "process": 0.75,
+      "combined": 0.4342
+    },
+    {
+      "task_id": "048-release-note-changelog",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.9615,
+      "process": 0.6,
+      "combined": 0.5769
+    },
+    {
+      "task_id": "049-excel-like-cleaning",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.85,
+      "combined": 0.85
+    },
+    {
+      "task_id": "050-multitable-join-analysis",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.54,
+      "combined": 0.54
+    },
+    {
+      "task_id": "051-sql-query-report",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.7333,
+      "combined": 0.7333
+    },
+    {
+      "task_id": "052-metric-definition-audit",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.5882,
+      "process": 0.9333,
+      "combined": 0.549
+    },
+    {
+      "task_id": "053-anomalous-transaction-detect",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.9786,
+      "process": 0.8,
+      "combined": 0.7829
+    },
+    {
+      "task_id": "054-budget-variance-analysis",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": null,
+      "combined": 1.0
+    },
+    {
+      "task_id": "055-funnel-dropoff-analysis",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.9836,
+      "process": 0.8667,
+      "combined": 0.8525
+    },
+    {
+      "task_id": "056-inventory-forecast",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.69,
+      "process": 0.9333,
+      "combined": 0.644
+    },
+    {
+      "task_id": "057-interruption-resume",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.8077,
+      "process": 0.9333,
+      "combined": 0.7539
+    },
+    {
+      "task_id": "058-multiday-project-state",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.8437,
+      "process": 0.75,
+      "combined": 0.6328
+    },
+    {
+      "task_id": "059-event-update-replan",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.8667,
+      "combined": 0.8667
+    },
+    {
+      "task_id": "060-task-cancellation-cleanup",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9333,
+      "combined": 0.9333
+    },
+    {
+      "task_id": "061-periodic-status-rollup",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.55,
+      "combined": 0.55
+    },
+    {
+      "task_id": "082-compose-config-repair",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.99,
+      "process": 0.9333,
+      "combined": 0.924
+    },
+    {
+      "task_id": "083-monorepo-interface-repair",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "084-js-state-type-bug",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9833,
+      "combined": 0.9833
+    },
+    {
+      "task_id": "085-flaky-test-root-cause",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": null,
+      "combined": 1.0
+    },
+    {
+      "task_id": "086-sql-migration-preflight-rollback",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9,
+      "combined": 0.9
+    },
+    {
+      "task_id": "087-cli-parser-bug-tests",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.8679,
+      "process": 0.65,
+      "combined": 0.5641
+    },
+    {
+      "task_id": "088-api-contract-mock-client-compat",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.6,
+      "process": 0.8167,
+      "combined": 0.49
+    },
+    {
+      "task_id": "089-ab-test-caveat-analysis",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.9524,
+      "process": 0.9,
+      "combined": 0.8572
+    },
+    {
+      "task_id": "090-timeseries-anomaly-attribution",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.8667,
+      "combined": 0.8667
+    },
+    {
+      "task_id": "091-financial-close-reconciliation",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.7869,
+      "process": 0.6833,
+      "combined": 0.5377
+    },
+    {
+      "task_id": "092-schema-drift-audit",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.3826,
+      "process": 0.85,
+      "combined": 0.3252
+    },
+    {
+      "task_id": "093-jsonl-sessionization-analysis",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.4449,
+      "process": 0.9,
+      "combined": 0.4004
+    },
+    {
+      "task_id": "094-metric-definition-migration-diff",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.78,
+      "process": 0.9333,
+      "combined": 0.728
+    },
+    {
+      "task_id": "103-policy-update-replan-diff",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.617,
+      "process": 0.4,
+      "combined": 0.2468
+    },
+    {
+      "task_id": "104-async-ops-window-rollup",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.94,
+      "process": 0.8,
+      "combined": 0.752
+    },
+    {
+      "task_id": "105-partial-batch-resume-ledger",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.65,
+      "process": 0.7,
+      "combined": 0.455
+    },
+    {
+      "task_id": "106-release-approval-gate-plan",
+      "harness": "openclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.4525,
+      "process": 0.9333,
+      "combined": 0.4223
+    },
+    {
+      "task_id": "007-session-memory",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.0,
+      "process": 0.4,
+      "combined": 0.0
+    },
+    {
+      "task_id": "009-git-pr-merge",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.25,
+      "process": 0.4167,
+      "combined": 0.1042
+    },
+    {
+      "task_id": "011-code-debug",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.8575,
+      "process": 0.8167,
+      "combined": 0.7003
+    },
+    {
+      "task_id": "014-task-decomposition",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.81,
+      "process": 0.93,
+      "combined": 0.7533
+    },
+    {
+      "task_id": "016-code-repair-pytest",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "017-db-doc-consistency",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.9318,
+      "process": 0.8667,
+      "combined": 0.8076
+    },
+    {
+      "task_id": "018-provider-failover-audit",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.9395,
+      "process": 0.8067,
+      "combined": 0.7579
+    },
+    {
+      "task_id": "039-repo-architecture-map",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.956,
+      "process": 0.8333,
+      "combined": 0.7967
+    },
+    {
+      "task_id": "040-test-coverage-fill",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9333,
+      "combined": 0.9333
+    },
+    {
+      "task_id": "041-frontend-state-bug",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.5925,
+      "process": 0.95,
+      "combined": 0.5629
+    },
+    {
+      "task_id": "042-api-schema-migration",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.74,
+      "process": 0.6667,
+      "combined": 0.4933
+    },
+    {
+      "task_id": "043-db-migration-safety",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.857,
+      "process": 0.8833,
+      "combined": 0.757
+    },
+    {
+      "task_id": "044-ci-config-repair",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.95,
+      "combined": 0.95
+    },
+    {
+      "task_id": "045-dependency-upgrade-compat",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.99,
+      "process": 0.95,
+      "combined": 0.9405
+    },
+    {
+      "task_id": "046-performance-regression",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 1.0,
+      "combined": 1.0
+    },
+    {
+      "task_id": "047-code-review-risk-report",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.709,
+      "process": 0.9333,
+      "combined": 0.6617
+    },
+    {
+      "task_id": "048-release-note-changelog",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.9908,
+      "process": 0.7,
+      "combined": 0.6936
+    },
+    {
+      "task_id": "049-excel-like-cleaning",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": null,
+      "combined": 1.0
+    },
+    {
+      "task_id": "050-multitable-join-analysis",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.7,
+      "combined": 0.7
+    },
+    {
+      "task_id": "051-sql-query-report",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.4667,
+      "combined": 0.4667
+    },
+    {
+      "task_id": "052-metric-definition-audit",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.6118,
+      "process": 0.85,
+      "combined": 0.52
+    },
+    {
+      "task_id": "053-anomalous-transaction-detect",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.4866,
+      "process": 0.7833,
+      "combined": 0.3812
+    },
+    {
+      "task_id": "054-budget-variance-analysis",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.69,
+      "process": null,
+      "combined": 0.69
+    },
+    {
+      "task_id": "055-funnel-dropoff-analysis",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.6011,
+      "process": null,
+      "combined": 0.6011
+    },
+    {
+      "task_id": "056-inventory-forecast",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.0947,
+      "process": null,
+      "combined": 0.0947
+    },
+    {
+      "task_id": "057-interruption-resume",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.8077,
+      "process": 0.8333,
+      "combined": 0.6731
+    },
+    {
+      "task_id": "058-multiday-project-state",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.9,
+      "combined": 0.9
+    },
+    {
+      "task_id": "059-event-update-replan",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.5,
+      "process": 0.9667,
+      "combined": 0.4833
+    },
+    {
+      "task_id": "060-task-cancellation-cleanup",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.49,
+      "process": 0.8833,
+      "combined": 0.4328
+    },
+    {
+      "task_id": "061-periodic-status-rollup",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.1818,
+      "process": 0.2167,
+      "combined": 0.0394
+    },
+    {
+      "task_id": "082-compose-config-repair",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 1.0,
+      "process": 0.7167,
+      "combined": 0.7167
+    },
+    {
+      "task_id": "083-monorepo-interface-repair",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.23,
+      "process": 0.3667,
+      "combined": 0.0843
+    },
+    {
+      "task_id": "084-js-state-type-bug",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.9938,
+      "process": 0.75,
+      "combined": 0.7453
+    },
+    {
+      "task_id": "085-flaky-test-root-cause",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.1837,
+      "process": 0.2333,
+      "combined": 0.0429
+    },
+    {
+      "task_id": "086-sql-migration-preflight-rollback",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.7,
+      "process": 0.9667,
+      "combined": 0.6767
+    },
+    {
+      "task_id": "087-cli-parser-bug-tests",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.2867,
+      "process": 0.7,
+      "combined": 0.2007
+    },
+    {
+      "task_id": "088-api-contract-mock-client-compat",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.5,
+      "process": 0.5333,
+      "combined": 0.2667
+    },
+    {
+      "task_id": "089-ab-test-caveat-analysis",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.69,
+      "process": 0.8933,
+      "combined": 0.6164
+    },
+    {
+      "task_id": "090-timeseries-anomaly-attribution",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.3729,
+      "process": 0.8333,
+      "combined": 0.3108
+    },
+    {
+      "task_id": "091-financial-close-reconciliation",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.4912,
+      "process": 0.9,
+      "combined": 0.4421
+    },
+    {
+      "task_id": "092-schema-drift-audit",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.0348,
+      "process": 0.3333,
+      "combined": 0.0116
+    },
+    {
+      "task_id": "093-jsonl-sessionization-analysis",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.0367,
+      "process": 0.25,
+      "combined": 0.0092
+    },
+    {
+      "task_id": "094-metric-definition-migration-diff",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.8491,
+      "process": null,
+      "combined": 0.8491
+    },
+    {
+      "task_id": "103-policy-update-replan-diff",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.7,
+      "process": 0.8833,
+      "combined": 0.6183
+    },
+    {
+      "task_id": "104-async-ops-window-rollup",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.1,
+      "process": 0.1,
+      "combined": 0.01
+    },
+    {
+      "task_id": "105-partial-batch-resume-ledger",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.1894,
+      "process": 0.94,
+      "combined": 0.178
+    },
+    {
+      "task_id": "106-release-approval-gate-plan",
+      "harness": "zeroclaw-local",
+      "model": "gpt-5.4",
+      "completion": 0.4525,
+      "process": 1.0,
+      "combined": 0.4525
+    }
+  ],
+  "source_sha256": "9ec6627148bcee70a0894b1c9640500c71817bba3595b6473620809b6876b218"
+}

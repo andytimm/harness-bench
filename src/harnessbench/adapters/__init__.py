@@ -9,6 +9,8 @@ from harnessbench.adapters.nanoclaw import NanoClawAdapter
 from harnessbench.adapters.nullclaw import NullClawAdapter
 from harnessbench.adapters.openclaw import OpenClawAdapter
 from harnessbench.adapters.picoclaw import PicoClawAdapter
+from harnessbench.adapters.prime_agent import PrimeAgentAdapter
+from harnessbench.adapters.pi import PiAdapter
 from harnessbench.adapters.zeroclaw import ZeroClawAdapter
 from harnessbench.adapters.hermes import HermesAgentAdapter
 
@@ -22,6 +24,8 @@ __all__ = [
     "NullClawAdapter",
     "OpenClawAdapter",
     "PicoClawAdapter",
+    "PrimeAgentAdapter",
+    "PiAdapter",
     "ZeroClawAdapter",
     "HermesAgentAdapter",
     "MoltisAdapter",

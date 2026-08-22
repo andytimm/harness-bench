@@ -272,7 +272,11 @@ def run_llm_rubric(
             {"role": "user", "content": user},
         ],
         "temperature": 0.2,
+        "max_tokens": int(os.environ.get("HARNESSBENCH_RUBRIC_MAX_TOKENS", "1500")),
     }
+    preferred_provider = os.environ.get("RUBRIC_PROVIDER", "").strip()
+    if preferred_provider:
+        payload["provider"] = {"order": [preferred_provider], "allow_fallbacks": False}
     body = json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(
         f"{base}/chat/completions",
@@ -336,9 +340,28 @@ def run_llm_rubric(
         "scores": scores,
         "total": float(total) if total is not None else None,
         "notes": notes,
-        "raw_content": content[:1500] if isinstance(content, str) else "",
+        "raw_content": content if isinstance(content, str) else "",
+        "parsed_response": parsed,
         "rubric_model": mdl,
     }
+    response_model = data.get("model")
+    if isinstance(response_model, str):
+        out["response_model"] = response_model
+    try:
+        finish_reason = data["choices"][0].get("finish_reason")
+    except (KeyError, IndexError, TypeError):
+        finish_reason = None
+    if isinstance(finish_reason, str):
+        out["finish_reason"] = finish_reason
+    response_id = data.get("id")
+    if isinstance(response_id, str):
+        out["response_id"] = response_id
+    response_provider = data.get("provider")
+    if isinstance(response_provider, str):
+        out["response_provider"] = response_provider
+    usage = data.get("usage")
+    if isinstance(usage, dict):
+        out["usage"] = usage
     vb = parsed.get("vision_breakdown")
     if isinstance(vb, dict):
         out["vision_breakdown"] = vb
