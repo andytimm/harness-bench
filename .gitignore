@@ -29,3 +29,4 @@ reports/*
 /evaluation/runs/
 /evaluation/process-grades/
 /evaluation/process-grading-staging/
+/evaluation/invalid-integration-results/

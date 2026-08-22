@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from harnessbench.config import load_app_config
+from prime_agent_version import EXPECTED_PRIME_AGENT_VERSION, require_historical_prime_agent_version
 
 
 DEFAULT_HARNESS = "prime-agent-gpt-5.4-medium"
@@ -99,10 +100,21 @@ def write_manifest(path: Path, manifest: dict[str, Any]) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--harness", default=DEFAULT_HARNESS)
+    parser.add_argument(
+        "--allow-version-mismatch",
+        action="store_true",
+        help="allow a non-identical reproduction with a Prime Agent CLI version other than 0.7.2",
+    )
     parser.add_argument("--manifest", type=Path, default=Path("reports/prime-agent-gpt-5.4-full-manifest.json"))
     parser.add_argument("--preflight-only", action="store_true", help="validate existing results without running tasks")
     args = parser.parse_args()
 
+    try:
+        prime_agent_version = require_historical_prime_agent_version(
+            allow_mismatch=args.allow_version_mismatch
+        )
+    except RuntimeError as exc:
+        raise SystemExit(str(exc)) from exc
     app = load_app_config()
     task_ids = sorted(path.name for path in app.tasks_dir.iterdir() if (path / "task.yaml").is_file())
     if len(task_ids) != EXPECTED_TASK_COUNT:
@@ -138,6 +150,8 @@ def main() -> int:
         "provider": EXPECTED_PROVIDER,
         "model": EXPECTED_MODEL,
         "thinking": "medium",
+        "expected_prime_agent_version": EXPECTED_PRIME_AGENT_VERSION,
+        "prime_agent_version": prime_agent_version,
         "selection_rule": {"name": "complete_suite", "task_count": len(task_ids)},
         "tasks": task_ids,
         "valid_existing_count": len(existing_records),

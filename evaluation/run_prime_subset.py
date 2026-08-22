@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from harnessbench.config import load_app_config
+from prime_agent_version import EXPECTED_PRIME_AGENT_VERSION, require_historical_prime_agent_version
 
 
 SUBSET_CLASSES = [
@@ -136,9 +137,20 @@ def write_manifest(path: Path, manifest: dict[str, Any]) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--harness", default=DEFAULT_HARNESS)
+    parser.add_argument(
+        "--allow-version-mismatch",
+        action="store_true",
+        help="allow a non-identical reproduction with a Prime Agent CLI version other than 0.7.2",
+    )
     parser.add_argument("--manifest", type=Path, default=Path("reports/prime-agent-gpt-5.4-subset-manifest.json"))
     args = parser.parse_args()
 
+    try:
+        prime_agent_version = require_historical_prime_agent_version(
+            allow_mismatch=args.allow_version_mismatch
+        )
+    except RuntimeError as exc:
+        raise SystemExit(str(exc)) from exc
     app = load_app_config()
     missing_task_dirs = [task_id for task_id in SUBSET_TASKS if not (app.tasks_dir / task_id / "task.yaml").is_file()]
     if missing_task_dirs:
@@ -160,6 +172,8 @@ def main() -> int:
         "provider": EXPECTED_PROVIDER,
         "model": EXPECTED_MODEL,
         "thinking": "medium",
+        "expected_prime_agent_version": EXPECTED_PRIME_AGENT_VERSION,
+        "prime_agent_version": prime_agent_version,
         "selection_rule": {"task_classes": SUBSET_CLASSES, "task_count": len(SUBSET_TASKS)},
         "tasks": SUBSET_TASKS,
         "results": [],

@@ -12,6 +12,7 @@ import time
 from pathlib import Path
 
 from harnessbench.config import load_app_config
+from prime_agent_version import EXPECTED_PRIME_AGENT_VERSION, require_historical_prime_agent_version
 
 
 PILOT_TASKS = [
@@ -31,6 +32,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--harness", default="prime-agent-gpt-5.4-medium")
     parser.add_argument("--mode", default="live")
     parser.add_argument("--allow-existing", action="store_true")
+    parser.add_argument(
+        "--allow-version-mismatch",
+        action="store_true",
+        help="allow a non-identical reproduction with a Prime Agent CLI version other than 0.7.2",
+    )
     parser.add_argument("--manifest", type=Path, default=Path("reports/prime-agent-pilot-run.json"))
     return parser.parse_args()
 
@@ -41,6 +47,12 @@ def existing_results(results_dir: Path, harness: str, task_id: str) -> list[Path
 
 def main() -> int:
     args = parse_args()
+    try:
+        prime_agent_version = require_historical_prime_agent_version(
+            allow_mismatch=args.allow_version_mismatch
+        )
+    except RuntimeError as exc:
+        raise SystemExit(str(exc)) from exc
     app = load_app_config()
     prior = {task: existing_results(app.results_dir, args.harness, task) for task in PILOT_TASKS}
     conflicts = {task: paths for task, paths in prior.items() if paths}
@@ -92,6 +104,8 @@ def main() -> int:
         "finished_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "process_grade_skipped": True,
         "oracle_quality_llm_skipped": True,
+        "expected_prime_agent_version": EXPECTED_PRIME_AGENT_VERSION,
+        "prime_agent_version": prime_agent_version,
         "tasks": rows,
     }
     args.manifest.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")

@@ -43,6 +43,14 @@
 | [→ 评分说明（摘要）](#scoring-summary) | 过程 / 结果分、环境变量、合成公式 |
 | [→ 代码主逻辑](#architecture-overview) | `cli` · `runner` · `adapter` |
 
+### Recent evaluation: Prime Agent + GPT-5.4
+
+We evaluated Prime Agent on all 106 HarnessBench tasks using GPT-5.4 at medium reasoning. It achieved **86.65% mean raw outcome score** in the retained run.
+
+This branch also adds Pi and a corrected/contained Hermes evaluation. An earlier Hermes run had oracle/ground-truth leakage on four tasks, so the reported Hermes result is a rerun without those contaminated conditions.
+
+See the [comparison report](evaluation/results/gpt54-harness-report/README.md), [full Prime Agent results](evaluation/results/prime-agent-gpt-5.4-medium-full.md), and the evaluation scripts/configuration under [`evaluation/`](evaluation/).
+
 ---
 
 <a id="run-quickstart"></a>

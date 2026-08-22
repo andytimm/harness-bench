@@ -2,12 +2,14 @@
 
 The pilot task list was committed in `NOTES.md` before benchmark results were observed and is duplicated as a constant in `run_prime_pilot.py`.
 
-From the repository root, after installing the project and the benchmark oracles' undeclared `pytest` requirement into `.venv`:
+From the repository root, install the project with the declared evaluation dependencies:
 
 ```bash
-uv pip install --python .venv/bin/python -e . pytest
+uv pip install --python .venv/bin/python -e ".[evaluation]"
 PYTHONPATH=src .venv/bin/python evaluation/run_prime_pilot.py
 ```
+
+The published Prime Agent run used CLI version `0.7.2`. The Prime evaluation runners enforce that version before running; use `--allow-version-mismatch` only to make and label a non-identical reproduction.
 
 The runner prepends `.venv/bin` to `PATH`, matching an activated virtual environment. This matters because several benchmark oracles invoke `python3` or `pytest` by executable name.
 
@@ -42,7 +44,6 @@ The full runner preflights all retained results before making a model call, pres
 Generate the exact-subset comparison plots from retained Prime result JSON and the derived authors' GPT-5.4 score artifact:
 
 ```bash
-uv pip install --python .venv/bin/python matplotlib
 .venv/bin/python evaluation/plot_prime_comparison.py
 ```
 
